@@ -22,6 +22,7 @@ import java.util.Set;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 
 /**
@@ -29,11 +30,7 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
  *
  * @author Joao Bispo
  */
-public abstract class Partitioner {
-
-   public Partitioner() {
-      listeners = new HashSet<InstructionBlockListener>();
-   }
+public abstract class Partitioner extends InstructionBlockProducer {
 
 
    /**
@@ -46,9 +43,6 @@ public abstract class Partitioner {
    protected abstract void flush();
 
 
-
-
-
    public void run(InstructionBusReader reader) {
       GenericInstruction instruction = reader.nextInstruction();
       while(instruction != null) {
@@ -57,32 +51,5 @@ public abstract class Partitioner {
       }
       flush();
    }
- 
-   /**
-    * Adds an InstructionBlockListener.
-    *
-    * @param listener
-    */
-   public void addListener(InstructionBlockListener listener) {
-      listeners.add(listener);
-   }
-
-   protected void noticeListeners(InstructionBlock instructionBlock) {
-      for(InstructionBlockListener listener : listeners) {
-         listener.accept(instructionBlock);
-      }
-   }
-
-   protected void flushListeners() {
-      for(InstructionBlockListener listener : listeners) {
-         listener.flush();
-      }
-   }
-
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   private Set<InstructionBlockListener> listeners;
 
 }
