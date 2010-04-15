@@ -47,15 +47,6 @@ public class TraceProperties {
    }
 
 
-
-/*
-   public String getValue(Key key) {
-      return properties.getProperty(key.name());
-   }
- */
-
-
-
    public float getCpi() {
       String value = TraceUtils.safeGet(Key.cpi, properties);
       return Float.parseFloat(value);

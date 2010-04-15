@@ -10,6 +10,7 @@ import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_EXTENSION;
 
 
 import java.io.File;
+import java.util.logging.Logger;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockPrinter;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
@@ -76,15 +77,26 @@ public class Tester {
       
    }
 
-   private static void check(File trace, InstructionBlockStats ibStats) {
+   private static boolean check(File trace, InstructionBlockStats ibStats) {
       // Get trace properties filename
       //TraceDefinitions.getPropertiesFilename(IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR));
       //String tracePropFilename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR)
       //        + EXTENSION_SEPARATOR + PROPERTIES_EXTENSION;
       // Get trace properties
-      TraceProperties.getTraceProperties(trace);
+      TraceProperties props = TraceProperties.getTraceProperties(trace);
 
-      System.out.println(ibStats.getTotalInstructions());
+      // Check if Partitioned Instructions Add Up
+      int blockInst = ibStats.getTotalInstructions();
+      int traceInst = props.getInstructions();
+
+      if(blockInst != traceInst) {
+         Logger.getLogger(Tester.class.getName()).
+                 warning("Total instructions does not add up: Trace("+traceInst+") " +
+                 "vs. Partitioner("+blockInst+")");
+         return false;
+      }
+
+      return true;
    }
 
    

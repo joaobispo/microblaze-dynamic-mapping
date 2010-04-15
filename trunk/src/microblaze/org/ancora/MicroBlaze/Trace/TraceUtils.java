@@ -82,10 +82,9 @@ public class TraceUtils {
             }
          }
 
+         line = lineReader.nextLine();
       }
 
-      System.out.println("Properties:");
-      System.out.println(newProps);
 
       if (counter == totalElements) {
          // Save file
