@@ -5,16 +5,24 @@
 
 package org.ancora.MicroBlaze;
 
+//import static org.ancora.MicroBlaze.Trace.TraceDefinitions.EXTENSION_SEPARATOR;
+import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_EXTENSION;
+
+
 import java.io.File;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockPrinter;
+import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 import org.ancora.DynamicMapping.Partitioning.BasicBlock;
 import org.ancora.DynamicMapping.Partitioning.MbJumpFilter;
 import org.ancora.DynamicMapping.Partitioning.Partitioner;
+import org.ancora.MicroBlaze.Trace.TraceDefinitions;
+import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.common.ExtensionFilter;
+import org.ancora.common.IoUtilsAppend;
 
 /**
  *
@@ -59,12 +67,27 @@ public class Tester {
 
       InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
       Partitioner partitioner = new BasicBlock(new MbJumpFilter());
-      partitioner.addListener(new InstructionBlockPrinter());
+      InstructionBlockStats ibStats = new InstructionBlockStats();
+      partitioner.addListener(ibStats);
       
       partitioner.run(busReader);
+
+      check(trace, ibStats);
+      
    }
 
-   private static final String TRACE_EXTENSION = "trace";
-   //private static final String EXTENSION_SEPARATOR = ".";
+   private static void check(File trace, InstructionBlockStats ibStats) {
+      // Get trace properties filename
+      //TraceDefinitions.getPropertiesFilename(IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR));
+      //String tracePropFilename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR)
+      //        + EXTENSION_SEPARATOR + PROPERTIES_EXTENSION;
+      // Get trace properties
+      TraceProperties.getTraceProperties(trace);
+
+      System.out.println(ibStats.getTotalInstructions());
+   }
+
+   
+
 
 }
