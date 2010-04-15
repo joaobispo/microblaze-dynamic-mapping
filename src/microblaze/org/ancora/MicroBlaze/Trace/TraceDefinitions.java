@@ -17,69 +17,16 @@
 
 package org.ancora.MicroBlaze.Trace;
 
-import java.io.File;
-import java.util.Properties;
-import java.util.logging.Logger;
-import org.ancora.SharedLibrary.IoUtils;
-import org.ancora.common.IoUtilsAppend;
-import org.ancora.common.LineReader;
-
 /**
- * Parses Properties files with information about the trace.
+ * Contains information about the format of the MicroBlaze Trace.
  *
  * @author Joao Bispo
  */
-public class TraceDefinitions {
+public interface TraceDefinitions {
 
-
-/*
-   private TraceDefinitions(Properties traceProperties) {
-      properties = traceProperties;
-   }
-*/
-
-   /**
-    * Given a File object representing a Trace Properties file, loads the
-    * contents of the file into a TraceDefinitions object.
-    *
-    * <p>If an error occurs (ex.: the File argument does not represent a file,
-    * could not load the Properties object) returns null.
-    *
-    * @param tracePropertiesFile
-    * @return
-    */
-   /*
-   public static TraceDefinitions getTraceProperties(File traceFile) {
-      // Get Properties file corresponding to this trace file
-      File tracePropertiesFile = getTracePropertiesFile(traceFile);
-      // Check if file exists
-      if(!tracePropertiesFile.exists()) {
-         return null;
-      }
-
-      Properties properties = IoUtils.loadProperties(tracePropertiesFile);
-
-      if(properties == null) {
-         return null;
-      }
-
-      return new TraceDefinitions(properties);
-   }
-*/
-
-   
-
-
-
-
-
-   /**
-    * INSTANCE VARIABLES
-    */
-
-   public static final String TRACE_PREFIX = "0x";
-   public static final String TRACE_EXTENSION = "trace";
-   public static final String PROPERTIES_EXTENSION = "properties";
-   public static final String EXTENSION_SEPARATOR = ".";
-   public static final String PROPERTIES_SEPARATOR = ":";
+   String TRACE_PREFIX = "0x";
+   String TRACE_EXTENSION = "trace";
+   String PROPERTIES_EXTENSION = "properties";
+   String EXTENSION_SEPARATOR = ".";
+   String PROPERTIES_SEPARATOR = ":";
 }

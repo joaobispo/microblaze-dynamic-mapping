@@ -5,16 +5,13 @@
 
 package org.ancora.DynamicMapping.InstructionBlock;
 
-import java.io.BufferedReader;
+import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_PREFIX;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.common.LineReader;
 
 /**
  * Reads MicroBlaze traces as if they where executing in an instruction bus.
@@ -28,7 +25,7 @@ public class MbTraceReader implements InstructionBusReader {
     *
     * @param reader
     */
-    private MbTraceReader(BufferedReader reader) {
+    private MbTraceReader(LineReader reader) {
        this.reader = reader;
     }
 
@@ -46,24 +43,14 @@ public class MbTraceReader implements InstructionBusReader {
     */
    public static MbTraceReader createTraceReader(File traceFile) {
 
-      FileInputStream stream = null;
-      InputStreamReader streamReader = null;
+      LineReader reader = LineReader.createLineReader(traceFile);
+      if(reader == null) {
+         Logger.getLogger(MbTraceReader.class.getName()).
+                    warning("Could not create MbTraceReader.");
+      }
 
-        try {
-            // Try to read the contents of the file into the StringBuilder
-            stream = new FileInputStream(traceFile);
-            streamReader = new InputStreamReader(stream, DEFAULT_CHAR_SET);
-            BufferedReader newReader = new BufferedReader(streamReader);
-            return new MbTraceReader(newReader);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MbTraceReader.class.getName()).
-                    warning("FileNotFoundException: "+ex.getMessage());
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(MbTraceReader.class.getName()).
-                    warning("UnsupportedEncodingException: "+ex.getMessage());
-        }
+      return new MbTraceReader(reader);
 
-      return null;
    }
 
    public static MbInstruction createMicroBlazeInstruction(String line) {
@@ -73,7 +60,7 @@ public class MbTraceReader implements InstructionBusReader {
       /// Get Address
       String addressString = line.substring(0, whiteSpaceIndex);
       // Remove prefix
-      addressString = addressString.substring("0x".length());
+      addressString = addressString.substring(TRACE_PREFIX.length());
       // Parse to integer
       int instructionAddress = Integer.valueOf(addressString, 16);
 
@@ -94,50 +81,30 @@ public class MbTraceReader implements InstructionBusReader {
      * null if the end of the stream has been reached.
      * A line is considered as a trace instruction if it starts with "0x".
      */
-    public GenericInstruction nextInstruction() {
+   public GenericInstruction nextInstruction() {
 
-        // While there are lines and a trace instruction was not found, loop.
-        String line = null;
-        while(true) {
+      // While there are lines and a trace instruction was not found, loop.
+      String line = null;
+      
+      while (true) {
+         line = reader.nextLine();
 
-           try {
-               // Read next line
-              line = reader.readLine();
+         if(line == null) {
+            return null;
+         }
 
-              // Check if end of stream has arrived.
-              if (line == null) {
-                 return null;
-              }
-
-              // Check if current line is a trace instruction
-              if (line.startsWith(TRACE_PREFIX)) {
-                 // Create MicroBlazeInstruction
-                 MbInstruction instruction = createMicroBlazeInstruction(line);
-                 return instruction;
-              }
-
-           } catch (IOException ex) {
-              Logger.getLogger(MbTraceReader.class.getName()).
-                      warning("IOException: "+ex.getMessage());
-              return null;
-           }
-        }
-
-    }
+         // Check if current line is a trace instruction
+         if (line.startsWith(TRACE_PREFIX)) {
+            // Create MicroBlazeInstruction
+            MbInstruction instruction = createMicroBlazeInstruction(line);
+            return instruction;
+         } 
+      }
+   }
 
    /**
     * INSTANCE VARIABLES
     */
-    private final BufferedReader reader;
-
-    // Definitions
-    private final String TRACE_PREFIX = "0x";
-
-   /**
-    * Default CharSet used in file operations.
-    */
-   public static final String DEFAULT_CHAR_SET = "UTF-8";
-
-
+    private final LineReader reader;
 
 }
