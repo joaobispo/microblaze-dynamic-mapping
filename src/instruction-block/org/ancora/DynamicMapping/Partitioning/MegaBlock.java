@@ -14,12 +14,17 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.ancora.DynamicMapping.Partitioning;
 
+import org.ancora.DynamicMapping.Partitioning.Tools.InstructionFilter;
+import java.util.ArrayList;
+import java.util.List;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+import org.ancora.DynamicMapping.Partitioning.Tools.PatternFinder;
+import org.ancora.DynamicMapping.Partitioning.Tools.PatternFinderInfo;
+import org.ancora.SharedLibrary.BitUtils;
 
 /**
  *
@@ -27,14 +32,12 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
  */
 public class MegaBlock extends Partitioner {
 
-   public MegaBlock(InstructionFilter jumpFilter) {
+   public MegaBlock(InstructionFilter jumpFilter, int maxPatternSize) {
       this.sbPartitioner = new SuperBlock(jumpFilter);
-      this.mbBuilder = new MegaBlockBuilder();
+      this.mbBuilder = new MegaBlockBuilder(maxPatternSize);
 
       this.sbPartitioner.addListener(mbBuilder);
    }
-
-
 
    @Override
    public String getName() {
@@ -50,25 +53,226 @@ public class MegaBlock extends Partitioner {
    protected void flush() {
       sbPartitioner.flush();
    }
-
    /**
     * INSTANCE VARIABLES
     */
-
    private SuperBlock sbPartitioner;
    private MegaBlockBuilder mbBuilder;
-
    public static final String NAME = "MegaBlock";
 
    class MegaBlockBuilder implements InstructionBlockListener {
 
+      public MegaBlockBuilder(int maxPatternSize) {
+         initCurrentMegaBlock();
+         initPreviousMegaBlock();
+
+         // Init object state
+         lastPatternSize = 0;
+         state = BuilderState.LOOKING_FOR_PATTERN;
+         patternFinder = new PatternFinder(maxPatternSize);
+      }
+
+      private void initCurrentMegaBlock() {
+         currentBlock = new ArrayList<GenericInstruction>();
+         currentLoopSize = 0;
+         currentIds = new ArrayList<Integer>();
+      }
+
+      private void initPreviousMegaBlock() {
+         //previousBlock = null;
+         //loopIterations = 0;
+         previousIds = null;
+      }
+
       public void accept(InstructionBlock instructionBlock) {
-         throw new UnsupportedOperationException("Not supported yet.");
+         // Give instructions to pattern finder
+         patternFinder.accept(instructionBlock);
+         PatternFinderInfo patternInfo = patternFinder.getInfo();
+
+
+         parseInstructionBlock(instructionBlock, patternInfo);
       }
 
       public void flush() {
-         throw new UnsupportedOperationException("Not supported yet.");
+         flushCurrentMegaBlock();
+         flushListeners();
       }
 
+      private void parseInstructionBlock(InstructionBlock instructionBlock, PatternFinderInfo patternInfo) {
+
+         switch (state) {
+            case LOOKING_FOR_PATTERN:
+               stateLookingForPattern(instructionBlock, patternInfo);
+               break;
+
+            case BUILDING_PATTERN:
+               stateBuildingPattern(instructionBlock, patternInfo);
+               break;
+
+            case CHECKING_PATTERN:
+               stateCheckingPattern(instructionBlock, patternInfo);
+
+         }
+      }
+
+      private void stateLookingForPattern(InstructionBlock instructionBlock, PatternFinderInfo patternInfo) {
+         // Check if there is a pattern
+         if (patternInfo.getPaternSize() > 0) {
+            // Flush current superblocks
+            flushCurrentMegaBlock();
+
+            // Prepare Data
+            changeState(BuilderState.BUILDING_PATTERN);
+
+            lastPatternSize = patternInfo.getPaternSize();
+
+            // Start processing pattern
+            parseInstructionBlock(instructionBlock, patternInfo);
+            return;
+         }
+
+         addInstructionsToCurrentBlock(instructionBlock);
+      }
+
+      private void stateBuildingPattern(InstructionBlock instructionBlock, PatternFinderInfo patternInfo) {
+         // Check pattern size. If it has changed, we can interrupt the building
+         // of the pattern.
+         if (lastPatternSize != patternInfo.getPaternSize()) {
+            flushCurrentMegaBlock();
+            changeState(BuilderState.LOOKING_FOR_PATTERN);
+            lastPatternSize = 0;
+
+            parseInstructionBlock(instructionBlock, patternInfo);
+            return;
+         }
+
+         // Just add SuperBlocks to current until it has size equal to the pattern.
+         addInstructionsToCurrentBlock(instructionBlock);
+         //currentSuperBlockLoop.addSuperBlock(superBlock);
+
+         if (currentLoopSize == lastPatternSize) {
+
+            //buildPatternLoop();
+            storeCurrentMegaBlock();
+            flushCurrentMegaBlock();
+            //initCurrentLoop();
+            // Send just found loop
+            changeState(BuilderState.CHECKING_PATTERN);
+         }
+      }
+
+      private void stateCheckingPattern(InstructionBlock instructionBlock, PatternFinderInfo patternInfo) {
+         // First, check if incoming superblock is part of the found pattern
+         int index = currentLoopSize;
+         //int patternHash = patternSuperBlockLoop.getSuperBlocks().get(index).getHash();
+         int patternHash = previousIds.get(index);
+
+         // If there is a mismatch, reset pattern and go looking for new patterns.
+         if (patternHash != instructionBlock.getId()) {
+            initPreviousMegaBlock();
+            //flushPatternSuperBlockLoop();
+
+            changeState(BuilderState.LOOKING_FOR_PATTERN);
+            lastPatternSize = 0;
+
+            parseInstructionBlock(instructionBlock, patternInfo);
+            return;
+         }
+
+         // There is no mismatch, add instructions to current.
+         addInstructionsToCurrentBlock(instructionBlock);
+
+         // If currentLoop is the same size as pattern, flush current MegaBlock.
+         if (currentLoopSize == lastPatternSize) {
+            flushCurrentMegaBlock();
+            //loopIterations++;
+            //initCurrentLoop();
+            }
+      }
+
+      /**
+       * Sends the current MegaBlock to registred consumers and resets it.
+       */
+      private void flushCurrentMegaBlock() {
+         if (currentLoopSize == 0) {
+            return;
+         }
+
+         sendBlock(currentBlock, currentIds);
+         /*
+         int blockId = calcId(currentIds);
+
+         // Build InstructionBlock
+         InstructionBlock newBlock = new InstructionBlock(currentBlock, 1, blockId);
+         // Send it to listeners
+         noticeListeners(newBlock);
+          */
+
+         initCurrentMegaBlock();
+      }
+
+      private void sendBlock(List<GenericInstruction> instructions, List<Integer> currentIds) {
+         int blockId = calcId(currentIds);
+
+         // Build InstructionBlock
+         InstructionBlock newBlock = new InstructionBlock(instructions, 1, blockId);
+         // Send it to listeners
+         noticeListeners(newBlock);
+      }
+
+      private void addInstructionsToCurrentBlock(InstructionBlock instructionBlock) {
+         currentBlock.addAll(instructionBlock.getInstructions());
+         currentLoopSize++;
+         currentIds.add(instructionBlock.getId());
+      }
+
+      private void storeCurrentMegaBlock() {
+         //previousBlock = currentBlock;
+         //loopIterations = 1;
+         previousIds = currentIds;
+      }
+
+      // }
+      private int calcId(List<Integer> currentIds) {
+         int hash = HASH_INITIAL_VALUE;
+
+         for (Integer superBlockHash : currentIds) {
+            hash = BitUtils.superFastHash(superBlockHash, hash);
+         }
+
+         return hash;
+      }
+
+      private void changeState(BuilderState builderState) {
+         state = builderState;
+      }
+      /**
+       * INSTANCE VARIABLES
+       */
+      // State for the MegaBlock being built
+      private List<GenericInstruction> currentBlock;
+      private int currentLoopSize;
+      private List<Integer> currentIds;
+
+      // State for the previous found MegaBlock
+
+      //private List<GenericInstruction> previousBlock;
+      // Stores the hashes of each SuperBlock in sequence
+      private List<Integer> previousIds;
+      
+
+      // Object state for finding patterns
+      private BuilderState state;
+      private int lastPatternSize;
+      private PatternFinder patternFinder;
+      
+      private static final int HASH_INITIAL_VALUE = 4;
+   }
+
+   enum BuilderState {
+
+      LOOKING_FOR_PATTERN,
+      BUILDING_PATTERN,
+      CHECKING_PATTERN;
    }
 }
