@@ -26,6 +26,12 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
  */
 public class InstructionBlockPrinter implements InstructionBlockListener {
 
+   public InstructionBlockPrinter() {
+      //printToFile = false;
+   }
+
+
+
    public void accept(InstructionBlock instructionBlock) {
       System.out.println(instructionBlock);
    }
@@ -34,4 +40,5 @@ public class InstructionBlockPrinter implements InstructionBlockListener {
       // Do Nothing
    }
 
+   //private boolean printToFile;
 }

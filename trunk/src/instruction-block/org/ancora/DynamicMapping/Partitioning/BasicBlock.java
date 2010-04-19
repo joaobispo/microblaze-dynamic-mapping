@@ -17,6 +17,7 @@
 
 package org.ancora.DynamicMapping.Partitioning;
 
+import org.ancora.DynamicMapping.Partitioning.Tools.InstructionFilter;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;

@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.Partitioning;
+package org.ancora.DynamicMapping.Partitioning.Tools;
 
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
