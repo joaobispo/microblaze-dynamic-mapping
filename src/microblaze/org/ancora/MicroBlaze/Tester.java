@@ -11,13 +11,19 @@ import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_EXTENSION;
 
 import java.io.File;
 import java.util.logging.Logger;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockPrinter;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 import org.ancora.DynamicMapping.Partitioning.BasicBlock;
+import org.ancora.DynamicMapping.Partitioning.Tools.Gatherer;
 import org.ancora.DynamicMapping.Partitioning.MbJumpFilter;
+import org.ancora.DynamicMapping.Partitioning.MegaBlock;
 import org.ancora.DynamicMapping.Partitioning.Partitioner;
+import org.ancora.DynamicMapping.Partitioning.SuperBlock;
+import org.ancora.DynamicMapping.Partitioning.Tools.Selector;
+import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.MicroBlaze.Trace.TraceDefinitions;
 import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.IoUtils;
@@ -36,7 +42,8 @@ public class Tester {
      */
     public static void main(String[] args) {
         setupProgram();
-        executeTraceReader();
+        //executeTraceReader();
+        executeBlockReader();
     }
 
     private static void setupProgram() {
@@ -49,7 +56,8 @@ public class Tester {
       String foldername = "../data/traces-without-optimization/";
       File folder = IoUtils.safeFolder(foldername);
 
-      File[] traces = getTraces(folder);
+      //File[] traces = getTraces(folder);
+      File[] traces = getFiles(folder, TraceDefinitions.TRACE_EXTENSION);
       
       for(File trace : traces) {
          processTrace(trace);
@@ -61,27 +69,56 @@ public class Tester {
       return traceFolder.listFiles(new ExtensionFilter(TRACE_EXTENSION));
    }
 
+   /**
+    * Returns files from a folder with a certain extension.
+    *
+    * @param folder
+    * @param extension
+    * @return
+    */
+   private static File[] getFiles(File folder, String extension) {
+      return folder.listFiles(new ExtensionFilter(extension));
+   }
+
    private static void processTrace(File trace) {
       //String filename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR);
       System.out.println("Processing "+trace.getName()+"...");
 
+      int maxMegablockPatternSize = 20;
+      int repetitionsThreshold = 2;
 
       InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
-      Partitioner partitioner = new BasicBlock(new MbJumpFilter());
+      //Partitioner partitioner = new BasicBlock(new MbJumpFilter());
+      //Partitioner partitioner = new SuperBlock(new MbJumpFilter());
+      Partitioner partitioner = new MegaBlock(new MbJumpFilter(), maxMegablockPatternSize);
+      Gatherer gatherer = new Gatherer();
+      Selector selector = new Selector(repetitionsThreshold);
       InstructionBlockStats ibStats = new InstructionBlockStats();
-      partitioner.addListener(ibStats);
+      MbInstructionBlockWriter ibWriter = new MbInstructionBlockWriter(trace.getName());
       
+      
+      partitioner.addListener(gatherer);
+
+      gatherer.addListener(ibStats);
+      //gatherer.addListener(new InstructionBlockPrinter());
+      gatherer.addListener(selector);
+
+      //selector.addListener(new InstructionBlockPrinter());
+      selector.addListener(ibWriter);
+
       partitioner.run(busReader);
 
-      check(trace, ibStats);
+      //System.out.println("Total Instructions:"+ibStats.getTotalInstructions());
+      boolean passed = check(trace, ibStats);
+      /*
+      if(passed) {
+         System.out.println("Passed Checks.");
+      }
+       */
       
    }
 
    private static boolean check(File trace, InstructionBlockStats ibStats) {
-      // Get trace properties filename
-      //TraceDefinitions.getPropertiesFilename(IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR));
-      //String tracePropFilename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR)
-      //        + EXTENSION_SEPARATOR + PROPERTIES_EXTENSION;
       // Get trace properties
       TraceProperties props = TraceProperties.getTraceProperties(trace);
 
@@ -98,6 +135,25 @@ public class Tester {
 
       return true;
    }
+
+   private static void executeBlockReader() {
+      String foldername = "blocks/adpcm-coder_trace_without_optimization/";
+      File folder = IoUtils.safeFolder(foldername);
+
+      File[] blocks = getFiles(folder, MbInstructionBlockWriter.BLOCK_EXTENSION);
+
+      for(File block : blocks) {
+         processBlock(block);
+      }
+   }
+
+   private static void processBlock(File fileBlock) {
+      // Recover block
+      InstructionBlock block = MbInstructionBlockWriter.loadInstructionBlock(fileBlock);
+      System.out.println(block);
+   }
+
+
 
    
 

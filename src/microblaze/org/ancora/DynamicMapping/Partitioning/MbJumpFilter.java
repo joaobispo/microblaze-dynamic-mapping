@@ -5,6 +5,7 @@
 
 package org.ancora.DynamicMapping.Partitioning;
 
+import org.ancora.DynamicMapping.Partitioning.Tools.InstructionFilter;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
 import org.ancora.MicroBlaze.InstructionName;
