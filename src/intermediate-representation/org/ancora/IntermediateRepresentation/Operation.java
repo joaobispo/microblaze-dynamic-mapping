@@ -90,7 +90,28 @@ public abstract class Operation {
 
    @Override
    public String toString() {
-      return getType()+"-"+getValue();
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(getType());
+      builder.append("-");
+      builder.append(getValue());
+
+      if(inputs.size() > 0) {
+         builder.append(" in:");
+         builder.append(inputs);
+      }
+
+      if(outputs.size() > 0) {
+         builder.append(" out:");
+         builder.append(outputs);
+      }
+
+      if(parameters.size() > 0) {
+         builder.append(" param:");
+         builder.append(parameters);
+      }
+      
+      return builder.toString();
    }
 
 
