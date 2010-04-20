@@ -101,4 +101,26 @@ public interface InstructionProperties {
            InstructionName.rtid,
            InstructionName.rted,
            InstructionName.rtsd);
+
+   /**
+    * Which instructions are loads
+    */
+   EnumSet<InstructionName> LOAD_INSTRUCTIONS = EnumSet.of(
+           InstructionName.lbu,
+           InstructionName.lbui,
+           InstructionName.lhu,
+           InstructionName.lhui,
+           InstructionName.lw,
+           InstructionName.lwi);
+
+   /**
+    * Which instructions are stores
+    */
+   EnumSet<InstructionName> STORE_INSTRUCTIONS = EnumSet.of(
+           InstructionName.sb,
+           InstructionName.sbi,
+           InstructionName.sh,
+           InstructionName.shi,
+           InstructionName.sw,
+           InstructionName.swi);
 }

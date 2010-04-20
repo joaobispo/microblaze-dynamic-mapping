@@ -1,0 +1,126 @@
+/*
+ *  Copyright 2010 Ancora Research Group.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
+ */
+
+package org.ancora.IntermediateRepresentation;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
+import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
+import org.ancora.IntermediateRepresentation.Operands.MbOperand;
+import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
+import org.ancora.IntermediateRepresentation.Operations.MbOperation;
+import org.ancora.MicroBlaze.ArgumentsProperties;
+import org.ancora.MicroBlaze.ArgumentsProperties.ArgumentProperty;
+import org.ancora.MicroBlaze.InstructionName;
+import org.ancora.SharedLibrary.ParseUtils;
+
+/**
+ *
+ * @author Joao Bispo
+ */
+public class MbParser {
+   public static List<Operation> parseMbInstructions(List<GenericInstruction> instructions) {
+      List<Operation> operations = new ArrayList(instructions.size());
+      
+      for(GenericInstruction instruction : instructions) {
+         Operation op = parseMbInstruction((MbInstruction) instruction);
+         if(op != null) {
+            operations.add(op);
+         }
+      }
+
+      return operations;
+   }
+
+   public static Operation parseMbInstruction(MbInstruction mbInstruction) {
+      // Parse arguments
+      String[] arguments = parseArguments(mbInstruction.getInstruction());
+
+      // Get arguments properties
+      ArgumentProperty[] argProps = ArgumentsProperties.getProperties(mbInstruction.getInstructionName());
+
+      // Check arguments properties have the same size as the arguments
+      if(arguments.length != argProps.length) {
+         Logger.getLogger(MbParser.class.getName()).
+                 warning("Number of arguments ("+arguments.length+") different from " +
+                 "the number of properties ("+argProps.length+") for instruction '"+
+                 mbInstruction.getInstructionName()+"'. Returning null.");
+         return null;
+      }
+
+      // For each argument, return the correct operand
+      Operand[] operands = new Operand[arguments.length];
+      for (int i = 0; i < arguments.length; i++) {
+         //System.out.println("Arg:" + arguments[i]);
+         //System.out.println("Prop:" + argProp[i]);
+         operands[i] = parseMbArgument(arguments[i]);
+      }
+
+      // Build Input and Output Lists
+      List<Operand> inputs = new ArrayList<Operand>();
+      List<Operand> outputs = new ArrayList<Operand>();
+
+      for(int i=0; i< argProps.length; i++) {
+         if(argProps[i] == ArgumentProperty.read) {
+            inputs.add(operands[i]);
+         }
+
+         if(argProps[i] == ArgumentProperty.write) {
+            outputs.add(operands[i]);
+         }
+      }
+
+      return new MbOperation(mbInstruction.getInstructionName(), inputs, outputs);
+   }
+
+   public static String[] parseArguments(String instruction) {
+      int whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(instruction);
+      String registersString = instruction.substring(whiteSpaceIndex).trim();
+
+      String[] regs = registersString.split(",");
+      for(int i=0; i<regs.length; i++) {
+         regs[i] = regs[i].trim();
+      }
+
+      return regs;
+   }
+
+   public static Operand parseMbArgument(String argument) {
+       // Check if register
+      if(argument.startsWith(REGISTER_PREFIX)) {
+         String value = argument.substring(REGISTER_PREFIX.length());
+         return new MbOperand(MbOperandType.register, value);
+      }
+
+      // Check if integer immediate
+      try {
+         Integer.parseInt(argument);
+         return new MbOperand(MbOperandType.immediate, argument);
+      } catch(NumberFormatException ex) {
+         Logger.getLogger(MbParser.class.getName()).
+                 warning("Expecting an integer immediate: '" + argument + "'.");
+      }
+
+      return null;
+   }
+
+
+   public static final String REGISTER_PREFIX = "r";
+}

@@ -10,9 +10,12 @@ import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_EXTENSION;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
+import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockCollector;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockPrinter;
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
@@ -24,10 +27,18 @@ import org.ancora.DynamicMapping.Partitioning.Partitioner;
 import org.ancora.DynamicMapping.Partitioning.SuperBlock;
 import org.ancora.DynamicMapping.Partitioning.Tools.Selector;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.IntermediateRepresentation.Dotty;
+import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene1;
+import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
+import org.ancora.IntermediateRepresentation.MbParser;
+import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
+import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
 import org.ancora.MicroBlaze.Trace.TraceDefinitions;
 import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.Transformations.GeneralMbTransformations;
 import org.ancora.common.ExtensionFilter;
 import org.ancora.common.IoUtilsAppend;
 
@@ -43,7 +54,8 @@ public class Tester {
     public static void main(String[] args) {
         setupProgram();
         //executeTraceReader();
-        executeBlockReader();
+        //executeBlockReader();
+        executeGetIlpFromTraces();
     }
 
     private static void setupProgram() {
@@ -150,7 +162,110 @@ public class Tester {
    private static void processBlock(File fileBlock) {
       // Recover block
       InstructionBlock block = MbInstructionBlockWriter.loadInstructionBlock(fileBlock);
-      System.out.println(block);
+      //System.out.println(block);
+      // Transform block into IR
+      List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
+
+      MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
+      ilp.processOperations(operations);
+      ilp.printStats();
+      //applyTransformations(operations);
+      //System.out.println(operations);
+      //IoUtils.write(new File("E:\\dotty.dot"), Dotty.generateDot(operations));
+   }
+
+   private static void applyTransformations(List<Operation> operations) {
+      // Transform R0 in literal 0
+      GeneralMbTransformations.transformRegister0(operations);
+   }
+
+   private static void executeGetIlpFromTraces() {
+      String foldername = "../data/";
+      File folder = IoUtils.safeFolder(foldername);
+
+      //File[] traces = getTraces(folder);
+      List<File> traces = getFilesRecursive(folder, TraceDefinitions.TRACE_EXTENSION);
+
+      for(File trace : traces) {
+         processTraceIlp(trace);
+      }
+   }
+
+   private static List<File> getFilesRecursive(File folder, String extension) {
+      List<File> fileList = new ArrayList<File>();
+      File[] files = folder.listFiles(new ExtensionFilter(extension));
+
+      for(File file : files) {
+         fileList.add(file);
+      }
+
+      files = folder.listFiles();
+      for(File file : files) {
+         if(file.isDirectory()) {
+            fileList.addAll(getFilesRecursive(file, extension));
+         }
+      }
+
+      return fileList;
+   }
+
+   private static void processTraceIlp(File trace) {
+ //String filename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR);
+      System.out.println("Getting ILP for "+trace.getName()+"...");
+
+      int maxMegablockPatternSize = 20;
+      int repetitionsThreshold = 2;
+
+      InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
+      //Partitioner partitioner = new BasicBlock(new MbJumpFilter());
+      //Partitioner partitioner = new SuperBlock(new MbJumpFilter());
+      Partitioner partitioner = new MegaBlock(new MbJumpFilter(), maxMegablockPatternSize);
+      Gatherer gatherer = new Gatherer();
+      //Selector selector = new Selector(repetitionsThreshold);
+      InstructionBlockStats ibStats = new InstructionBlockStats();
+      //MbInstructionBlockWriter ibWriter = new MbInstructionBlockWriter(trace.getName());
+      InstructionBlockCollector collector = new InstructionBlockCollector();
+
+      partitioner.addListener(gatherer);
+      //partitioner.addListener(collector);
+
+      gatherer.addListener(ibStats);
+      gatherer.addListener(collector);
+
+      //gatherer.addListener(new InstructionBlockPrinter());
+      //gatherer.addListener(selector);
+
+      //selector.addListener(new InstructionBlockPrinter());
+      //selector.addListener(ibWriter);
+
+      partitioner.run(busReader);
+
+      check(trace, ibStats);
+
+      // Get ILP from Blocks
+      getIlp(collector.getBlocks());
+   }
+
+   private static void getIlp(List<InstructionBlock> blocks) {
+      int totalOperations = 0;
+      int totalLines = 0;
+
+      for(InstructionBlock block : blocks) {
+         // Transform block into IR
+      List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
+
+      // Collect ILP
+      //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
+      MbIlpScene2 ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
+      ilp.processOperations(operations);
+
+      // Collect data
+      totalOperations+=(ilp.getMappedOps()*block.getRepetitions());
+      totalLines+=(ilp.getUsedLines()*block.getRepetitions());
+      //ilp.printStats();
+      }
+
+      System.out.println("ILP:"+((double)totalOperations/(double)totalLines));
    }
 
 
