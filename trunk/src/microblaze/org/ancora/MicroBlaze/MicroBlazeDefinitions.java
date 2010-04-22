@@ -15,42 +15,14 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operands;
-
-import org.ancora.IntermediateRepresentation.Operand;
+package org.ancora.MicroBlaze;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MbOperand extends Operand {
+public interface MicroBlazeDefinitions {
 
-   public MbOperand(MbOperandType type, String value, int bits) {
-      this.type = type;
-      this.value = value;
-      this.bits = bits;
-   }
-
-   @Override
-   public String getValue() {
-      return value;
-   }
-
-   @Override
-   public Enum getType() {
-      return type;
-   }
-
-   @Override
-   public int getBits() {
-      return bits;
-   }
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   private MbOperandType type;
-   private String value;
-   private int bits;
-
+   int BITS_IMMEDIATE = 16;
+   int BITS_REGISTER = 32;
 }

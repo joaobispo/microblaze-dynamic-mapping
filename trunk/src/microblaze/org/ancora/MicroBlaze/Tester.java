@@ -69,7 +69,7 @@ public class Tester {
       File folder = IoUtils.safeFolder(foldername);
 
       //File[] traces = getTraces(folder);
-      File[] traces = getFiles(folder, TraceDefinitions.TRACE_EXTENSION);
+      File[] traces = IoUtilsAppend.getFiles(folder, TraceDefinitions.TRACE_EXTENSION);
       
       for(File trace : traces) {
          processTrace(trace);
@@ -88,9 +88,11 @@ public class Tester {
     * @param extension
     * @return
     */
+   /*
    private static File[] getFiles(File folder, String extension) {
       return folder.listFiles(new ExtensionFilter(extension));
    }
+    */
 
    private static void processTrace(File trace) {
       //String filename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR);
@@ -152,7 +154,7 @@ public class Tester {
       String foldername = "blocks/adpcm-coder_trace_without_optimization/";
       File folder = IoUtils.safeFolder(foldername);
 
-      File[] blocks = getFiles(folder, MbInstructionBlockWriter.BLOCK_EXTENSION);
+      File[] blocks = IoUtilsAppend.getFiles(folder, MbInstructionBlockWriter.BLOCK_EXTENSION);
 
       for(File block : blocks) {
          processBlock(block);
@@ -174,40 +176,26 @@ public class Tester {
       //IoUtils.write(new File("E:\\dotty.dot"), Dotty.generateDot(operations));
    }
 
+   /*
    private static void applyTransformations(List<Operation> operations) {
       // Transform R0 in literal 0
-      GeneralMbTransformations.transformRegister0(operations);
+      //GeneralMbTransformations.transformRegister0(operations);
    }
+    */
 
    private static void executeGetIlpFromTraces() {
       String foldername = "../data/";
       File folder = IoUtils.safeFolder(foldername);
 
       //File[] traces = getTraces(folder);
-      List<File> traces = getFilesRecursive(folder, TraceDefinitions.TRACE_EXTENSION);
+      List<File> traces = IoUtilsAppend.getFilesRecursive(folder, TraceDefinitions.TRACE_EXTENSION);
 
       for(File trace : traces) {
          processTraceIlp(trace);
       }
    }
 
-   private static List<File> getFilesRecursive(File folder, String extension) {
-      List<File> fileList = new ArrayList<File>();
-      File[] files = folder.listFiles(new ExtensionFilter(extension));
 
-      for(File file : files) {
-         fileList.add(file);
-      }
-
-      files = folder.listFiles();
-      for(File file : files) {
-         if(file.isDirectory()) {
-            fileList.addAll(getFilesRecursive(file, extension));
-         }
-      }
-
-      return fileList;
-   }
 
    private static void processTraceIlp(File trace) {
  //String filename = IoUtilsAppend.removeExtension(trace.getName(), EXTENSION_SEPARATOR);
@@ -260,8 +248,8 @@ public class Tester {
       ilp.processOperations(operations);
 
       // Collect data
-      totalOperations+=(ilp.getMappedOps()*block.getRepetitions());
-      totalLines+=(ilp.getUsedLines()*block.getRepetitions());
+      totalOperations+=(ilp.getNumberOfOps()*block.getRepetitions());
+      totalLines+=(ilp.getNumberOfLines()*block.getRepetitions());
       //ilp.printStats();
       }
 

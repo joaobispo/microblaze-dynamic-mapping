@@ -23,12 +23,24 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
+import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
+import org.ancora.SharedLibrary.ParseUtils;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MbIlpScene2 {
+public class MbIlpScene2 implements IlpScenario {
+
+   /**
+    * Creates a MicroBlaze ILP Scenario 2 with MicroBlaze Immutable and Memory Tests
+    */
+   public MbIlpScene2() {
+      this(new MbImmutableTest(), new MbMemoryTest());
+   }
+
+
 
    public MbIlpScene2(ImmutableTest immutableTest, MemoryTest memoryTest) {
       this.immutableTest = immutableTest;
@@ -37,12 +49,15 @@ public class MbIlpScene2 {
    }
 
    public void processOperations(List<Operation> operations) {
-      reset();
+      //reset();
 
       for(Operation operation : operations) {
          // Given the inputs, find the lower possible line where the operation
          // can be put.
          int lowestOperandsLine = processInputs(operation.getInputs());
+         //System.out.println("Operation:"+operation);
+         //System.out.println("Inputs:"+operation.getInputs());
+         //System.out.println("Outputs:"+operation.getOutputs());
 
          // Calculate operation line, taking into account that it can be a
          // memory operation
@@ -67,13 +82,15 @@ public class MbIlpScene2 {
          }
 
          // Get line where this operand was created
-         String operandRepresentation = operand.toString();
+         //String operandRepresentation = operand.toString();
+         String operandRepresentation = operand.getValue();
          Integer line = dataLines.get(operandRepresentation);
 
          // Check if Live-In
          if(line == null) {
             line = 0;
             dataLines.put(operandRepresentation, line);
+            updateLiveins(operandRepresentation);
          }
 
          lowestLine = Math.max(lowestLine, line);
@@ -113,27 +130,41 @@ public class MbIlpScene2 {
          }
 
          // Update consumer table
-         String operandRepresentation = operand.toString();
+         //String operandRepresentation = operand.toString();
+         String operandRepresentation = operand.getValue();
          dataLines.put(operandRepresentation, operationLine);
+
+         //Update Liveouts
+         updateLiveouts(operandRepresentation);
       }
    }
 
-   private void reset() {
+      private void updateLiveouts(String operandRepresentation) {
+      liveOuts.add(ParseUtils.parseInt(operandRepresentation));
+   }
+
+   private void updateLiveins(String operandRepresentation) {
+      liveIns.add(ParseUtils.parseInt(operandRepresentation));
+   }
+
+   public void reset() {
       mappedOps = 0;
       usedLines = 0;
       lastLineWithStore = 0;
       dataLines = new Hashtable<String, Integer>();
 
       liveIns = new HashSet<Integer>();
-      //liveOuts = new HashSet<Integer>();
+      liveOuts = new HashSet<Integer>();
    }
 
 
    public int getLiveIns() {
+      //System.out.println("Liveins:"+liveIns);
       return liveIns.size();
    }
 
    public int getLiveOuts() {
+     /*
       int liveOuts = 0;
       //Set<String> liveOuts = new HashSet<String>();
 
@@ -144,19 +175,20 @@ public class MbIlpScene2 {
             liveOuts++;
          }
       }
-
-      return liveOuts;
+*/
+      //System.out.println("Liveouts:"+liveOuts);
+      return liveOuts.size();
    }
 
    public double getIlp() {
       return (double)mappedOps/(double)usedLines;
    }
 
-   public int getMappedOps() {
+   public int getNumberOfOps() {
       return mappedOps;
    }
 
-   public int getUsedLines() {
+   public int getNumberOfLines() {
       return usedLines;
    }
 
@@ -183,10 +215,12 @@ public class MbIlpScene2 {
    private Map<String,Integer> dataLines;
 
    private Set<Integer> liveIns;
-   //private Set<Integer> liveOuts;
+   private Set<Integer> liveOuts;
 
    private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
+
+
 
 
 
