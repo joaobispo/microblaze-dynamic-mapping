@@ -15,42 +15,16 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operands;
+package org.ancora.Transformations;
 
-import org.ancora.IntermediateRepresentation.Operand;
+import java.util.List;
+import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MbOperand extends Operand {
+public interface Transformation {
 
-   public MbOperand(MbOperandType type, String value, int bits) {
-      this.type = type;
-      this.value = value;
-      this.bits = bits;
-   }
-
-   @Override
-   public String getValue() {
-      return value;
-   }
-
-   @Override
-   public Enum getType() {
-      return type;
-   }
-
-   @Override
-   public int getBits() {
-      return bits;
-   }
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   private MbOperandType type;
-   private String value;
-   private int bits;
-
+   List<Operation> transform(List<Operation> operations);
 }

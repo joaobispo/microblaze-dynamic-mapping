@@ -29,6 +29,7 @@ import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.ArgumentsProperties;
 import org.ancora.MicroBlaze.ArgumentsProperties.ArgumentProperty;
 import org.ancora.MicroBlaze.InstructionName;
+import org.ancora.MicroBlaze.MicroBlazeDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
 
 /**
@@ -106,13 +107,13 @@ public class MbParser {
        // Check if register
       if(argument.startsWith(REGISTER_PREFIX)) {
          String value = argument.substring(REGISTER_PREFIX.length());
-         return new MbOperand(MbOperandType.register, value);
+         return new MbOperand(MbOperandType.register, value, MicroBlazeDefinitions.BITS_REGISTER);
       }
 
       // Check if integer immediate
       try {
          Integer.parseInt(argument);
-         return new MbOperand(MbOperandType.immediate, argument);
+         return new MbOperand(MbOperandType.immediate, argument, MicroBlazeDefinitions.BITS_IMMEDIATE);
       } catch(NumberFormatException ex) {
          Logger.getLogger(MbParser.class.getName()).
                  warning("Expecting an integer immediate: '" + argument + "'.");

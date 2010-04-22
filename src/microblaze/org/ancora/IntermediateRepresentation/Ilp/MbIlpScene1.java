@@ -18,17 +18,29 @@
 package org.ancora.IntermediateRepresentation.Ilp;
 
 import java.util.HashSet;
-import org.ancora.IntermediateRepresentation.*;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.ancora.IntermediateRepresentation.ImmutableTest;
+import org.ancora.IntermediateRepresentation.MemoryTest;
+import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operand;
+import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
+import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MbIlpScene1 {
+public class MbIlpScene1 implements IlpScenario {
+
+   /**
+    * Creates a MicroBlaze ILP Scenario 1 with MicroBlaze Immutable and Memory Tests
+    */
+   public MbIlpScene1() {
+      this(new MbImmutableTest(), new MbMemoryTest());
+   }
 
    public MbIlpScene1(ImmutableTest immutableTest, MemoryTest memoryTest) {
       this.immutableTest = immutableTest;
@@ -37,7 +49,7 @@ public class MbIlpScene1 {
    }
 
    public void processOperations(List<Operation> operations) {
-      reset();
+      //reset();
 
       for(Operation operation : operations) {
          // Given the inputs, find the lower possible line where the operation
@@ -111,7 +123,7 @@ public class MbIlpScene1 {
       }
    }
 
-   private void reset() {
+   public void reset() {
       mappedOps = 0;
       usedLines = 0;
       lastLineWithMemoryOperation = 0;
@@ -145,11 +157,11 @@ public class MbIlpScene1 {
       return (double)mappedOps/(double)usedLines;
    }
 
-   public int getMappedOps() {
+   public int getNumberOfOps() {
       return mappedOps;
    }
 
-   public int getUsedLines() {
+   public int getNumberOfLines() {
       return usedLines;
    }
 
@@ -180,6 +192,7 @@ public class MbIlpScene1 {
 
    private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
+
 
 
 

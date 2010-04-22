@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
+import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.common.IoUtilsAppend;
 import org.ancora.common.LineReader;
 
@@ -110,5 +111,23 @@ public class TraceUtils {
       }
 
       return cpiString;
+   }
+
+    public static boolean testStats(File trace, InstructionBlockStats ibStats) {
+      // Get trace properties
+      TraceProperties props = TraceProperties.getTraceProperties(trace);
+
+      // Check if Partitioned Instructions Add Up
+      int blockInst = ibStats.getTotalInstructions();
+      int traceInst = props.getInstructions();
+
+      if(blockInst != traceInst) {
+         Logger.getLogger(TraceUtils.class.getName()).
+                 warning("Total instructions does not add up: Trace("+traceInst+") " +
+                 "vs. Partitioner("+blockInst+")");
+         return false;
+      }
+
+      return true;
    }
 }
