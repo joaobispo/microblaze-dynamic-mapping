@@ -19,14 +19,14 @@ package org.ancora.DynamicMapping.Partitioning.Tools;
 
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListenerProducer;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducerSkeleton;
 
 /**
  *
  * @author Joao Bispo
  */
-public class Gatherer implements InstructionBlockListenerProducer {
+public class Gatherer implements InstructionBlockListener, InstructionBlockProducer {
 
    public Gatherer() {
       producer = new GathererProducer();
@@ -119,7 +119,7 @@ public class Gatherer implements InstructionBlockListenerProducer {
 
 
 
-   class GathererProducer extends InstructionBlockProducer {
+   class GathererProducer extends InstructionBlockProducerSkeleton {
       public void sendBlock(InstructionBlock block) {
          noticeListeners(block);
       }

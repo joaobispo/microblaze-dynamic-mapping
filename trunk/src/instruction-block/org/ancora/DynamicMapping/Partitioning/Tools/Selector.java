@@ -19,8 +19,8 @@ package org.ancora.DynamicMapping.Partitioning.Tools;
 
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListenerProducer;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducerSkeleton;
 
 /**
  * Forward Instruction Blocks if the number of repetitions is equal or above
@@ -28,7 +28,7 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
  *
  * @author Joao Bispo
  */
-public class Selector implements InstructionBlockListenerProducer {
+public class Selector implements InstructionBlockListener, InstructionBlockProducer {
 
    public Selector(int repetitionThreshold) {
       this.repetitionThreshold = repetitionThreshold;
@@ -59,7 +59,7 @@ public class Selector implements InstructionBlockListenerProducer {
    private SelectorProducer producer;
 
 
-   class SelectorProducer extends InstructionBlockProducer {
+   class SelectorProducer extends InstructionBlockProducerSkeleton {
       public void sendBlock(InstructionBlock block) {
          noticeListeners(block);
       }

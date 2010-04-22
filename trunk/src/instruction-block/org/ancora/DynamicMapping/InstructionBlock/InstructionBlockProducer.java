@@ -17,44 +17,10 @@
 
 package org.ancora.DynamicMapping.InstructionBlock;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  *
  * @author Joao Bispo
  */
-public abstract class InstructionBlockProducer {
-
-   public InstructionBlockProducer() {
-      consumers = new HashSet<InstructionBlockListener>();
-   }
-
-
-   /**
-    * Adds an InstructionBlockListener.
-    *
-    * @param listener
-    */
-   public void addListener(InstructionBlockListener listener) {
-      consumers.add(listener);
-   }
-
-   protected void noticeListeners(InstructionBlock instructionBlock) {
-      for(InstructionBlockListener consumer : consumers) {
-         consumer.accept(instructionBlock);
-      }
-   }
-
-   protected void flushListeners() {
-      for(InstructionBlockListener consumer : consumers) {
-         consumer.flush();
-      }
-   }
-
-
-   /**
-    * INSTANCE VARIABLES
-    */
-   private Set<InstructionBlockListener> consumers;
+public interface InstructionBlockProducer {
+   public void addListener(InstructionBlockListener listener);
 }
