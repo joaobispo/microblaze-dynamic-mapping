@@ -22,7 +22,7 @@ import java.util.Set;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducerSkeleton;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 
 /**
@@ -30,7 +30,7 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
  *
  * @author Joao Bispo
  */
-public abstract class Partitioner extends InstructionBlockProducer {
+public abstract class Partitioner extends InstructionBlockProducerSkeleton {
 
 
    /**
