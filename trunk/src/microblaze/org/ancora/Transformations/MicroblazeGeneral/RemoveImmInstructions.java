@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.Microblaze;
+package org.ancora.Transformations.MicroblazeGeneral;
 
 import java.util.ArrayList;
 import java.util.List;

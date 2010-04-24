@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.Microblaze;
+package org.ancora.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
