@@ -165,7 +165,11 @@ public class MbIlpScene1 implements IlpScenario {
       return usedLines;
    }
 
+   public Map<Integer, List<Operation>> getMapping() {
+      throw new UnsupportedOperationException("Not supported yet.");
+   }
 
+   
    public void printStats() {
       StringBuilder builder = new StringBuilder();
 
@@ -192,6 +196,7 @@ public class MbIlpScene1 implements IlpScenario {
 
    private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
+
 
 
 

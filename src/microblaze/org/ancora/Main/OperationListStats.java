@@ -17,7 +17,11 @@
 
 package org.ancora.Main;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
 import org.ancora.IntermediateRepresentation.Operation;
 
@@ -27,16 +31,25 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public class OperationListStats {
 
-   private OperationListStats(int numberOfLines, int numberOfOperations, int liveins, int liveouts) {
+   private OperationListStats(int numberOfLines, int numberOfOperations, 
+           int liveins, int liveouts, Map<Integer, List<Operation>> mapping) {
       this.numberOfLines = numberOfLines;
       this.numberOfOperations = numberOfOperations;
       this.liveins = liveins;
       this.liveouts = liveouts;
+      this.mapping = mapping;
    }
 
 
+/*
+public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario ilpScene) {
+      // Create data
+      ilpScene.reset();
+      ilpScene.processOperations(operations);
 
-
+      return ilpScene;
+}
+ */
 
    public static OperationListStats buildStats(List<Operation> operations, IlpScenario ilpScene) {
       // Create data
@@ -45,7 +58,7 @@ public class OperationListStats {
 
       // Gather data
       return new OperationListStats(ilpScene.getNumberOfLines(), ilpScene.getNumberOfOps(),
-              ilpScene.getLiveIns(), ilpScene.getLiveOuts());
+              ilpScene.getLiveIns(), ilpScene.getLiveOuts(), ilpScene.getMapping());
       
    }
 
@@ -83,6 +96,34 @@ public class OperationListStats {
       return liveins + liveouts;
    }
 
+   public String getMappingString() {
+      StringBuilder builder = new StringBuilder();
+
+      List<Integer> keys = new ArrayList<Integer>(mapping.size());
+      keys.addAll(mapping.keySet());
+      Collections.sort(keys);
+ //     Set<Integer> keys = mapping.keySet();
+ //     Collections.sort(keys);
+      for(Integer key : keys) {
+      //for(int i=0; i<mapping.size(); i++) {
+         //int key = i+1;
+         List<Operation> operations = mapping.get(key);
+         // First operation
+         builder.append(operations.get(0).getValue());
+         //builder.append(operations.get(0));
+
+         for(int j=1; j<operations.size(); j++) {
+            builder.append(" | ");
+            //builder.append(operations.get(j));
+            builder.append(operations.get(j).getValue());
+         }
+         builder.append("\n");
+      }
+      
+
+      return builder.toString();
+   }
+
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -95,13 +136,16 @@ public class OperationListStats {
       return builder.toString();
    }
 
-
+            // Show Mapping
+      //printMapping(ilpScene);
+      //Map<Integer, List<Operation>> mapping = ilpScene.getMapping();
 
    /**
     * INSTANCE VARIABLES
     */
-   private int numberOfLines;
-   private int numberOfOperations;
-   private int liveins;
-   private int liveouts;
+   private final int numberOfLines;
+   private final int numberOfOperations;
+   private final int liveins;
+   private final int liveouts;
+   private final Map<Integer, List<Operation>> mapping;
 }
