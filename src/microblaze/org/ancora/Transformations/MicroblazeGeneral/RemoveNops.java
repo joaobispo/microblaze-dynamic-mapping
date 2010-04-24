@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.Microblaze;
+package org.ancora.Transformations.MicroblazeGeneral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +31,13 @@ import org.ancora.Transformations.GeneralMbTransformations;
 import org.ancora.Transformations.Transformation;
 
 /**
- * Transforms MicroBlaze Immediate operands to Literal Operands
  *
  * @author Joao Bispo
  */
-public class TransformImmToLiterals implements Transformation {
+public class RemoveNops implements Transformation {
 
    /**
-    * Transforms MicroBlaze Immediate operands to General Literal Operands
+    * Detects and removes MicroBlaze nops (or r0, r0, r0)
     *
     * <p>Changes input operations.
     * 
@@ -46,24 +45,23 @@ public class TransformImmToLiterals implements Transformation {
     * @return
     */
    public List<Operation> transform(List<Operation> operations) {
+      List<Operation> newList = new ArrayList<Operation>(operations.size());
+
       for(Operation operation : operations) {
-         transformOperands(operation.getInputs());
-         transformOperands(operation.getOutputs());
-      }
-
-      return operations;
-   }
-
-   private void transformOperands(List<Operand> operands) {
-      for(int i=0; i<operands.size(); i++) {
-         if(operands.get(i).getType() == MbOperandType.immediate) {
-            Operand newOperand = GeneralMbTransformations.transformOperandToLiteral(operands.get(i));
-            if(newOperand != null) {
-               operands.set(i, newOperand);
+         boolean remove = hasLiteralsAsOnlyOutput(operation.getOutputs());
+         if(!remove) {
+            newList.add(operation);
+         } else {
+            // Check if is instruction other than OR:
+            boolean isOr = ((MbOperation)operation).getMbType() == InstructionName.or;
+            if(!isOr) {
+               Logger.getLogger(RemoveNops.class.getName()).
+                       warning("Removed operation besides OR:"+operation);
             }
          }
       }
 
+      return newList;
    }
 
 
@@ -95,7 +93,7 @@ public class TransformImmToLiterals implements Transformation {
    @Override
    public String toString() {
       //return RegisterZeroToLiteral.class.getName();
-      return "TransformImmToLiterals";
+      return "RemoveNops";
    }
 
    /**
