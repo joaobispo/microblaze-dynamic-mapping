@@ -17,6 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Ilp;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import org.ancora.IntermediateRepresentation.*;
 import java.util.Hashtable;
@@ -46,6 +47,7 @@ public class MbIlpScene2 implements IlpScenario {
       this.immutableTest = immutableTest;
       this.memoryTest = memoryTest;
       //this.numLoads = numLoads;
+
    }
 
    public void processOperations(List<Operation> operations) {
@@ -70,6 +72,8 @@ public class MbIlpScene2 implements IlpScenario {
          usedLines = Math.max(usedLines, operationLine);
          // Update mappedOps
          mappedOps++;
+         // Add operation to mapping table
+         updateMapping(operation, operationLine);
       }
    }
 
@@ -155,6 +159,8 @@ public class MbIlpScene2 implements IlpScenario {
 
       liveIns = new HashSet<Integer>();
       liveOuts = new HashSet<Integer>();
+
+      mapping = new Hashtable<Integer, List<Operation>>();
    }
 
 
@@ -204,6 +210,22 @@ public class MbIlpScene2 implements IlpScenario {
       System.out.println(builder);
    }
 
+   private void updateMapping(Operation operation, int operationLine) {
+      List<Operation> operations = mapping.get(operationLine);
+      if(operations == null) {
+         operations = new ArrayList<Operation>();
+         mapping.put(operationLine, operations);
+      }
+
+      operations.add(operation);
+   }
+
+   public Map<Integer, List<Operation>> getMapping() {
+      return mapping;
+   }
+
+   
+
    /**
     * INSTANCE VARIABLES
     */
@@ -219,6 +241,10 @@ public class MbIlpScene2 implements IlpScenario {
 
    private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
+
+   private Map<Integer, List<Operation>> mapping;
+
+
 
 
 

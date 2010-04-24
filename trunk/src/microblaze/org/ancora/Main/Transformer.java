@@ -28,9 +28,10 @@ import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.Transformations.Microblaze.RegisterZeroToLiteral;
-import org.ancora.Transformations.Microblaze.RemoveNops;
-import org.ancora.Transformations.Microblaze.TransformImmToLiterals;
+import org.ancora.Transformations.MicroblazeGeneral.RegisterZeroToLiteral;
+import org.ancora.Transformations.MicroblazeGeneral.RemoveNops;
+import org.ancora.Transformations.MicroblazeGeneral.TransformImmToLiterals;
+import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
 import org.ancora.Transformations.Transformation;
 import org.ancora.common.IoUtilsAppend;
 
@@ -53,9 +54,9 @@ public class Transformer {
       // Get instruction blocks
       List<InstructionBlock> blocks = getBlocks(foldername);
 
-      //for(int i=0; i<blocks.size(); i++) {
-      int blockNumber = 2;
-      for(int i=blockNumber-1; i<blockNumber; i++) {
+      for(int i=0; i<blocks.size(); i++) {
+      //int blockNumber = 2;
+      //for(int i=blockNumber-1; i<blockNumber; i++) {
          System.out.println("Processing block "+(i+1)+"...");
          processBlock(blocks.get(i));
       }
@@ -107,14 +108,18 @@ public class Transformer {
       // Gather statistic before transformation
       OperationListStats beforeTransf = OperationListStats.buildStats(operations, ilpScenario);
 
-      //System.out.println("Operations Before:");
-      //System.out.println(operations);
+
 
       
       // Apply MicroBlaze Base transformations
       operations = applyTransformations(operations, getBaseMicroBlazeTransf());
+      operations = applyTransformations(operations, getMicroBlazeInstructionTransf());
+
       System.out.println("\nApplyed transformations:");
-      for(Transformation transf : getBaseMicroBlazeTransf()) {
+      List<Transformation> transfs = new ArrayList<Transformation>();
+      transfs.addAll(getBaseMicroBlazeTransf());
+      transfs.addAll(getMicroBlazeInstructionTransf());
+      for(Transformation transf : transfs) {
          System.out.println(transf);
       }
       System.out.println(" ");
@@ -128,8 +133,10 @@ public class Transformer {
 
       System.out.println("Before:");
       System.out.println(beforeTransf);
+      //System.out.println(beforeTransf.getMappingString());
       System.out.println("After:");
       System.out.println(afterTransf);
+      //System.out.println(afterTransf.getMappingString());
       System.out.println("------------------------");
    }
 
@@ -160,6 +167,19 @@ public class Transformer {
       transformations.add(new TransformImmToLiterals());
       transformations.add(new RegisterZeroToLiteral());
       transformations.add(new RemoveNops());
+
+      return transformations;
+   }
+
+   /**
+    * Transformations include, in this order:
+    * <br>- Transformation of Register 0 to Literal 0, and removal of NOPs (add r0, r0, r0)
+    * @return
+    */
+   public static List<Transformation> getMicroBlazeInstructionTransf() {
+      List<Transformation> transformations = new ArrayList<Transformation>();
+
+      transformations.add(new RemoveImm());
 
       return transformations;
    }

@@ -21,7 +21,7 @@ package org.ancora.MicroBlaze;
  *
  * @author Joao Bispo
  */
-public interface MicroBlazeDefinitions {
+public interface MbDefinitions {
 
    int BITS_IMMEDIATE = 16;
    int BITS_REGISTER = 32;

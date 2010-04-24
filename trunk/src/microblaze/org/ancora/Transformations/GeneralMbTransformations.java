@@ -22,7 +22,7 @@ import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operands.OperandType;
-import org.ancora.MicroBlaze.MicroBlazeDefinitions;
+import org.ancora.MicroBlaze.MbDefinitions;
 
 /**
  *
@@ -71,7 +71,7 @@ public class GeneralMbTransformations {
       // Check if it is a MicroBlaze immediate value
       if(operand.getType() == MbOperandType.immediate) {
          return new Literal(Literal.LiteralType.integer, operand.getValue(), 
-                 MicroBlazeDefinitions.BITS_IMMEDIATE);
+                 MbDefinitions.BITS_IMMEDIATE);
       }
 
       if(operand.getType() == MbOperandType.register) {
