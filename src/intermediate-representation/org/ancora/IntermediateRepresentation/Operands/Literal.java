@@ -17,10 +17,50 @@
 
 package org.ancora.IntermediateRepresentation.Operands;
 
+import org.ancora.IntermediateRepresentation.Operand;
+
 /**
  *
  * @author Joao Bispo
  */
-public class Literal {
+public class Literal extends Operand {
 
+   public Literal(LiteralType literalType, String value, int bits) {
+      this.value = value;
+      this.literalType = literalType;
+      this.bits = bits;
+   }
+
+
+   @Override
+   public String getValue() {
+      return value;
+   }
+
+   @Override
+   public Enum getType() {
+      return OperandType.literal;
+   }
+
+   public LiteralType getLiteralType() {
+      return literalType;
+   }
+
+   @Override
+   public int getBits() {
+      return bits;
+   }
+
+   
+
+   public enum LiteralType{
+      integer;
+   }
+
+   /**
+    * INSTANCE VARIABLES
+    */
+   private String value;
+   private int bits;
+   private LiteralType literalType;
 }
