@@ -47,6 +47,8 @@ public abstract class Operand {
 
    public abstract Enum getType();
 
+   public abstract int getBits();
+
    /**
     * Adds the given operation as producer of this object, and adds this operand
     * as an output of the operation.
