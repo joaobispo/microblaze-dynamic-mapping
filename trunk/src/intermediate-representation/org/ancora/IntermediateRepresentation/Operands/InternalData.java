@@ -23,13 +23,13 @@ import org.ancora.IntermediateRepresentation.Operand;
  *
  * @author Joao Bispo
  */
-public class Literal extends Operand {
+public class InternalData extends Operand {
 
-   public Literal(LiteralType literalType, String value, int bits) {
+   public InternalData(String value, int bits) {
       this.value = value;
-      this.literalType = literalType;
       this.bits = bits;
    }
+
 
 
    @Override
@@ -39,11 +39,7 @@ public class Literal extends Operand {
 
    @Override
    public Enum getType() {
-      return OperandType.literal;
-   }
-
-   public LiteralType getLiteralType() {
-      return literalType;
+      return OperandType.internalData;
    }
 
    @Override
@@ -52,21 +48,13 @@ public class Literal extends Operand {
    }
 
    @Override
-   public Operand copy() {
-      return new Literal(literalType, value, bits);
-   }
-
-   @Override
    public boolean isImmutable() {
       return true;
    }
 
-
-
-   
-
-   public enum LiteralType{
-      integer;
+   @Override
+   public Operand copy() {
+      return new InternalData(value, bits);
    }
 
    /**
@@ -74,5 +62,6 @@ public class Literal extends Operand {
     */
    private String value;
    private int bits;
-   private LiteralType literalType;
+
+
 }

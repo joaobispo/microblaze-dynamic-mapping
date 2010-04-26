@@ -17,10 +17,16 @@
 
 package org.ancora.IntermediateRepresentation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import org.ancora.IntermediateRepresentation.Operands.InternalData;
+import org.ancora.IntermediateRepresentation.Operations.Control;
+import org.ancora.IntermediateRepresentation.Operations.DotOperation;
 
 /**
  *
@@ -79,7 +85,8 @@ public class Dotty {
       for(Operation op : operations) {
          builder.append(op.hashCode());
          builder.append("[label=\"");
-         builder.append(op.getType()+"-"+op.getValue());
+         //builder.append(op.getType()+"-"+op.getValue());
+         builder.append(op.getValue());
          builder.append("\"];\n");
       }
    }
@@ -93,4 +100,79 @@ public class Dotty {
       }
    }
 
+
+   /**
+    * Changes input list.
+    * 
+    * @param operations
+    * @return
+    */
+   public static List<Operation> connectOperations(List<Operation> operations) {
+      List<Operation> newList = new ArrayList<Operation>();
+      Map<String, Integer> variablesVersion = new Hashtable<String, Integer>();
+      Map<String, Operand> operandsTable = new Hashtable<String, Operand>();
+      Operation start = new Control(Control.Op.start);
+      newList.add(start);
+
+      for(int i=0; i<operations.size(); i++) {
+         Operation operation = operations.get(i);
+         Operation dotOp = new DotOperation(operation.getValue());
+         newList.add(dotOp);
+
+         List<Operand> inputs = operation.getInputs();
+         for(int j=0; j<inputs.size(); j++) {
+            Operand input = inputs.get(j);
+            // Check if immutable
+            if(input.isImmutable()) {
+               dotOp.connectToInput(input.copy());
+               continue;
+            }
+
+            String inputValue = input.getValue();
+            // Get input index from table
+            Integer version = variablesVersion.get(inputValue);
+            Operand newInput = operandsTable.get(inputValue);
+
+            if(version == null) {
+               version = 0;
+               variablesVersion.put(input.getValue(), version);
+               String opValue = inputValue+"."+version;
+               newInput = new InternalData(opValue, input.getBits());
+               operandsTable.put(inputValue, newInput);
+               newInput.connectToProducer(start);
+            }
+
+            // Add new Inputs to new operation
+            dotOp.connectToInput(newInput);
+         }
+
+         List<Operand> outputs = operation.getOutputs();
+         for(int j=0; j<outputs.size(); j++) {
+            Operand output = outputs.get(j);
+            String outputValue = output.getValue();
+
+             // Update output index from table
+            Integer version = variablesVersion.get(outputValue);
+//            Operand newInput = operandsTable.get(outputValue);
+
+            if(version == null) {
+               version = 1;
+            } else {
+               version++;
+            }
+
+            // Create new operand
+            variablesVersion.put(outputValue, version);
+            String opValue = output.getValue()+"."+version;
+            Operand newOutput = new InternalData(opValue, output.getBits());
+            operandsTable.put(outputValue, newOutput);
+
+            // Add new Output to new operation
+            dotOp.connectToOutput(newOutput);
+         }
+
+      }
+
+      return newList;
+   }
 }

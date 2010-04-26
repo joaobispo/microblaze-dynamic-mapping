@@ -15,22 +15,24 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operands;
+package org.ancora.IntermediateRepresentation.Operations;
 
-import org.ancora.IntermediateRepresentation.Operand;
+import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class Literal extends Operand {
+public class DotOperation extends Operation {
 
-   public Literal(LiteralType literalType, String value, int bits) {
+   public DotOperation(String value) {
       this.value = value;
-      this.literalType = literalType;
-      this.bits = bits;
    }
 
+   @Override
+   public Enum getType() {
+      return OperationType.DotOperation;
+   }
 
    @Override
    public String getValue() {
@@ -38,41 +40,15 @@ public class Literal extends Operand {
    }
 
    @Override
-   public Enum getType() {
-      return OperandType.literal;
-   }
-
-   public LiteralType getLiteralType() {
-      return literalType;
-   }
-
-   @Override
-   public int getBits() {
-      return bits;
-   }
-
-   @Override
-   public Operand copy() {
-      return new Literal(literalType, value, bits);
-   }
-
-   @Override
-   public boolean isImmutable() {
-      return true;
-   }
-
-
-
-   
-
-   public enum LiteralType{
-      integer;
+   public boolean hasSideEffects() {
+      return false;
    }
 
    /**
     * INSTANCE VARIABLES
     */
    private String value;
-   private int bits;
-   private LiteralType literalType;
+
+
+
 }
