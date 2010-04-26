@@ -17,6 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operands;
 
+import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
 
 /**
@@ -46,11 +47,34 @@ public class MbOperand extends Operand {
       return bits;
    }
 
+   @Override
+   public Operand copy() {
+      return new MbOperand(type, value, bits);
+   }
+
+   @Override
+   public boolean isImmutable() {
+      switch(type) {
+         case immediate:
+            return true;
+         case register:
+            return false;
+         default:
+            Logger.getLogger(MbOperand.class.getName()).
+                    warning("Case not defined: '"+type+"'.");
+            return false;
+      }
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    private MbOperandType type;
    private String value;
    private int bits;
+
+
+
+
 
 }

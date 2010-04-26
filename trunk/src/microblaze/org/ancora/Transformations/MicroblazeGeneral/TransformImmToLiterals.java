@@ -17,17 +17,11 @@
 
 package org.ancora.Transformations.MicroblazeGeneral;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.GeneralMbTransformations;
+import org.ancora.Transformations.OperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -57,7 +51,7 @@ public class TransformImmToLiterals implements Transformation {
    private void transformOperands(List<Operand> operands) {
       for(int i=0; i<operands.size(); i++) {
          if(operands.get(i).getType() == MbOperandType.immediate) {
-            Operand newOperand = GeneralMbTransformations.transformOperandToLiteral(operands.get(i));
+            Operand newOperand = OperandUtils.transformOperandToLiteral(operands.get(i));
             if(newOperand != null) {
                operands.set(i, newOperand);
             }
@@ -66,7 +60,7 @@ public class TransformImmToLiterals implements Transformation {
 
    }
 
-
+/*
    private boolean hasLiteralsAsOnlyOutput(List<Operand> outputs) {
       // Check if all outputs are to register 0
       boolean isZero = false;
@@ -81,10 +75,11 @@ public class TransformImmToLiterals implements Transformation {
 
       return isZero;
    }
+ */
 
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = GeneralMbTransformations.transformOperandToLiteral(operand);
+      Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
@@ -97,45 +92,6 @@ public class TransformImmToLiterals implements Transformation {
       //return RegisterZeroToLiteral.class.getName();
       return "TransformImmToLiterals";
    }
-
-   /**
-    * @param inputs
-    * @return true if found register 0.
-    */
-   /*
-   private boolean transformRegister0(List<Operand> operands) {
-      boolean transformed = false;
-      for(int i=0; i<operands.size(); i++) {
-         // Check if operand is a MbOperand
-         Operand operand = operands.get(i);
-         if(operand.getType() == MbOperandType.register) {
-            transformed = isRegisterZero(operand.getValue());
-            if(transformed) {
-               // Change register to literal
-               Operand newOperand = new Literal(INTEGER_VALUE_ZERO, Literal.LiteralType.integer);
-               operands.set(i, newOperand);
-            }
-         }
-      }
-
-      return false;
-   }
-    */
-/*
-   private boolean isZero(Operand operand) {
-      // Check for "register 0"
-      if(operand.getType() == MbOperandType.register) {
-         return value.equals(INTEGER_VALUE_ZERO);
-      }
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
-   private boolean isRegisterZero(String value) {
-      return value.equals(INTEGER_VALUE_ZERO);
-   }
-
-   private static final String INTEGER_VALUE_ZERO = "0";
- */
 
 
 

@@ -21,7 +21,7 @@ import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.Transformations.GeneralMbTransformations;
+import org.ancora.Transformations.OperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -60,7 +60,7 @@ public class RegisterZeroToLiteral implements Transformation {
          // Check if operand is a MbOperand
          Operand operand = operands.get(i);
          if(operand.getType() == MbOperandType.register) {
-            Operand newOperand = GeneralMbTransformations.transformOperandToLiteral(operand);
+            Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
             if(newOperand != null) {
                // Change register to literal
                operands.set(i, newOperand);
@@ -78,12 +78,4 @@ public class RegisterZeroToLiteral implements Transformation {
       return "RegisterZeroToLiteral";
    }
 
-
-   /*
-   private boolean isRegisterZero(String value) {
-      return value.equals(INTEGER_VALUE_ZERO);
-   }
-    */
-
-   //private static final String INTEGER_VALUE_ZERO = "0";
 }

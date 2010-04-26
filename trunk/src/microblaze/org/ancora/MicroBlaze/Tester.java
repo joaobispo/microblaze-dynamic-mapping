@@ -38,7 +38,7 @@ import org.ancora.MicroBlaze.Trace.TraceDefinitions;
 import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.Transformations.GeneralMbTransformations;
+import org.ancora.Transformations.OperandUtils;
 import org.ancora.common.ExtensionFilter;
 import org.ancora.common.IoUtilsAppend;
 
@@ -179,7 +179,7 @@ public class Tester {
    /*
    private static void applyTransformations(List<Operation> operations) {
       // Transform R0 in literal 0
-      //GeneralMbTransformations.transformRegister0(operations);
+      //OperandUtils.transformRegister0(operations);
    }
     */
 

@@ -53,6 +53,12 @@ public class MbOperation extends Operation {
       return value.name();
    }
 
+   @Override
+   public boolean hasSideEffects() {
+      // List of instructions with side-effects
+      throw new UnsupportedOperationException("Not supported yet.");
+   }
+
    public InstructionName getMbType() {
       return value;
    }
@@ -75,5 +81,7 @@ public class MbOperation extends Operation {
     */
    private InstructionName value;
    private MbOperationType type;
+
+
 
 }
