@@ -25,4 +25,7 @@ public interface MbDefinitions {
 
    int BITS_IMMEDIATE = 16;
    int BITS_REGISTER = 32;
+   int BITS_CARRY = 1;
+
+   String CARRY_REGISTER = "MSR[29]";
 }

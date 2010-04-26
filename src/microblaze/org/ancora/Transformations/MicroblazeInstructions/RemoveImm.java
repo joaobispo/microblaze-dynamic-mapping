@@ -23,7 +23,6 @@ import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.IntermediateRepresentation.Operations.MbOperationType;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
@@ -68,7 +67,7 @@ public class RemoveImm implements Transformation {
 
         // Replace Operand for a Literal
         inputs.set(immIndex, new Literal(Literal.LiteralType.integer,
-                String.valueOf(completeInt), MbDefinitions.BITS_REGISTER));
+                String.valueOf(completeInt), BIS_FUSED_IMM));
         //System.out.println("Imm Operand:"+immOperand);
 
 // System.out.println("Operation After:"+nextOperation);
@@ -111,6 +110,7 @@ public class RemoveImm implements Transformation {
       return "RemoveImm";
    }
 
+   public static int BIS_FUSED_IMM = 32;
 
 
 }

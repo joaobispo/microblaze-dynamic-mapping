@@ -27,7 +27,7 @@ import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.GeneralMbTransformations;
+import org.ancora.Transformations.OperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -82,7 +82,7 @@ public class RemoveNops implements Transformation {
 
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = GeneralMbTransformations.transformOperandToLiteral(operand);
+      Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
@@ -95,45 +95,6 @@ public class RemoveNops implements Transformation {
       //return RegisterZeroToLiteral.class.getName();
       return "RemoveNops";
    }
-
-   /**
-    * @param inputs
-    * @return true if found register 0.
-    */
-   /*
-   private boolean transformRegister0(List<Operand> operands) {
-      boolean transformed = false;
-      for(int i=0; i<operands.size(); i++) {
-         // Check if operand is a MbOperand
-         Operand operand = operands.get(i);
-         if(operand.getType() == MbOperandType.register) {
-            transformed = isRegisterZero(operand.getValue());
-            if(transformed) {
-               // Change register to literal
-               Operand newOperand = new Literal(INTEGER_VALUE_ZERO, Literal.LiteralType.integer);
-               operands.set(i, newOperand);
-            }
-         }
-      }
-
-      return false;
-   }
-    */
-/*
-   private boolean isZero(Operand operand) {
-      // Check for "register 0"
-      if(operand.getType() == MbOperandType.register) {
-         return value.equals(INTEGER_VALUE_ZERO);
-      }
-      throw new UnsupportedOperationException("Not yet implemented");
-   }
-
-   private boolean isRegisterZero(String value) {
-      return value.equals(INTEGER_VALUE_ZERO);
-   }
-
-   private static final String INTEGER_VALUE_ZERO = "0";
- */
 
 
 

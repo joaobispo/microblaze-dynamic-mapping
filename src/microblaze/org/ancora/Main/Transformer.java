@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.IntermediateRepresentation.Dotty;
 import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
 import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.IntermediateRepresentation.MbParser;
@@ -31,6 +32,7 @@ import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.Transformations.MicroblazeGeneral.RegisterZeroToLiteral;
 import org.ancora.Transformations.MicroblazeGeneral.RemoveNops;
 import org.ancora.Transformations.MicroblazeGeneral.TransformImmToLiterals;
+import org.ancora.Transformations.MicroblazeInstructions.ParseCarryArithmetic;
 import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
 import org.ancora.Transformations.Transformation;
 import org.ancora.common.IoUtilsAppend;
@@ -54,11 +56,14 @@ public class Transformer {
       // Get instruction blocks
       List<InstructionBlock> blocks = getBlocks(foldername);
 
-      for(int i=0; i<blocks.size(); i++) {
-      //int blockNumber = 2;
-      //for(int i=blockNumber-1; i<blockNumber; i++) {
-         System.out.println("Processing block "+(i+1)+"...");
-         processBlock(blocks.get(i));
+      for (int i = 0; i < blocks.size(); i++) {
+         //int blockNumber = 2;
+         //for(int i=blockNumber-1; i<blockNumber; i++) {
+         System.out.println("Processing block " + i + "...");
+         List<Operation> operations = processBlock(blocks.get(i));
+         // Connect
+         List<Operation> ops = Dotty.connectOperations(operations);
+         IoUtils.write(new File("E:/dot." + i + ".txt"), Dotty.generateDot(ops));
       }
      
 
@@ -98,7 +103,7 @@ public class Transformer {
       return blocks;
    }
 
-   private static void processBlock(InstructionBlock block) {
+   private static List<Operation> processBlock(InstructionBlock block) {
       IlpScenario ilpScenario = new MbIlpScene2();
 
       System.out.println("Repetitions:"+block.getRepetitions());
@@ -125,19 +130,19 @@ public class Transformer {
       System.out.println(" ");
       
 
-      //System.out.println("Operations After:");
-      //System.out.println(operations);
 
       // Gather statistic after transformation
       OperationListStats afterTransf = OperationListStats.buildStats(operations, ilpScenario);
 
       System.out.println("Before:");
       System.out.println(beforeTransf);
-      //System.out.println(beforeTransf.getMappingString());
+      System.out.println(beforeTransf.getMappingString());
       System.out.println("After:");
       System.out.println(afterTransf);
-      //System.out.println(afterTransf.getMappingString());
+      System.out.println(afterTransf.getMappingString());
       System.out.println("------------------------");
+
+      return operations;
    }
 
    /*
@@ -180,6 +185,7 @@ public class Transformer {
       List<Transformation> transformations = new ArrayList<Transformation>();
 
       transformations.add(new RemoveImm());
+      transformations.add(new ParseCarryArithmetic());
 
       return transformations;
    }

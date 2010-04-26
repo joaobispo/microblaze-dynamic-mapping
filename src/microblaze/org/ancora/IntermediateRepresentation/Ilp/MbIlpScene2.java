@@ -143,12 +143,12 @@ public class MbIlpScene2 implements IlpScenario {
       }
    }
 
-      private void updateLiveouts(String operandRepresentation) {
-      liveOuts.add(ParseUtils.parseInt(operandRepresentation));
+   private void updateLiveouts(String operandRepresentation) {
+      liveOuts.add(operandRepresentation);
    }
 
    private void updateLiveins(String operandRepresentation) {
-      liveIns.add(ParseUtils.parseInt(operandRepresentation));
+      liveIns.add(operandRepresentation);
    }
 
    public void reset() {
@@ -157,8 +157,8 @@ public class MbIlpScene2 implements IlpScenario {
       lastLineWithStore = 0;
       dataLines = new Hashtable<String, Integer>();
 
-      liveIns = new HashSet<Integer>();
-      liveOuts = new HashSet<Integer>();
+      liveIns = new HashSet<String>();
+      liveOuts = new HashSet<String>();
 
       mapping = new Hashtable<Integer, List<Operation>>();
    }
@@ -236,8 +236,10 @@ public class MbIlpScene2 implements IlpScenario {
 
    private Map<String,Integer> dataLines;
 
-   private Set<Integer> liveIns;
-   private Set<Integer> liveOuts;
+   //private Set<Integer> liveIns;
+   //private Set<Integer> liveOuts;
+   private Set<String> liveIns;
+   private Set<String> liveOuts;
 
    private ImmutableTest immutableTest;
    private MemoryTest memoryTest;

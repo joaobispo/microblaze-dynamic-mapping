@@ -20,6 +20,7 @@ package org.ancora.Transformations;
 import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
+import org.ancora.IntermediateRepresentation.Operands.MbOperand;
 import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operands.OperandType;
 import org.ancora.MicroBlaze.MbDefinitions;
@@ -28,7 +29,7 @@ import org.ancora.MicroBlaze.MbDefinitions;
  *
  * @author Joao Bispo
  */
-public class GeneralMbTransformations {
+public class OperandUtils {
 
    /*
    public static List<Operation> transformRegister0(List<Operation> operations) {
@@ -84,9 +85,13 @@ public class GeneralMbTransformations {
          }
       }
 
-      Logger.getLogger(GeneralMbTransformations.class.getName()).
+      Logger.getLogger(OperandUtils.class.getName()).
               warning("Could not find case to transform operand '"+operand+"'.");
       return null;
+   }
+
+   public static Operand createCarryOperand() {
+      return new MbOperand(MbOperandType.register, MbDefinitions.CARRY_REGISTER, MbDefinitions.BITS_CARRY);
    }
 
    private static boolean isRegisterZero(String value) {
