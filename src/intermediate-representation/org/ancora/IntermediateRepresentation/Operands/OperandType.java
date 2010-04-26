@@ -22,5 +22,6 @@ package org.ancora.IntermediateRepresentation.Operands;
  * @author Joao Bispo
  */
 public enum OperandType {
-   literal;
+   literal,
+   internalData;
 }

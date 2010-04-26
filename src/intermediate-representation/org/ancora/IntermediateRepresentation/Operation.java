@@ -38,6 +38,13 @@ public abstract class Operation {
 
    public abstract String getValue();
 
+   /**
+    *
+    * @return true if the operation alters anything besides its list of outputs
+    * (e.g., memory operations), false otherwise
+    */
+   public abstract boolean hasSideEffects();
+
    public List<Operand> getInputs() {
       return inputs;
    }
@@ -71,6 +78,11 @@ public abstract class Operation {
    public void connectToOutput(Operand output) {
       output.connectToProducer(this);
    }
+   /*
+   public void connectToOutput(Operand output, boolean showWarning) {
+      output.connectToProducer(this, showWarning);
+   }
+    */
 
    public List<Operand> getOutputs() {
       return outputs;
@@ -92,8 +104,8 @@ public abstract class Operation {
    public String toString() {
       StringBuilder builder = new StringBuilder();
 
-      builder.append(getType());
-      builder.append("-");
+      //builder.append(getType());
+      //builder.append("-");
       builder.append(getValue());
 
       if(inputs.size() > 0) {

@@ -17,13 +17,42 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import org.ancora.IntermediateRepresentation.Operation;
+
 /**
  *
  * @author Joao Bispo
  */
-public enum OperationType {
+public class Control extends Operation {
 
-   IntegerArithmeticWithCarry,
-   Control,
-   DotOperation;
+   public Control(Control.Op operation) {
+      this.operation = operation;
+   }
+
+
+   @Override
+   public Enum getType() {
+      return OperationType.Control;
+   }
+
+   @Override
+   public String getValue() {
+      return "ir-"+operation.name();
+   }
+
+   @Override
+   public boolean hasSideEffects() {
+      return false;
+   }
+
+   public enum Op {
+      start,
+      exit,
+      end;
+   }
+
+   /**
+    * INSTANCE VARIABLES
+    */
+   Control.Op operation;
 }

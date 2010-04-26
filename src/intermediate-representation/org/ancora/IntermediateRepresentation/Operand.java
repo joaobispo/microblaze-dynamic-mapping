@@ -50,12 +50,33 @@ public abstract class Operand {
    public abstract int getBits();
 
    /**
+    *
+    * @return true if this object represents an operand which cannot change its
+    * contents. false otherwise.
+    */
+   public abstract boolean isImmutable();
+
+   /**
+    * Copies the operand, except for the producers and consumers.
+    * 
+    * @return
+    */
+   public abstract Operand copy();
+
+   /**
     * Adds the given operation as producer of this object, and adds this operand
     * as an output of the operation.
     * 
     * @param producer
     */
    public void connectToProducer(Operation producer) {
+   /*
+      connectToProducer(producer, true);
+   }
+    
+   public void connectToProducer(Operation producer, boolean showWarning) {
+    */
+      //if(this.producer != null && showWarning) {
       if(this.producer != null) {
           Logger.getLogger(Operand.class.getName()).
                  info("Replacing producer '"+this.producer+"' in operand '"+this+"' " +
