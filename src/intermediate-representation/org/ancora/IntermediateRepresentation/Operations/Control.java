@@ -48,7 +48,6 @@ public class Control extends Operation {
 
    public enum Op {
       start,
-      exit,
       end;
    }
 
