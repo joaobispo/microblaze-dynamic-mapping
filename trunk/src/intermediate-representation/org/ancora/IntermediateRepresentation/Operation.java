@@ -26,11 +26,12 @@ import java.util.List;
  */
 public abstract class Operation {
 
-   public Operation() {
+   public Operation(int address) {
    //public Operation(OperationType type) {
       inputs = new ArrayList<Operand>();
       outputs = new ArrayList<Operand>();
       parameters = new ArrayList<Operand>();
+      this.address = address;
       //this.type = type;
    }
 
@@ -92,6 +93,10 @@ public abstract class Operation {
       return parameters;
    }
 
+   public int getAddress() {
+      return address;
+   }
+
 
 
    /*
@@ -134,6 +139,7 @@ public abstract class Operation {
    private List<Operand> inputs;
    private List<Operand> outputs;
    private List<Operand> parameters;
+   private int address;
    //private OperationType type;
    //private String type;
 }

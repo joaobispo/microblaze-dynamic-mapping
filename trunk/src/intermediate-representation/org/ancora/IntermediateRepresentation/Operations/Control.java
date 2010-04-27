@@ -25,7 +25,8 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public class Control extends Operation {
 
-   public Control(Control.Op operation) {
+   public Control(int address, Control.Op operation) {
+      super(address);
       this.operation = operation;
    }
 
