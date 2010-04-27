@@ -24,22 +24,27 @@ import org.ancora.IntermediateRepresentation.Operation;
  *
  * @author Joao Bispo
  */
-public class ConditionalExit extends Operation {
+public class Exit extends Operation {
 
-   public ConditionalExit(int address, ConditionalExit.Op operation) {
+   public Exit(int address, Operand exitAddress, Operand exitFlag) {
       super(address);
-      this.operation = operation;
+      this.exitAddress = exitAddress;
+      this.exitFlag = exitFlag;
+
+      connectToInput(exitFlag);
+      connectToInput(exitAddress);
    }
+
 
 
    @Override
    public Enum getType() {
-      return OperationType.ConditionalExit;
+      return OperationType.Exit;
    }
 
    @Override
    public String getValue() {
-      return operation.name();
+      return "Exit";
    }
 
    @Override
@@ -47,41 +52,10 @@ public class ConditionalExit extends Operation {
       return false;
    }
 
-   public Operand getDestinationAddress() {
-      return address;
-   }
-
-   public void setDestinationAddress(Operand address) {
-      this.address = address;
-      connectToInput(address);
-   }
-
-   public Operand getCompareToZero() {
-      return compareToZero;
-   }
-
-   public void setCompareToZero(Operand compareToZero) {
-      this.compareToZero = compareToZero;
-      connectToInput(compareToZero);
-   }
-
-   
-
-
-
    /**
     * INSTANCE VARIABLES
     */
-   private ConditionalExit.Op operation;
-   private Operand compareToZero;
-   private Operand address;
+   private Operand exitAddress;
+   private Operand exitFlag;
 
-   public enum Op {
-      equal,
-      notEqual,
-      greater,
-      greaterOrEqual,
-      less,
-      lessOrEqual
-   }
 }

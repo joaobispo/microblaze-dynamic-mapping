@@ -26,5 +26,7 @@ public enum OperationType {
    IntegerArithmeticWithCarry,
    Control,
    DotOperation,
-   ConditionalExit;
+   Compare,
+   Exit,
+   Mux;
 }
