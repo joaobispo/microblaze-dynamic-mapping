@@ -38,13 +38,15 @@ public class MbIlpScene2 implements IlpScenario {
     * Creates a MicroBlaze ILP Scenario 2 with MicroBlaze Immutable and Memory Tests
     */
    public MbIlpScene2() {
-      this(new MbImmutableTest(), new MbMemoryTest());
+      //this(new MbImmutableTest(), new MbMemoryTest());
+      this(new MbMemoryTest());
    }
 
 
 
-   public MbIlpScene2(ImmutableTest immutableTest, MemoryTest memoryTest) {
-      this.immutableTest = immutableTest;
+//   public MbIlpScene2(ImmutableTest immutableTest, MemoryTest memoryTest) {
+   public MbIlpScene2(MemoryTest memoryTest) {
+//      this.immutableTest = immutableTest;
       this.memoryTest = memoryTest;
       //this.numLoads = numLoads;
 
@@ -81,7 +83,8 @@ public class MbIlpScene2 implements IlpScenario {
       int lowestLine = 0;
       for(Operand operand : operands) {
          // Check if operand is immutable
-         if(immutableTest.isImmutable(operand)) {
+//         if(immutableTest.isImmutable(operand)) {
+         if(operand.isImmutable()) {
             continue;
          }
 
@@ -129,7 +132,8 @@ public class MbIlpScene2 implements IlpScenario {
    private void processOutputs(List<Operand> operands, int operationLine) {
       for(Operand operand : operands) {
          // Check if operand is immutable
-         if(immutableTest.isImmutable(operand)) {
+//         if(immutableTest.isImmutable(operand)) {
+         if(operand.isImmutable()) {
             continue;
          }
 
@@ -241,7 +245,7 @@ public class MbIlpScene2 implements IlpScenario {
    private Set<String> liveIns;
    private Set<String> liveOuts;
 
-   private ImmutableTest immutableTest;
+   //private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
 
    private Map<Integer, List<Operation>> mapping;

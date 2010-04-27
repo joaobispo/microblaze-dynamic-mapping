@@ -66,8 +66,8 @@ public class ParseCarryArithmetic implements Transformation {
         Operand input2 = arithmeticOperation.getInputs().get(1).copy();
         Operand output1 = arithmeticOperation.getOutputs().get(0).copy();
 
-        Operation newOperation = new ArithmeticWithCarry(irOperation, input1,
-                input2, output1, carryIn, carryOut);
+        Operation newOperation = new ArithmeticWithCarry(arithmeticOperation.getAddress(),
+                irOperation, input1, input2, output1, carryIn, carryOut);
 
         // Replace old operation
         operations.set(i, newOperation);
@@ -190,6 +190,7 @@ public class ParseCarryArithmetic implements Transformation {
     * @param instructionName
     * @return null if is not an arithmetic operation with carry
     */
+
    private ArithmeticWithCarry.Op getArithmeticOperation(InstructionName instructionName) {
       ArithmeticProperties props = instructionProperties.get(instructionName);
 

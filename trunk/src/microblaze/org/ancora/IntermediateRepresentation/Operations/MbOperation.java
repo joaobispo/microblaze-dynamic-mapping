@@ -28,7 +28,8 @@ import org.ancora.MicroBlaze.InstructionName;
  */
 public class MbOperation extends Operation {
 
-   public MbOperation(InstructionName operationName, List<Operand> inputs, List<Operand> outputs) {
+   public MbOperation(int address, InstructionName operationName, List<Operand> inputs, List<Operand> outputs) {
+      super(address);
       this.value = operationName;
       this.type = MbOperationType.MicroBlazeOperation;
 
