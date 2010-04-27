@@ -244,7 +244,8 @@ public class Tester {
 
       // Collect ILP
       //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
-      MbIlpScene2 ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
+      //MbIlpScene2 ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
+      MbIlpScene2 ilp = new MbIlpScene2(new MbMemoryTest());
       ilp.processOperations(operations);
 
       // Collect data

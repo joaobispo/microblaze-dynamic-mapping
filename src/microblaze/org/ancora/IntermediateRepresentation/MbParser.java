@@ -88,7 +88,7 @@ public class MbParser {
          }
       }
 
-      return new MbOperation(mbInstruction.getInstructionName(), inputs, outputs);
+      return new MbOperation(mbInstruction.getAddress(), mbInstruction.getInstructionName(), inputs, outputs);
    }
 
    public static String[] parseArguments(String instruction) {
