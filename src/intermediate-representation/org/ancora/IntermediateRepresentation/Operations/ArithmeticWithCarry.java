@@ -26,7 +26,8 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public class ArithmeticWithCarry extends Operation {
 
-   public ArithmeticWithCarry(ArithmeticWithCarry.Op operation, Operand input1, Operand input2, Operand output1, Operand carryIn, Operand carryOut) {
+   public ArithmeticWithCarry(int address, ArithmeticWithCarry.Op operation, Operand input1, Operand input2, Operand output1, Operand carryIn, Operand carryOut) {
+      super(address);
       this.operation = operation;
       this.input1 = input1;
       this.input2 = input2;

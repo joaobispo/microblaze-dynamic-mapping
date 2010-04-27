@@ -17,27 +17,29 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class DotOperation extends Operation {
+public class ConditionalExit extends Operation {
 
-   public DotOperation(int address, String value) {
+   public ConditionalExit(int address, ConditionalExit.Op operation) {
       super(address);
-      this.value = value;
+      this.operation = operation;
    }
+
 
    @Override
    public Enum getType() {
-      return OperationType.DotOperation;
+      return OperationType.ConditionalExit;
    }
 
    @Override
    public String getValue() {
-      return value;
+      return operation.name();
    }
 
    @Override
@@ -45,11 +47,41 @@ public class DotOperation extends Operation {
       return false;
    }
 
+   public Operand getDestinationAddress() {
+      return address;
+   }
+
+   public void setDestinationAddress(Operand address) {
+      this.address = address;
+      connectToInput(address);
+   }
+
+   public Operand getCompareToZero() {
+      return compareToZero;
+   }
+
+   public void setCompareToZero(Operand compareToZero) {
+      this.compareToZero = compareToZero;
+      connectToInput(compareToZero);
+   }
+
+   
+
+
+
    /**
     * INSTANCE VARIABLES
     */
-   private String value;
+   private ConditionalExit.Op operation;
+   private Operand compareToZero;
+   private Operand address;
 
-
-
+   public enum Op {
+      equal,
+      notEqual,
+      greater,
+      greaterOrEqual,
+      less,
+      lessOrEqual
+   }
 }

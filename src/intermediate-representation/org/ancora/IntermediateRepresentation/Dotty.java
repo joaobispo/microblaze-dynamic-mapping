@@ -111,12 +111,12 @@ public class Dotty {
       List<Operation> newList = new ArrayList<Operation>();
       Map<String, Integer> variablesVersion = new Hashtable<String, Integer>();
       Map<String, Operand> operandsTable = new Hashtable<String, Operand>();
-      Operation start = new Control(Control.Op.start);
+      Operation start = new Control(-1, Control.Op.start);
       newList.add(start);
 
       for(int i=0; i<operations.size(); i++) {
          Operation operation = operations.get(i);
-         Operation dotOp = new DotOperation(operation.getValue());
+         Operation dotOp = new DotOperation(operation.getAddress(), operation.getValue());
          newList.add(dotOp);
 
          List<Operand> inputs = operation.getInputs();

@@ -49,7 +49,7 @@ public class InternalData extends Operand {
 
    @Override
    public boolean isImmutable() {
-      return true;
+      return false;
    }
 
    @Override
