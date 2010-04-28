@@ -42,10 +42,12 @@ public class Exit extends Operation {
       return OperationType.Exit;
    }
 
+   /*
    @Override
    public String getValue() {
       return "Exit";
    }
+    */
 
    @Override
    public boolean hasSideEffects() {

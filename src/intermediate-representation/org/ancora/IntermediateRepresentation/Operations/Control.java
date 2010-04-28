@@ -37,9 +37,18 @@ public class Control extends Operation {
    }
 
    @Override
+   public String toString() {
+      return operation.name().toUpperCase();
+   }
+
+   /*
+   @Override
    public String getValue() {
       return "ir-"+operation.name();
    }
+    */
+
+
 
    @Override
    public boolean hasSideEffects() {

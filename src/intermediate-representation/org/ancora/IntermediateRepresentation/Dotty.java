@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
 import org.ancora.IntermediateRepresentation.Operations.Control;
-import org.ancora.IntermediateRepresentation.Operations.DotOperation;
+import org.ancora.IntermediateRepresentation.Operations.MockOperation;
 
 /**
  *
@@ -86,7 +86,8 @@ public class Dotty {
          builder.append(op.hashCode());
          builder.append("[label=\"");
          //builder.append(op.getType()+"-"+op.getValue());
-         builder.append(op.getValue());
+         //builder.append(op.getValue());
+         builder.append(op);
          builder.append("\"];\n");
       }
    }
@@ -116,7 +117,8 @@ public class Dotty {
 
       for(int i=0; i<operations.size(); i++) {
          Operation operation = operations.get(i);
-         Operation dotOp = new DotOperation(operation.getAddress(), operation.getValue());
+         //Operation dotOp = new MockOperation(operation.getAddress(), operation.getValue());
+         Operation dotOp = new MockOperation(operation.getAddress(), operation.toString());
          newList.add(dotOp);
 
          List<Operand> inputs = operation.getInputs();

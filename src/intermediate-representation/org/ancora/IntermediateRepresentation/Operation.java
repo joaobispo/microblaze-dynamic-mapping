@@ -37,7 +37,7 @@ public abstract class Operation {
 
    public abstract Enum getType();
 
-   public abstract String getValue();
+   //public abstract String getValue();
 
    /**
     *
@@ -104,7 +104,7 @@ public abstract class Operation {
       return type;
    }
     */
-
+/*
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
@@ -130,7 +130,7 @@ public abstract class Operation {
       
       return builder.toString();
    }
-
+*/
 
 
    /**

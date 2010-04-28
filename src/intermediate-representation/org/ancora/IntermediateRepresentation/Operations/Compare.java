@@ -49,9 +49,18 @@ public class Compare extends Operation {
    }
 
    @Override
+   public String toString() {
+      //return "ir-"+operation.name();
+      return operation.name();
+   }
+
+   /*
+   @Override
    public String getValue() {
       return operation.name();
    }
+    */
+
 
    @Override
    public boolean hasSideEffects() {
@@ -80,12 +89,14 @@ public class Compare extends Operation {
 
 
    public enum Op {
+      /*
       equal,
       notEqual,
       greater,
       greaterOrEqual,
       less,
       lessOrEqual,
+       */
       mbCompare;
    }
 }

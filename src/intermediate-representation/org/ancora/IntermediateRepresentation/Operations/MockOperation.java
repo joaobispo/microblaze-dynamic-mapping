@@ -23,22 +23,32 @@ import org.ancora.IntermediateRepresentation.Operation;
  *
  * @author Joao Bispo
  */
-public class DotOperation extends Operation {
+public class MockOperation extends Operation {
 
-   public DotOperation(int address, String value) {
+   public MockOperation(int address, String name) {
       super(address);
-      this.value = value;
+      this.name = name;
    }
 
    @Override
    public Enum getType() {
-      return OperationType.DotOperation;
+      return OperationType.MockOperation;
    }
 
    @Override
-   public String getValue() {
-      return value;
+   public String toString() {
+      return name;
    }
+
+
+   /*
+   @Override
+   public String getValue() {
+      return name;
+   }
+    */
+
+
 
    @Override
    public boolean hasSideEffects() {
@@ -48,7 +58,7 @@ public class DotOperation extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private String value;
+   private String name;
 
 
 
