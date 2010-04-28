@@ -51,10 +51,12 @@ public class Mux extends Operation {
       return OperationType.Mux;
    }
 
+   /*
    @Override
    public String getValue() {
       return OperationType.Mux.name();
    }
+    */
 
    @Override
    public boolean hasSideEffects() {
