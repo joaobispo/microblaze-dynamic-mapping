@@ -198,7 +198,7 @@ public class Transformer {
 
       transformations.add(new RemoveImm());
       transformations.add(new ParseCarryArithmetic());
-      transformations.add(new ParseConditionalBranch());
+      //transformations.add(new ParseConditionalBranch());
 
       return transformations;
    }
