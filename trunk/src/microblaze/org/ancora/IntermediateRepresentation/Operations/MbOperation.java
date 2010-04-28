@@ -30,7 +30,7 @@ public class MbOperation extends Operation {
 
    public MbOperation(int address, InstructionName operationName, List<Operand> inputs, List<Operand> outputs) {
       super(address);
-      this.value = operationName;
+      this.instructionName = operationName;
       this.type = MbOperationType.MicroBlazeOperation;
 
       for(Operand input : inputs) {
@@ -50,9 +50,18 @@ public class MbOperation extends Operation {
    }
 
    @Override
-   public String getValue() {
-      return value.name();
+   public String toString() {
+      return "mb-"+instructionName.name();
    }
+
+   /*
+   @Override
+   public String getValue() {
+      return instructionName.name();
+   }
+    */
+
+
 
    @Override
    public boolean hasSideEffects() {
@@ -61,7 +70,7 @@ public class MbOperation extends Operation {
    }
 
    public InstructionName getMbType() {
-      return value;
+      return instructionName;
    }
 
    /**
@@ -80,7 +89,7 @@ public class MbOperation extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private InstructionName value;
+   private InstructionName instructionName;
    private MbOperationType type;
 
 

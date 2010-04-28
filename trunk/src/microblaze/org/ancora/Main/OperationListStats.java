@@ -109,13 +109,13 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
          //int key = i+1;
          List<Operation> operations = mapping.get(key);
          // First operation
-         builder.append(operations.get(0).getValue());
-         //builder.append(operations.get(0));
+         //builder.append(operations.get(0).getValue());
+         builder.append(operations.get(0));
 
          for(int j=1; j<operations.size(); j++) {
             builder.append(" | ");
-            //builder.append(operations.get(j));
-            builder.append(operations.get(j).getValue());
+            builder.append(operations.get(j));
+            //builder.append(operations.get(j).getValue());
          }
          builder.append("\n");
       }
