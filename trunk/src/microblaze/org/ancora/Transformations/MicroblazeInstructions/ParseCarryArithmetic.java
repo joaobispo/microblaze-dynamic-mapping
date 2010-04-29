@@ -29,7 +29,7 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.ArithmeticWithCarry;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.OperandUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -223,7 +223,7 @@ public class ParseCarryArithmetic implements Transformation {
          return null;
       }
 
-      return OperandUtils.createCarryOperand();
+      return MbOperandUtils.createCarryOperand();
    }
 
    private Operand getCarryOut(InstructionName instructionName) {
@@ -237,7 +237,7 @@ public class ParseCarryArithmetic implements Transformation {
          return null;
       }
 
-      return OperandUtils.createCarryOperand();
+      return MbOperandUtils.createCarryOperand();
    }
 
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.common.LineReader;
@@ -174,11 +175,43 @@ public class MbInstructionBlockWriter implements InstructionBlockListener {
       String line = reader.nextLine();
 
       while(line != null) {
-         instructions.add(MbTraceReader.createMicroBlazeInstruction(line));
+         //System.out.println("Line:"+line);
+         //MbInstruction newInstruction = MbTraceReader.createMicroBlazeInstruction(line);
+         MbInstruction newInstruction = createMicroBlazeInstruction(line);
+         instructions.add(newInstruction);
+         //System.out.println("Parsed Address:"+newInstruction.getAddress());
          line = reader.nextLine();
       }
 
       return instructions;
+   }
+
+   /**
+    * Block format is diferent from MicroBlaze trace format. The address of the
+    * instructions in the former is a decimal value, while in the later is a
+    * hexadecimal value prefixed by "0x".
+    * @param blockLine
+    * @return
+    */
+   public static MbInstruction createMicroBlazeInstruction(String blockLine) {
+      /// Split the trace instruction in parts
+      int whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(blockLine);
+
+      /// Get Address
+      String addressString = blockLine.substring(0, whiteSpaceIndex);
+
+      // Parse to integer
+      int instructionAddress = Integer.valueOf(addressString);
+
+      /// Get Instruction
+      String instruction = blockLine.substring(whiteSpaceIndex).trim();
+
+      /// Get InstructionName
+      whiteSpaceIndex = ParseUtils.indexOfFirstWhiteSpace(instruction);
+      String instNameString = instruction.substring(0, whiteSpaceIndex);
+      InstructionName instName = InstructionName.getEnum(instNameString);
+
+      return new MbInstruction(instructionAddress, instruction, instName);
    }
 
    private int counter;

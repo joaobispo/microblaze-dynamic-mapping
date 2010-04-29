@@ -20,21 +20,19 @@ package org.ancora.Transformations.MicroblazeGeneral;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.Literal;
-import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
+import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.OperandUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class RemoveNops implements Transformation {
+public class IdentifyNops implements Transformation {
 
    /**
     * Detects and removes MicroBlaze nops (or r0, r0, r0)
@@ -45,23 +43,65 @@ public class RemoveNops implements Transformation {
     * @return
     */
    public List<Operation> transform(List<Operation> operations) {
-      List<Operation> newList = new ArrayList<Operation>(operations.size());
+      //List<Operation> newList = new ArrayList<Operation>(operations.size());
 
-      for(Operation operation : operations) {
-         boolean remove = hasLiteralsAsOnlyOutput(operation.getOutputs());
+      //for(Operation operation : operations) {
+      for(int i=0; i<operations.size(); i++) {
+         Operation operation = operations.get(i);
+
+         MbOperation mbOperation = MbOperation.getMbOperation(operation);
+         if(mbOperation == null) {
+            continue;
+         }
+
+         // Identify OR r0, r0, r0
+         boolean isOr = mbOperation.getMbType() == InstructionName.or;
+         if(!isOr) {
+            continue;
+         }
+
+         Integer outputValue = MbOperandUtils.getIntegerValue(mbOperation.getOutputs().get(0));
+         if(outputValue == null) {
+            continue;
+         }
+
+         operations.set(i, new Nop(mbOperation.getAddress(), mbOperation.toString()));
+         // Check if value == 0
+         if(outputValue != 0) {
+            Logger.getLogger(IdentifyNops.class.getName()).
+                    warning("Removing an Or with output other than 0 ("+outputValue+")");
+         }
+
+
+         /*
+         //boolean remove = hasLiteralsAsOnlyOutput(operation.getOutputs());
+         boolean nop = hasLiteralsAsOnlyOutput(operation.getOutputs());
+         if(nop && !operation.hasSideEffects()) {
+            operations.set(i, new Nop(operation.getAddress(), operation.toString()));
+            // Check if is instruction other than OR:
+            boolean isOr = ((MbOperation)operation).getMbType() == InstructionName.or;
+            if(!isOr) {
+               Logger.getLogger(IdentifyNops.class.getName()).
+                       warning("Removed operation besides OR:"+operation.getAddress()+":"+operation);
+            }
+         }
+          */
+/*
          if(!remove) {
             newList.add(operation);
          } else {
             // Check if is instruction other than OR:
             boolean isOr = ((MbOperation)operation).getMbType() == InstructionName.or;
             if(!isOr) {
-               Logger.getLogger(RemoveNops.class.getName()).
+               Logger.getLogger(IdentifyNops.class.getName()).
                        warning("Removed operation besides OR:"+operation);
             }
          }
+ */
       }
 
-      return newList;
+      return operations;
+      //return newList;
    }
 
 
@@ -82,7 +122,7 @@ public class RemoveNops implements Transformation {
 
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
+      Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
@@ -93,7 +133,7 @@ public class RemoveNops implements Transformation {
    @Override
    public String toString() {
       //return RegisterZeroToLiteral.class.getName();
-      return "RemoveNops";
+      return "IdentifyNops";
    }
 
 

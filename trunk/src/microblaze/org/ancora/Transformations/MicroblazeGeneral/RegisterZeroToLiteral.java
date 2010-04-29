@@ -19,9 +19,9 @@ package org.ancora.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
+import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.Transformations.OperandUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -59,8 +59,8 @@ public class RegisterZeroToLiteral implements Transformation {
       for(int i=0; i<operands.size(); i++) {
          // Check if operand is a MbOperand
          Operand operand = operands.get(i);
-         if(operand.getType() == MbOperandType.register) {
-            Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
+         if(operand.getType() == MicroblazeType.MbRegister) {
+            Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
             if(newOperand != null) {
                // Change register to literal
                operands.set(i, newOperand);

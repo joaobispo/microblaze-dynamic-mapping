@@ -21,19 +21,8 @@ package org.ancora.IntermediateRepresentation.Operands;
  *
  * @author Joao Bispo
  */
-public enum MbOperandType {
-   register,
-   immediate;
+public enum MicroblazeType {
 
-   @Override
-   public String toString() {
-      switch(this) {
-         case register:
-            return "reg";
-         case immediate:
-            return "imm";
-         default:
-            return "undefined";
-      }
-   }
+   MbRegister,
+   MbImm;
 }

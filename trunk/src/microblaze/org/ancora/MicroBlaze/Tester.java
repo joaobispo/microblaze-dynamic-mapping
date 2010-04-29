@@ -31,14 +31,13 @@ import org.ancora.IntermediateRepresentation.Dotty;
 import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene1;
 import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.IntermediateRepresentation.MbParser;
-import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
 import org.ancora.MicroBlaze.Trace.TraceDefinitions;
 import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.Transformations.OperandUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.common.ExtensionFilter;
 import org.ancora.common.IoUtilsAppend;
 
@@ -168,7 +167,8 @@ public class Tester {
       // Transform block into IR
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
 
-      MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
+      //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
+      MbIlpScene1 ilp = new MbIlpScene1(new MbMemoryTest());
       ilp.processOperations(operations);
       ilp.printStats();
       //applyTransformations(operations);
@@ -179,7 +179,7 @@ public class Tester {
    /*
    private static void applyTransformations(List<Operation> operations) {
       // Transform R0 in literal 0
-      //OperandUtils.transformRegister0(operations);
+      //MbOperandUtils.transformRegister0(operations);
    }
     */
 

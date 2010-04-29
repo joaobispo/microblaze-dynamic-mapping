@@ -18,18 +18,15 @@
 package org.ancora.IntermediateRepresentation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
-import org.ancora.IntermediateRepresentation.Operands.MbOperand;
-import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
+import org.ancora.IntermediateRepresentation.Operands.MbRegister;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.ArgumentsProperties;
 import org.ancora.MicroBlaze.ArgumentsProperties.ArgumentProperty;
-import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
 
 /**
@@ -106,14 +103,22 @@ public class MbParser {
    public static Operand parseMbArgument(String argument) {
        // Check if register
       if(argument.startsWith(REGISTER_PREFIX)) {
-         String value = argument.substring(REGISTER_PREFIX.length());
-         return new MbOperand(MbOperandType.register, value, MbDefinitions.BITS_REGISTER);
+         try {
+         String stringValue = argument.substring(REGISTER_PREFIX.length());
+         int value = Integer.parseInt(stringValue);
+         return new MbRegister(argument, value);
+         //return new MbOperand(Type.register, value, MbDefinitions.BITS_REGISTER);
+         } catch(NumberFormatException ex) {
+         Logger.getLogger(MbParser.class.getName()).
+                 warning("Expecting an microblaze register (e.g., R3): '" + argument + "'.");
+      }
       }
 
       // Check if integer immediate
       try {
-         Integer.parseInt(argument);
-         return new MbOperand(MbOperandType.immediate, argument, MbDefinitions.BITS_IMMEDIATE);
+         int value = Integer.parseInt(argument);
+         return new MbImm(value);
+         //return new MbOperand(Type.immediate, value, MbDefinitions.BITS_IMMEDIATE);
       } catch(NumberFormatException ex) {
          Logger.getLogger(MbParser.class.getName()).
                  warning("Expecting an integer immediate: '" + argument + "'.");

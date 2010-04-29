@@ -26,7 +26,7 @@ import org.ancora.IntermediateRepresentation.ImmutableTest;
 import org.ancora.IntermediateRepresentation.MemoryTest;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
+//import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
 import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
 
 /**
@@ -39,11 +39,13 @@ public class MbIlpScene1 implements IlpScenario {
     * Creates a MicroBlaze ILP Scenario 1 with MicroBlaze Immutable and Memory Tests
     */
    public MbIlpScene1() {
-      this(new MbImmutableTest(), new MbMemoryTest());
+      //this(new MbImmutableTest(), new MbMemoryTest());
+      this(new MbMemoryTest());
    }
 
-   public MbIlpScene1(ImmutableTest immutableTest, MemoryTest memoryTest) {
-      this.immutableTest = immutableTest;
+   //public MbIlpScene1(ImmutableTest immutableTest, MemoryTest memoryTest) {
+   public MbIlpScene1(MemoryTest memoryTest) {
+      //this.immutableTest = immutableTest;
       this.memoryTest = memoryTest;
       //this.numLoads = numLoads;
    }
@@ -74,7 +76,8 @@ public class MbIlpScene1 implements IlpScenario {
       int lowestLine = 0;
       for(Operand operand : operands) {
          // Check if operand is immutable
-         if(immutableTest.isImmutable(operand)) {
+         //if(immutableTest.isImmutable(operand)) {
+         if(operand.isImmutable()) {
             continue;
          }
 
@@ -113,7 +116,8 @@ public class MbIlpScene1 implements IlpScenario {
    private void processOutputs(List<Operand> operands, int operationLine) {
       for(Operand operand : operands) {
          // Check if operand is immutable
-         if(immutableTest.isImmutable(operand)) {
+         //if(immutableTest.isImmutable(operand)) {
+         if(operand.isImmutable()) {
             continue;
          }
 
@@ -194,7 +198,7 @@ public class MbIlpScene1 implements IlpScenario {
    private Set<Integer> liveIns;
    //private Set<Integer> liveOuts;
 
-   private ImmutableTest immutableTest;
+   //private ImmutableTest immutableTest;
    private MemoryTest memoryTest;
 
 

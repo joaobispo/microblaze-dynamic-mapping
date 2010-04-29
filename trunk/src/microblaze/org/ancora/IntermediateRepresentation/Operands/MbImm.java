@@ -17,29 +17,28 @@
 
 package org.ancora.IntermediateRepresentation.Operands;
 
-import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
+import org.ancora.MicroBlaze.MbDefinitions;
 
 /**
  *
  * @author Joao Bispo
  */
-public class MbOperand extends Operand {
+public class MbImm extends Operand {
 
-   public MbOperand(MbOperandType type, String value, int bits) {
-      this.type = type;
-      this.value = value;
-      this.bits = bits;
+
+   public MbImm(int value) {
+      this(value, MbDefinitions.BITS_IMMEDIATE);
    }
 
-   @Override
-   public String getValue() {
-      return value;
+   public MbImm(int value, int bits) {
+      this.bits = bits;
+      this.value = value;
    }
 
    @Override
    public Enum getType() {
-      return type;
+      return MicroblazeType.MbImm;
    }
 
    @Override
@@ -48,33 +47,34 @@ public class MbOperand extends Operand {
    }
 
    @Override
-   public Operand copy() {
-      return new MbOperand(type, value, bits);
+   public boolean isImmutable() {
+      return true;
    }
 
    @Override
-   public boolean isImmutable() {
-      switch(type) {
-         case immediate:
-            return true;
-         case register:
-            return false;
-         default:
-            Logger.getLogger(MbOperand.class.getName()).
-                    warning("Case not defined: '"+type+"'.");
-            return false;
+   public Operand copy() {
+      return new MbImm(value, bits);
+   }
+
+   @Override
+   public String toString() {
+      return "imm."+value;
+   }
+
+
+   public static Integer getImmValue(Operand operand) {
+      // Check if MbImm
+      if(operand.getType() != MicroblazeType.MbImm) {
+         return null;
       }
+
+      return ((MbImm)operand).value;
    }
 
    /**
     * INSTANCE VARIABLES
     */
-   private MbOperandType type;
-   private String value;
+   private int value;
    private int bits;
-
-
-
-
-
+   
 }

@@ -21,11 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
+import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -35,24 +38,26 @@ import org.ancora.Transformations.Transformation;
 public class RemoveImm implements Transformation {
 
    public List<Operation> transform(List<Operation> operations) {
-     List<Operation> newList = new ArrayList<Operation>(operations.size());
+     //List<Operation> newList = new ArrayList<Operation>(operations.size());
 
      for(int i=0; i<operations.size(); i++) {
         // Check if MicroBlaze operation
         MbOperation immOperation = MbOperation.getMbOperation(operations.get(i));
         if(immOperation == null) {
-           newList.add(immOperation);
+           //newList.add(immOperation);
            continue;
         }
 
         // Check if IMM
         if(immOperation.getMbType() != InstructionName.imm) {
-           newList.add(immOperation);
+           //newList.add(immOperation);
            continue;
         }
 
         // Collect imm value from IMM operation
-        int upper16 = ParseUtils.parseInt(immOperation.getInputs().get(0).getValue());
+        Integer upper16 = MbOperandUtils.getIntegerValue(immOperation.getInputs().get(0));
+        //Integer upper16 = MbImm.getImmValue(immOperation.getInputs().get(0));
+        //int upper16 = ParseUtils.parseInt(immOperation.getInputs().get(0).getValue());
 
         // Collect imm value and imm from next instruction
         MbOperation nextOperation = MbOperation.getMbOperation(operations.get(i+1));
@@ -62,7 +67,9 @@ public class RemoveImm implements Transformation {
         int immIndex = inputs.size()-1;
 //System.out.println("Operation Before:"+nextOperation);
         Operand immOperand = inputs.get(immIndex);
-        int lower16 = ParseUtils.parseInt(immOperand.getValue());
+//        System.out.println("immOP:"+immOperand.toString());
+        int lower16 = MbOperandUtils.getIntegerValue(immOperand);
+        //int lower16 = ParseUtils.parseInt(immOperand.getValue());
         int completeInt = fuseImm(upper16, lower16);
 
         // Replace Operand for a Literal
@@ -74,12 +81,16 @@ public class RemoveImm implements Transformation {
         //newList.add(nextOperation);
         // Since IMM was found and processed, advance an extra index
         //i++;
+
+        operations.set(i, new Nop(immOperation.getAddress(), immOperation.toString()));
      }
 
      // Add last operation
      //newList.add(operations.get(operations.size()-1));
 
-     return newList;
+
+     return operations;
+     //return newList;
    }
 
    /**

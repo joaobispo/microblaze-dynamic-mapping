@@ -19,6 +19,7 @@ package org.ancora.Main;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
@@ -33,10 +34,12 @@ import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
 import org.ancora.Transformations.MicroblazeGeneral.RegisterZeroToLiteral;
-import org.ancora.Transformations.MicroblazeGeneral.RemoveNops;
+import org.ancora.Transformations.MicroblazeGeneral.IdentifyNops;
 import org.ancora.Transformations.MicroblazeGeneral.TransformImmToLiterals;
 import org.ancora.Transformations.MicroblazeInstructions.ParseCarryArithmetic;
 import org.ancora.Transformations.MicroblazeInstructions.ParseConditionalBranch;
+import org.ancora.Transformations.MicroblazeInstructions.ParseUnconditionalBranches;
+import org.ancora.Transformations.MicroblazeInstructions.deprecated.ParseConditionalBranchUnroll;
 import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
 import org.ancora.Transformations.Transformation;
 import org.ancora.common.IoUtilsAppend;
@@ -117,42 +120,55 @@ public class Transformer {
    private static List<Operation> processBlock(InstructionBlock block) {
       IlpScenario ilpScenario = new MbIlpScene2();
 
+      Transformation[] segmentA = {
+         
+         new TransformImmToLiterals(),
+         new RegisterZeroToLiteral(),
+         new IdentifyNops(),
+         new RemoveImm(),
+         new ParseCarryArithmetic(),
+         new ParseConditionalBranch()
+          
+      };
+
+      Transformation[] segmentB = {
+         new ParseUnconditionalBranches()
+      };
+
+
       System.out.println("Repetitions:"+block.getRepetitions());
 
       // Transform block in List of operations
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
-      // Gather statistic before transformation
+
+
+      
+      // Apply SegmentA transformations
+      operations = applyTransformations(operations, segmentA);
+      //operations = applyTransformations(operations, getBaseMicroBlazeTransf());
+      //operations = applyTransformations(operations, getMicroBlazeInstructionTransf());
+
+      // Gather statistic before segmentB
       OperationListStats beforeTransf = OperationListStats.buildStats(operations, ilpScenario);
 
+      // Apply SegmentB transformations
+      operations = applyTransformations(operations, segmentB);
 
 
-      
-      // Apply MicroBlaze Base transformations
-      operations = applyTransformations(operations, getBaseMicroBlazeTransf());
-      operations = applyTransformations(operations, getMicroBlazeInstructionTransf());
-
-      
-      System.out.println("\nApplyed transformations:");
-      List<Transformation> transfs = new ArrayList<Transformation>();
-      transfs.addAll(getBaseMicroBlazeTransf());
-      transfs.addAll(getMicroBlazeInstructionTransf());
-      for(Transformation transf : transfs) {
-         System.out.println(transf);
-      }
+      System.out.println("\nSegmentA transformations:");
+      showTransformations(segmentA);
+      System.out.println("\nSegmentB transformations:");
+      showTransformations(segmentB);
       System.out.println(" ");
+      
       
 
 
       // Gather statistic after transformation
       OperationListStats afterTransf = OperationListStats.buildStats(operations, ilpScenario);
 
-      System.out.println("Before:");
-      System.out.println(beforeTransf);
-      System.out.println(beforeTransf.getMappingString());
-      System.out.println("After:");
-      System.out.println(afterTransf);
-      System.out.println(afterTransf.getMappingString());
-      System.out.println("------------------------");
+      showStats(beforeTransf, afterTransf);
+
 
       return operations;
    }
@@ -183,7 +199,7 @@ public class Transformer {
 
       transformations.add(new TransformImmToLiterals());
       transformations.add(new RegisterZeroToLiteral());
-      transformations.add(new RemoveNops());
+      transformations.add(new IdentifyNops());
 
       return transformations;
    }
@@ -198,7 +214,7 @@ public class Transformer {
 
       transformations.add(new RemoveImm());
       transformations.add(new ParseCarryArithmetic());
-      //transformations.add(new ParseConditionalBranch());
+      transformations.add(new ParseConditionalBranch());
 
       return transformations;
    }
@@ -233,6 +249,91 @@ public class Transformer {
 
       System.out.println("Jumps not taken:"+counter4);
       System.out.println("Jumps taken:"+counterOther);
+   }
+
+   private static void showStats(OperationListStats beforeTransf, OperationListStats afterTransf) {
+      // only show after stats that change
+      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations"};
+      String[] before = {String.valueOf(beforeTransf.getCommunicationCost()),
+        String.valueOf(beforeTransf.getCpl()),
+        String.valueOf(beforeTransf.getIlp()),
+        String.valueOf(beforeTransf.getNumberOfOperations())
+      };
+      String[] after = {String.valueOf(afterTransf.getCommunicationCost()),
+        String.valueOf(afterTransf.getCpl()),
+        String.valueOf(afterTransf.getIlp()),
+        String.valueOf(afterTransf.getNumberOfOperations())
+      };
+
+      //boolean[] changes = new boolean[param.length];
+      //boolean showAny = false;
+      /*
+      for(int i=0; i<changes.length; i++) {
+         changes[i] = before[i].equals(after[i]);
+
+         if(!showAny) {
+            showAny = changes[i];
+         }
+
+      }
+      */
+      //boolean showComm = beforeTransf.getCommunicationCost() != afterTransf.getCommunicationCost();
+      //boolean showCpl = beforeTransf.getCpl() != afterTransf.getCpl();
+      //boolean showIlp = beforeTransf.getIlp() != afterTransf.getIlp();
+      //boolean showOp = beforeTransf.getNumberOfOperations() != afterTransf.getNumberOfOperations();
+
+      //boolean showAny = showComm || showCpl || showIlp || showOp;
+
+      System.out.println("Before:");
+      System.out.println(beforeTransf);
+      //System.out.println(beforeTransf.getMappingString());
+
+      System.out.println("After:");
+      boolean noChanges = true;
+      for (int i = 0; i < param.length; i++) {
+         if (!before[i].equals(after[i])) {
+            noChanges = false;
+            System.out.println(param[i]+":"+before[i]+"->"+after[i]+";");
+         }
+      }
+
+      if(noChanges) {
+         System.out.println("No Changes");
+      }
+      /*
+      if(!showAny) {
+         System.out.println("No Changes");
+      } else {
+         show(showComm, beforeTransf.getCommunicationCost(), afterTransf.getCommunicationCost());
+         show(showCpl, beforeTransf.getCpl(), afterTransf.getCommunicationCost());
+         show(showComm, beforeTransf.getCommunicationCost(), afterTransf.getCommunicationCost());
+         show(showComm, beforeTransf.getCommunicationCost(), afterTransf.getCommunicationCost());
+      }
+       */
+      //System.out.println(afterTransf);
+      //System.out.println(afterTransf.getMappingString());
+      System.out.println("------------------------");
+   }
+
+   private static List<Operation> applyTransformations(List<Operation> operations, Transformation[] transformations) {
+      for(Transformation transformation : transformations) {
+         operations = transformation.transform(operations);
+      }
+
+      return operations;
+   }
+
+   private static void showTransformations(Transformation[] transformations) {
+      for(Transformation transf : transformations) {
+         System.out.println(transf);
+      }
+      /*
+      List<Transformation> transfs = new ArrayList<Transformation>();
+      transfs.addAll(Arrays.asList(segmentA));
+      transfs.addAll(Arrays.asList(segmentB));
+
+      System.out.println(" ");
+       */
    }
 
 }
