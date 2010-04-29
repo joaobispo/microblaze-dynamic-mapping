@@ -24,9 +24,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
+//import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
 import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
-import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.IntermediateRepresentation.Operations.OperationType;
 
 /**
  *
@@ -56,6 +56,10 @@ public class MbIlpScene2 implements IlpScenario {
       //reset();
 
       for(Operation operation : operations) {
+         if(operation.getType() == OperationType.Nop) {
+            continue;
+         }
+
          // Given the inputs, find the lower possible line where the operation
          // can be put.
          int lowestOperandsLine = processInputs(operation.getInputs());
@@ -90,7 +94,8 @@ public class MbIlpScene2 implements IlpScenario {
 
          // Get line where this operand was created
          //String operandRepresentation = operand.toString();
-         String operandRepresentation = operand.getValue();
+         String operandRepresentation = operand.toString();
+         //String operandRepresentation = operand.getValue();
          Integer line = dataLines.get(operandRepresentation);
 
          // Check if Live-In
@@ -139,7 +144,8 @@ public class MbIlpScene2 implements IlpScenario {
 
          // Update consumer table
          //String operandRepresentation = operand.toString();
-         String operandRepresentation = operand.getValue();
+         //String operandRepresentation = operand.getValue();
+         String operandRepresentation = operand.toString();
          dataLines.put(operandRepresentation, operationLine);
 
          //Update Liveouts

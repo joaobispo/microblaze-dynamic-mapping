@@ -19,9 +19,9 @@ package org.ancora.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MbOperandType;
+import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.Transformations.OperandUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -50,8 +50,9 @@ public class TransformImmToLiterals implements Transformation {
 
    private void transformOperands(List<Operand> operands) {
       for(int i=0; i<operands.size(); i++) {
-         if(operands.get(i).getType() == MbOperandType.immediate) {
-            Operand newOperand = OperandUtils.transformOperandToLiteral(operands.get(i));
+         //if(operands.get(i).getType() == MbOperandType.immediate) {
+         if(operands.get(i).getType() == MicroblazeType.MbImm) {
+            Operand newOperand = MbOperandUtils.transformOperandToLiteral(operands.get(i));
             if(newOperand != null) {
                operands.set(i, newOperand);
             }
@@ -79,7 +80,7 @@ public class TransformImmToLiterals implements Transformation {
 
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = OperandUtils.transformOperandToLiteral(operand);
+      Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
