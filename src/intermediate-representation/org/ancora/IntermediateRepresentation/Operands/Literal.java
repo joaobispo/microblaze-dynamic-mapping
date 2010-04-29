@@ -1,3 +1,4 @@
+
 /*
  *  Copyright 2010 Ancora Research Group.
  * 
@@ -32,19 +33,23 @@ public class Literal extends Operand {
    }
 
 
+   /*
    @Override
    public String getValue() {
       return value;
    }
+    */
 
    @Override
    public Enum getType() {
       return OperandType.literal;
    }
 
+   /*
    public LiteralType getLiteralType() {
       return literalType;
    }
+    */
 
    @Override
    public int getBits() {
@@ -61,8 +66,25 @@ public class Literal extends Operand {
       return true;
    }
 
+   @Override
+   public String toString() {
+      return literalType.name()+"."+value;
+   }
 
 
+   //public static Integer getInteger(Operand operand) {
+   public static Integer getInteger(Literal operand) {
+      if(operand.getType() != OperandType.literal) {
+         return null;
+      }
+
+      Literal litOp = (Literal)operand;
+      if(litOp.literalType != LiteralType.integer) {
+         return null;
+      }
+
+      return Integer.valueOf(litOp.value);
+   }
    
 
    public enum LiteralType{

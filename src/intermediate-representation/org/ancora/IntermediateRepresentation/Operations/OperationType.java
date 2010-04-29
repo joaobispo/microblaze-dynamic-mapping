@@ -28,5 +28,8 @@ public enum OperationType {
    MockOperation,
    Compare,
    Exit,
-   Mux;
+   Mux,
+   ConditionalExit,
+   UnconditionalExit,
+   Nop;
 }

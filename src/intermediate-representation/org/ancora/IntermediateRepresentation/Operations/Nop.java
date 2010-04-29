@@ -17,57 +17,38 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
-import java.util.List;
-import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class Mux extends Operation {
+public class Nop extends Operation {
 
-   public Mux(int address, Operand selector, String selectorBits,
-           Operand output, Operand ... choices) {
-
+   public Nop(int address, String name) {
       super(address);
-      this.selector = selector;
-      this.selectorBits = selectorBits;
-      this.output = output;
-      this.choices = choices;
-
-      connectToInput(selector);
-      for(Operand choice : choices) {
-         connectToInput(choice);
-      }
-
-      connectToOutput(output);
+      this.name = name;
    }
 
 
 
    @Override
    public Enum getType() {
-      return OperationType.Mux;
+      return OperationType.Nop;
    }
-
-   /*
-   @Override
-   public String getValue() {
-      return OperationType.Mux.name();
-   }
-    */
 
    @Override
    public boolean hasSideEffects() {
       return false;
    }
 
-   /**
-    * INSTANCE VARIABLES
-    */
-   private Operand selector;
-   private String selectorBits;
-   private Operand[] choices;
-   private Operand output;
+   @Override
+   public String toString() {
+      return "NOP "+name;
+   }
+
+
+
+   private String name;
+
 }

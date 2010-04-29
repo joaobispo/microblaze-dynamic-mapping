@@ -43,7 +43,9 @@ public abstract class Operand {
    }
     */
 
+   /*
    public abstract String getValue();
+    */
 
    public abstract Enum getType();
 
@@ -131,11 +133,13 @@ public abstract class Operand {
    }
     */
 
-  
+
+   /*
    @Override
    public String toString() {
       return getType()+"."+getValue();
    }
+    */
 
    /*
    @Override
