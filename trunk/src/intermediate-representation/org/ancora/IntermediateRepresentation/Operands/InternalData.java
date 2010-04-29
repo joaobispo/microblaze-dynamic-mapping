@@ -25,17 +25,19 @@ import org.ancora.IntermediateRepresentation.Operand;
  */
 public class InternalData extends Operand {
 
-   public InternalData(String value, int bits) {
-      this.value = value;
+   public InternalData(String name, int bits) {
+      this.name = name;
       this.bits = bits;
    }
 
 
 
+   /*
    @Override
    public String getValue() {
       return value;
    }
+    */
 
    @Override
    public Enum getType() {
@@ -54,13 +56,18 @@ public class InternalData extends Operand {
 
    @Override
    public Operand copy() {
-      return new InternalData(value, bits);
+      return new InternalData(name, bits);
+   }
+
+   @Override
+   public String toString() {
+      return name;
    }
 
    /**
     * INSTANCE VARIABLES
     */
-   private String value;
+   private String name;
    private int bits;
 
 

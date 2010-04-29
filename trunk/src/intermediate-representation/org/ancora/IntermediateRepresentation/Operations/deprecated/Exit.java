@@ -15,8 +15,9 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operations;
+package org.ancora.IntermediateRepresentation.Operations.deprecated;
 
+import org.ancora.IntermediateRepresentation.Operations.*;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
 

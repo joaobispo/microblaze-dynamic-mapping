@@ -27,6 +27,7 @@ import java.util.Set;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
 import org.ancora.IntermediateRepresentation.Operations.Control;
 import org.ancora.IntermediateRepresentation.Operations.MockOperation;
+import org.ancora.IntermediateRepresentation.Operations.OperationType;
 
 /**
  *
@@ -46,6 +47,10 @@ public class Dotty {
       builder.append("\n");
 
       for(Operation operation: operations) {
+         if(operation.getType() == OperationType.Nop) {
+            continue;
+         }
+
          for(Operand operand : operation.getOutputs()) {
             builder.append(operation.hashCode());
             builder.append(" -> ");
@@ -83,6 +88,10 @@ public class Dotty {
 
       private static void declareOperations(Collection<Operation> operations, StringBuilder builder) {
       for(Operation op : operations) {
+         if(op.getType() == OperationType.Nop) {
+            continue;
+         }
+
          builder.append(op.hashCode());
          builder.append("[label=\"");
          //builder.append(op.getType()+"-"+op.getValue());
@@ -130,17 +139,19 @@ public class Dotty {
                continue;
             }
 
-            String inputValue = input.getValue();
+            //String inputValue = input.getValue();
+            String inputName = input.toString();
             // Get input index from table
-            Integer version = variablesVersion.get(inputValue);
-            Operand newInput = operandsTable.get(inputValue);
+            Integer version = variablesVersion.get(inputName);
+            Operand newInput = operandsTable.get(inputName);
 
             if(version == null) {
                version = 0;
-               variablesVersion.put(input.getValue(), version);
-               String opValue = inputValue+"."+version;
+               //variablesVersion.put(input.getValue(), version);
+               variablesVersion.put(inputName, version);
+               String opValue = inputName+"."+version;
                newInput = new InternalData(opValue, input.getBits());
-               operandsTable.put(inputValue, newInput);
+               operandsTable.put(inputName, newInput);
                newInput.connectToProducer(start);
             }
 
@@ -151,10 +162,11 @@ public class Dotty {
          List<Operand> outputs = operation.getOutputs();
          for(int j=0; j<outputs.size(); j++) {
             Operand output = outputs.get(j);
-            String outputValue = output.getValue();
+            //String outputValue = output.getValue();
+            String outputName = output.toString();
 
              // Update output index from table
-            Integer version = variablesVersion.get(outputValue);
+            Integer version = variablesVersion.get(outputName);
 //            Operand newInput = operandsTable.get(outputValue);
 
             if(version == null) {
@@ -164,10 +176,10 @@ public class Dotty {
             }
 
             // Create new operand
-            variablesVersion.put(outputValue, version);
-            String opValue = output.getValue()+"."+version;
+            variablesVersion.put(outputName, version);
+            String opValue = outputName+"."+version;
             Operand newOutput = new InternalData(opValue, output.getBits());
-            operandsTable.put(outputValue, newOutput);
+            operandsTable.put(outputName, newOutput);
 
             // Add new Output to new operation
             dotOp.connectToOutput(newOutput);
