@@ -26,10 +26,16 @@ public enum OperationType {
    IntegerArithmeticWithCarry,
    Control,
    MockOperation,
-   Compare,
+   Logic,
    Exit,
    Mux,
    ConditionalExit,
    UnconditionalExit,
-   Nop;
+   Nop,
+   Division,
+   SignExtension,
+   MemoryLoad,
+   MemoryStore,
+   Multiplication,
+   ShiftRight;
 }

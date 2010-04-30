@@ -17,7 +17,11 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
+import org.ancora.IntermediateRepresentation.OperandUtils;
+import org.ancora.IntermediateRepresentation.Operands.Literal;
+import org.ancora.IntermediateRepresentation.Operands.OperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
@@ -68,19 +72,137 @@ public class ArithmeticWithCarry extends Operation {
       return operation.name();
    }
 
-   /*
-   @Override
-   public String getValue() {
-      return "ir-"+operation.name();
-   }
-    */
-
-
-
    @Override
    public boolean hasSideEffects() {
       return false;
    }
+
+   public Integer getInput1() {
+      if(input1.getType() != OperandType.literal) {
+         return null;
+      }
+
+      return Literal.getInteger((Literal)input1);
+   }
+
+   public Integer getInput2() {
+      if(input2.getType() != OperandType.literal) {
+         return null;
+      }
+
+      return Literal.getInteger((Literal)input2);
+   }
+
+   public Operand getCarryIn() {
+      return carryIn;
+   }
+
+   public Operand getCarryOut() {
+      return carryOut;
+   }
+
+   public Operand getOutput() {
+      return output1;
+   }
+
+   public Op getOperation() {
+      return operation;
+   }
+
+   public Integer resolveOutput() {
+      // Get first operand
+      Integer firstOperand = getInput1();
+      if(firstOperand == null) {
+         return null;
+      }
+
+      // Get second operand
+      Integer secondOperand = getInput2();
+      if(secondOperand == null) {
+         return null;
+      }
+
+      // Get carry
+      Integer carryInValue = null;
+      if (operation == Op.add) {
+         carryInValue = 0;
+      } else if (operation == Op.rsub) {
+         carryInValue = 1;
+      }
+      
+      if(carryIn != null) {
+        Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
+        if(lit == null) {
+           return null;
+        }
+        else {
+           carryInValue = Literal.getInteger(lit);
+        }
+      }
+
+      if(operation == Op.add) {
+         return firstOperand + secondOperand + carryInValue;
+      } else if(operation == Op.rsub) {
+         return secondOperand - firstOperand + carryInValue;
+      }
+      
+      Logger.getLogger(ArithmeticWithCarry.class.getName()).
+              warning("Not defined:"+operation);
+
+      return null;
+   }
+
+   public Integer resolveCarryOut() {
+      if(carryOut == null) {
+         return null;
+      }
+
+      // Get first operand
+      Integer firstOperand = getInput1();
+      if(firstOperand == null) {
+         return null;
+      }
+
+      // Get second operand
+      Integer secondOperand = getInput2();
+      if(secondOperand == null) {
+         return null;
+      }
+
+      // Get carry
+      Integer carryInValue = null;
+      if (operation == Op.add) {
+         carryInValue = 0;
+      } else if (operation == Op.rsub) {
+         carryInValue = 1;
+      }
+
+      if(carryIn != null) {
+        Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
+        if(lit == null) {
+           return null;
+        }
+        else {
+           carryInValue = Literal.getInteger(lit);
+        }
+      }
+
+      if(operation == Op.add) {
+         return getCarryOutAdd(firstOperand, secondOperand, carryInValue);
+      } else if(operation == Op.rsub) {
+         return getCarryOutRsub(firstOperand, secondOperand, carryInValue);
+      }
+
+      Logger.getLogger(ArithmeticWithCarry.class.getName()).
+              warning("Not defined:"+operation);
+
+      return null;
+   }
+
+
+
+
+   
 
    public enum Op {
       add,
@@ -99,4 +221,85 @@ public class ArithmeticWithCarry extends Operation {
    private boolean hasCarryOut;
 
    private ArithmeticWithCarry.Op operation;
+
+      /**
+     * Calculates the carryOut of the sum of rA with rB and carry.
+     * Operation is rA + rB + carry.
+     *
+     * @param rA
+     * @param rB
+     * @param carry the carry from the previous operation. Should be 0 or 1.
+     * @return 1 if there is carry out, or 0 if not.
+     */
+    public static int getCarryOutAdd(int rA, int rB, int carry) {
+        if(carry != 0 && carry != 1) {
+            Logger.getLogger(ArithmeticWithCarry.class.getName()).
+                    warning("Carry is different than 0 or 1 ("+
+                    carry+")");
+        }
+
+        //System.out.println("rA:"+Integer.toBinaryString(rA));
+        //System.out.println("rB:"+Integer.toBinaryString(rB));
+
+        // Extend operands to long and mask them
+        long lRa = rA & MASK_32_BITS;
+        long lRb = rB & MASK_32_BITS;
+        // Carry must be 0 or 1, it shouldn't need to be masked.
+        long lCarry = carry;
+
+
+        //System.out.println("lRa:"+Long.toBinaryString(lRa));
+        //System.out.println("lRb:"+Long.toBinaryString(lRb));
+
+        // Do the summation
+        long result = lRa + lRb + lCarry;
+
+        //System.out.println("Result:"+Long.toBinaryString(result));
+
+        // Get the carry bit
+        int carryOut = (int) ((result & MASK_BIT_33) >>> 32);
+        return carryOut;
+    }
+
+    /**
+     * Calculates the carryOut of the reverse subtraction of rA with rB and
+     * carry. Operation is rB + ~rA + carry.
+     *
+     * @param rA
+     * @param rB
+     * @param carry the carry from the previous operation. Should be 0 or 1.
+     * @return 1 if there is carry out, or 0 if not.
+     */
+    public static int getCarryOutRsub(int rA, int rB, int carry) {
+        if(carry != 0 && carry != 1) {
+            Logger.getLogger(ArithmeticWithCarry.class.getName()).
+                    warning("Carry is different than 0 or 1 ("+
+                    carry+")");
+        }
+
+        //System.out.println("rA:"+Integer.toBinaryString(rA));
+        //System.out.println("rB:"+Integer.toBinaryString(rB));
+
+        // Extend operands to long and mask them
+        long lRa = rA & MASK_32_BITS;
+        long lRb = rB & MASK_32_BITS;
+        // Carry must be 0 or 1, it shouldn't need to be masked.
+        long lCarry = carry;
+
+
+        //System.out.println("lRa:"+Long.toBinaryString(lRa));
+        //System.out.println("lRb:"+Long.toBinaryString(lRb));
+
+        // Do the summation
+        long result = lRb + ~lRa + lCarry;
+
+        //System.out.println("Result:"+Long.toBinaryString(result));
+
+        // Get the carry bit
+        int carryOut = (int) ((result & MASK_BIT_33) >>> 32);
+        return carryOut;
+    }
+
+        private static final long MASK_32_BITS = 0xFFFFFFFFL;
+    private static final long MASK_BIT_33 = 0x100000000L;
 }
