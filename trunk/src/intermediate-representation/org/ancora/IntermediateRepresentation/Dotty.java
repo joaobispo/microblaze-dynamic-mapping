@@ -27,7 +27,7 @@ import java.util.Set;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
 import org.ancora.IntermediateRepresentation.Operations.Control;
 import org.ancora.IntermediateRepresentation.Operations.MockOperation;
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+//import org.ancora.IntermediateRepresentation.Operations.OperationType;
 
 /**
  *
@@ -47,9 +47,11 @@ public class Dotty {
       builder.append("\n");
 
       for(Operation operation: operations) {
+         /*
          if(operation.getType() == OperationType.Nop) {
             continue;
          }
+          */
 
          for(Operand operand : operation.getOutputs()) {
             builder.append(operation.hashCode());
@@ -88,9 +90,11 @@ public class Dotty {
 
       private static void declareOperations(Collection<Operation> operations, StringBuilder builder) {
       for(Operation op : operations) {
+         /*
          if(op.getType() == OperationType.Nop) {
             continue;
          }
+          */
 
          builder.append(op.hashCode());
          builder.append("[label=\"");
@@ -126,6 +130,12 @@ public class Dotty {
 
       for(int i=0; i<operations.size(); i++) {
          Operation operation = operations.get(i);
+         /*
+         if(operation.getType() == OperationType.Nop) {
+            continue;
+         }
+          */
+
          //Operation dotOp = new MockOperation(operation.getAddress(), operation.getValue());
          Operation dotOp = new MockOperation(operation.getAddress(), operation.toString());
          newList.add(dotOp);

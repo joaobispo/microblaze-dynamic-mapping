@@ -22,72 +22,83 @@ import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  * <p><b>Inputs:</b>
- * <br>input1 - offset of the next address.
+ * <br>input1 - first operand.
+ * <br>input2 - second operand.
+ *
+ * <p><b>Outputs:</b>
+ * <br>output - result.
  *
  * <p><b>Parameters:</b>
- * <br>baseAddress - base address of the next instruction.
- * <br>supposedJumpAddress - address of the next instruction in the block.
+ * <br>operation - kind of division to perform on inputs.
  *
- * <b>Description</b>: The next address is calculated as baseAddress + input1.
- * If the next address is equal to supposedJumpAddress, the hardware execution
- * can continue. Otherwise, it must terminate.
+ *  <b>Description</b>: Performs an integer division operation on inputs and 
+ * stores the result on the output.
  *
  * @author Joao Bispo
  */
-public class UnconditionalExit extends Operation {
+public class Division extends Operation {
 
-   public UnconditionalExit(int address, int baseAddress, 
-           int supposedJumpAddress, int delaySlots, Operand input1) {
+   public Division(int address, Operand input1, Operand input2, Operand output1,
+           Op operation) {
+
       super(address);
-      this.baseAddress = baseAddress;
-      this.supposedJumpAddress = supposedJumpAddress;
-      this.delaySlots = delaySlots;
+
       this.input1 = input1;
+      this.input2 = input2;
+      this.output = output1;
+      this.operation = operation;
 
       connectToInput(input1);
+      connectToInput(input2);
+      connectToOutput(output1);
    }
-
-   @Override
-   public String toString() {
-      return "UnconditionalExit";
-   }
-
-
 
    @Override
    public Enum getType() {
-      return OperationType.UnconditionalExit;
+      return OperationType.Division;
    }
 
    @Override
    public boolean hasSideEffects() {
-      return false;
+      return true;
    }
 
    public Operand getInput1() {
       return input1;
    }
 
-   public int getBaseAddress() {
-      return baseAddress;
+   public Operand getInput2() {
+      return input2;
    }
 
-   public int getSupposedJumpAddress() {
-      return supposedJumpAddress;
+   public Operand getOutput() {
+      return output;
    }
 
-   public int getDelaySlots() {
-      return delaySlots;
+   public Op getOperation() {
+      return operation;
+   }
+
+   @Override
+   public String toString() {
+      return operation.name();
    }
 
    
 
-
    /**
     * INSTANCE VARIABLES
     */
-   private int baseAddress;
-   private int supposedJumpAddress;
-   private int delaySlots;
    private Operand input1;
+   private Operand input2;
+   private Operand output;
+   private Division.Op operation;
+   //private boolean signed;
+
+
+   public enum Op {
+      mbIntegerDivisionSigned,
+      mbIntegerDivisionUnsigned;
+   }
+
 }

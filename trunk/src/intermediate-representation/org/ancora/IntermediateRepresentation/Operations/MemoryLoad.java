@@ -21,53 +21,54 @@ import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
+ * <p><b>Inputs:</b>
+ * <br>input1 - first operand.
+ * <br>input2 - second operand.
+ *
+ * <p><b>Outputs:</b>
+ * <br>output - result.
+ *
+ * <p><b>Parameters:</b>
+ * <br>bytes - size of the load.
+ *
+ *  <b>Description</b>: Load the contents from the location that results from
+ * adding the contents of input1 and input2. The data is placed in output.
+ * The memory location is aligned acording to the number of bytes indicated by
+ * 'bytes'.
  *
  * @author Joao Bispo
  */
-public class Compare extends Operation {
+public class MemoryLoad extends Operation {
 
-   public Compare(int address, Operand input1, Operand input2, Operand output1,
-           Op operation, boolean signed) {
-
+   public MemoryLoad(int address, Operand input1, Operand input2, Operand output, int bytes) {
       super(address);
 
       this.input1 = input1;
       this.input2 = input2;
-      this.output1 = output1;
-      this.operation = operation;
-      this.signed = signed;
+      this.output = output;
+      this.bytes = bytes;
 
       connectToInput(input1);
       connectToInput(input2);
-      connectToOutput(output1);
+      connectToOutput(output);
    }
+
 
 
    @Override
    public Enum getType() {
-      return OperationType.Compare;
+      return OperationType.MemoryLoad;
    }
-
-   @Override
-   public String toString() {
-      //return "ir-"+operation.name();
-      return operation.name();
-   }
-
-   /*
-   @Override
-   public String getValue() {
-      return operation.name();
-   }
-    */
-
 
    @Override
    public boolean hasSideEffects() {
-      return false;
+      return true;
    }
 
-   /*
+   public int getBytes() {
+      return bytes;
+   }
+
    public Operand getInput1() {
       return input1;
    }
@@ -75,7 +76,16 @@ public class Compare extends Operation {
    public Operand getInput2() {
       return input2;
    }
-    */
+
+   public Operand getOutput() {
+      return output;
+   }
+
+   @Override
+   public String toString() {
+      return "load "+(bytes*8);
+   }
+
 
 
    /**
@@ -83,20 +93,6 @@ public class Compare extends Operation {
     */
    private Operand input1;
    private Operand input2;
-   private Operand output1;
-   private Compare.Op operation;
-   private boolean signed;
-
-
-   public enum Op {
-      /*
-      equal,
-      notEqual,
-      greater,
-      greaterOrEqual,
-      less,
-      lessOrEqual,
-       */
-      mbCompare;
-   }
+   private Operand output;
+   private int bytes;
 }

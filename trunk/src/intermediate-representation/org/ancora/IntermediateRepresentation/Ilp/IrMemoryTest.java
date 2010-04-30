@@ -15,10 +15,11 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operations;
+package org.ancora.IntermediateRepresentation.Ilp;
 
 import org.ancora.IntermediateRepresentation.MemoryTest;
 import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operations.OperationType;
 
 /**
  *
@@ -31,11 +32,19 @@ public class IrMemoryTest implements MemoryTest {
    }
 
    public boolean isLoad(Operation operation) {
-      return false;
+      if(operation.getType() == OperationType.MemoryLoad) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
    public boolean isStore(Operation operation) {
-      return false;
+      if(operation.getType() == OperationType.MemoryStore) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
 }

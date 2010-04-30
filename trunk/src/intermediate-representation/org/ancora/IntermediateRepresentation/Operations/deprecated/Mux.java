@@ -17,6 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operations.deprecated;
 
+import org.ancora.IntermediateRepresentation.Operations.OperationType;
 import org.ancora.IntermediateRepresentation.Operations.*;
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
