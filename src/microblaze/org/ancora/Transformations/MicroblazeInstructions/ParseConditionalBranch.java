@@ -67,7 +67,7 @@ public class ParseConditionalBranch implements Transformation {
 
         ConditionalExit cexit = new ConditionalExit(branchOp.getAddress(),
                 compareOperation, nextAddress, delaySlots, 
-                branchOp.getInputs().get(0), branchOp.getInputs().get(1));
+                branchOp.getInputs().get(0).copy(), branchOp.getInputs().get(1).copy());
 
 
         operations.set(i, cexit);

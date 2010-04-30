@@ -19,9 +19,7 @@ package org.ancora.Main;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
@@ -30,17 +28,28 @@ import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
 import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operations.MbOperation;
+import org.ancora.IntermediateRepresentation.Operations.OperationType;
 import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
+import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.Transformations.MicroblazeGeneral.RegisterZeroToLiteral;
 import org.ancora.Transformations.MicroblazeGeneral.IdentifyNops;
 import org.ancora.Transformations.MicroblazeGeneral.TransformImmToLiterals;
 import org.ancora.Transformations.MicroblazeInstructions.ParseCarryArithmetic;
 import org.ancora.Transformations.MicroblazeInstructions.ParseConditionalBranch;
+import org.ancora.Transformations.MicroblazeInstructions.ParseDivision;
+import org.ancora.Transformations.MicroblazeInstructions.ParseLoads;
+import org.ancora.Transformations.MicroblazeInstructions.ParseLogic;
+import org.ancora.Transformations.MicroblazeInstructions.ParseMultiplication;
+import org.ancora.Transformations.MicroblazeInstructions.ParseReturnSubroutine;
+import org.ancora.Transformations.MicroblazeInstructions.ParseShiftRight;
+import org.ancora.Transformations.MicroblazeInstructions.ParseSignExtension;
+import org.ancora.Transformations.MicroblazeInstructions.ParseStores;
 import org.ancora.Transformations.MicroblazeInstructions.ParseUnconditionalBranches;
-import org.ancora.Transformations.MicroblazeInstructions.deprecated.ParseConditionalBranchUnroll;
 import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
+import org.ancora.Transformations.PureIr.PropagateConstants;
 import org.ancora.Transformations.Transformation;
 import org.ancora.common.IoUtilsAppend;
 
@@ -72,6 +81,9 @@ public class Transformer {
          //System.out.println("------------------------------------");
          System.out.println("Processing block " + i + "...");
          List<Operation> operations = processBlock(blocks.get(i));
+
+         // Processing on list ended. Removed nops before printing
+         operations = removeNops(operations);
          // Connect
          List<Operation> ops = Dotty.connectOperations(operations);
 
@@ -120,19 +132,30 @@ public class Transformer {
    private static List<Operation> processBlock(InstructionBlock block) {
       IlpScenario ilpScenario = new MbIlpScene2();
 
-      Transformation[] segmentA = {
-         
+      Transformation[] microblaze = {
          new TransformImmToLiterals(),
          new RegisterZeroToLiteral(),
          new IdentifyNops(),
          new RemoveImm(),
          new ParseCarryArithmetic(),
-         new ParseConditionalBranch()
-          
+         new ParseConditionalBranch(),
+         new ParseUnconditionalBranches(),
+         new ParseLogic(),
+         new ParseDivision(),
+         new ParseSignExtension(),
+         new ParseReturnSubroutine(),
+         new ParseLoads(),
+         new ParseStores(),
+         new ParseMultiplication(),
+         new ParseShiftRight()
+      };
+
+      Transformation[] segmentA = {
+
       };
 
       Transformation[] segmentB = {
-         new ParseUnconditionalBranches()
+        new PropagateConstants()
       };
 
 
@@ -140,7 +163,15 @@ public class Transformer {
 
       // Transform block in List of operations
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
-
+      // Transform operations in pure IR operations
+      operations = applyTransformations(operations, microblaze);
+      // Check that there are no microblaze operations
+      for(Operation operation : operations) {
+         if(MbOperation.getMbOperation(operation) != null) {
+            System.out.println("THERE ARE STILL MICROBLAZE OPERATIONS!");
+            break;
+         }
+      }
 
       
       // Apply SegmentA transformations
@@ -253,16 +284,18 @@ public class Transformer {
 
    private static void showStats(OperationListStats beforeTransf, OperationListStats afterTransf) {
       // only show after stats that change
-      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations"};
+      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations", "MbOperations"};
       String[] before = {String.valueOf(beforeTransf.getCommunicationCost()),
         String.valueOf(beforeTransf.getCpl()),
         String.valueOf(beforeTransf.getIlp()),
-        String.valueOf(beforeTransf.getNumberOfOperations())
+        String.valueOf(beforeTransf.getNumberOfOperations()),
+        String.valueOf(beforeTransf.getNumberOfMbOps())
       };
       String[] after = {String.valueOf(afterTransf.getCommunicationCost()),
         String.valueOf(afterTransf.getCpl()),
         String.valueOf(afterTransf.getIlp()),
-        String.valueOf(afterTransf.getNumberOfOperations())
+        String.valueOf(afterTransf.getNumberOfOperations()),
+        String.valueOf(afterTransf.getNumberOfMbOps())
       };
 
       //boolean[] changes = new boolean[param.length];
@@ -334,6 +367,23 @@ public class Transformer {
 
       System.out.println(" ");
        */
+   }
+
+   private static List<Operation> removeNops(List<Operation> operations) {
+      List<Integer> nopIndexes = new ArrayList<Integer>();
+
+      for(int i=0; i<operations.size(); i++) {
+         if(operations.get(i).getType() == OperationType.Nop) {
+            nopIndexes.add(i);
+         }
+      }
+
+      // Remove nops in reversal order
+      for(int i=nopIndexes.size()-1; i>=0; i--) {
+         operations.remove((int)nopIndexes.get(i));
+      }
+
+      return operations;
    }
 
 }

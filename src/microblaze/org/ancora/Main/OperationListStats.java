@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
 import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 
 /**
  *
@@ -32,12 +33,14 @@ import org.ancora.IntermediateRepresentation.Operation;
 public class OperationListStats {
 
    private OperationListStats(int numberOfLines, int numberOfOperations, 
-           int liveins, int liveouts, Map<Integer, List<Operation>> mapping) {
+           int liveins, int liveouts, Map<Integer, List<Operation>> mapping,
+           int numberOfMbOps) {
       this.numberOfLines = numberOfLines;
       this.numberOfOperations = numberOfOperations;
       this.liveins = liveins;
       this.liveouts = liveouts;
       this.mapping = mapping;
+      this.numberOfMbOps = numberOfMbOps;
    }
 
 
@@ -56,9 +59,18 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
       ilpScene.reset();
       ilpScene.processOperations(operations);
 
+      int mbOp = 0;
+      for(int i=0; i<operations.size(); i++) {
+         MbOperation op = MbOperation.getMbOperation(operations.get(i));
+         if(op != null) {
+            mbOp++;
+         }
+      }
+
       // Gather data
       return new OperationListStats(ilpScene.getNumberOfLines(), ilpScene.getNumberOfOps(),
-              ilpScene.getLiveIns(), ilpScene.getLiveOuts(), ilpScene.getMapping());
+              ilpScene.getLiveIns(), ilpScene.getLiveOuts(), ilpScene.getMapping(),
+              mbOp);
       
    }
 
@@ -96,6 +108,12 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
       return liveins + liveouts;
    }
 
+   public int getNumberOfMbOps() {
+      return numberOfMbOps;
+   }
+
+
+
    public String getMappingString() {
       StringBuilder builder = new StringBuilder();
 
@@ -132,6 +150,7 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
       builder.append("CPL:"+getCpl()+"\n");
       builder.append("#Inst:"+getNumberOfOperations()+"\n");
       builder.append("CommunicationCosts:"+getCommunicationCost()+"\n");
+      builder.append("Number of MicroBlaze Ops:"+getNumberOfMbOps()+"\n");
 
       return builder.toString();
    }
@@ -148,4 +167,5 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
    private final int liveins;
    private final int liveouts;
    private final Map<Integer, List<Operation>> mapping;
+   private final int numberOfMbOps;
 }

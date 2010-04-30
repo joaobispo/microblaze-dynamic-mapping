@@ -90,7 +90,7 @@ public class ParseUnconditionalBranches implements Transformation {
         int delaySlots = MbOperandUtils.getDelaySlots(branchOp.getMbType());
 
         // Get input 1
-        Operand input1 = branchOp.getInputs().get(0);
+        Operand input1 = branchOp.getInputs().get(0).copy();
         if(unconditionalProperties.performsLinking) {
            //input1 = branchOp.getInputs().get(1);
             // Update table

@@ -31,7 +31,7 @@ import org.ancora.IntermediateRepresentation.Operands.InternalData;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.ArithmeticWithCarry;
-import org.ancora.IntermediateRepresentation.Operations.Compare;
+import org.ancora.IntermediateRepresentation.Operations.Logic;
 import org.ancora.IntermediateRepresentation.Operations.ConditionalExit;
 import org.ancora.IntermediateRepresentation.Operations.deprecated.Exit;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
@@ -156,11 +156,11 @@ public class ParseConditionalBranchUnroll implements Transformation {
       for(int i=0; i<5; i++) {
          temp[i] = new InternalData("T"+(i+1), 32);
       }
-      // First Compare
+      // First Logic
       Operation firstCmp = null;
       Operation secondCmp = null;
-      //Operation firstCmp = new Compare(address, rA, l0, temp[0], op, true);
-      //Operation secondCmp = new Compare(address, rB, lOffsetOp, temp[1], ConditionalExit.Op.notEqual, true);
+      //Operation firstCmp = new Logic(address, rA, l0, temp[0], op, true);
+      //Operation secondCmp = new Logic(address, rB, lOffsetOp, temp[1], ConditionalExit.Op.notEqual, true);
       Operation add = new ArithmeticWithCarry(address, ArithmeticWithCarry.Op.add, lCurrentAddress, rB, temp[2], null, null);
       Operation mux1 = new Mux(address, temp[0], "0", temp[3], lExitSignalNoBranchOp, temp[1]);
       Operation mux2 = new Mux(address, temp[0], "0", temp[4], temp[2], lAddressNoBranch);
