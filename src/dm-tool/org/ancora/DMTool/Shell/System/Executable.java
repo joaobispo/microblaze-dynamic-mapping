@@ -15,16 +15,15 @@
  *  under the License.
  */
 
-package org.ancora.DMTool.Configuration;
+package org.ancora.DMTool.Shell.System;
+
+import java.util.List;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum PartitionerType {
+public interface Executable {
 
-   BasicBlock,
-   SuperBlock,
-   MegaBlock;
-   
+   boolean execute(List<String> arguments);
 }

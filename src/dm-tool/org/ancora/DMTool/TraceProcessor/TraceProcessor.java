@@ -19,7 +19,7 @@ package org.ancora.DMTool.TraceProcessor;
 
 import java.io.File;
 import java.util.List;
-import org.ancora.DMTool.Configuration.GeneralPreferences;
+import org.ancora.DMTool.Shell.System.GeneralPreferences;
 import org.ancora.DMTool.Configuration.PartitionerType;
 import org.ancora.DMTool.TransformStudy.NamedBlock;
 import org.ancora.DMTool.Utils.EnumUtils;
@@ -29,7 +29,7 @@ import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 
 /**
- *
+ * TODO: Delete this class
  * @author Joao Bispo
  */
 public class TraceProcessor {
@@ -37,9 +37,27 @@ public class TraceProcessor {
 
 
    public TraceProcessor() {
-      worker = new TraceProcessorWorker();
+      //worker = new TraceProcessorWorker();
    }
 
+   /*
+   public void setGatherer(boolean value) {
+      worker.useGatherer = value;
+   }
+
+   public void setSelector(boolean value) {
+      worker.useSelector = value;
+   }
+
+   public void setWriter(boolean value) {
+      worker.useWriter = value;
+   }
+
+   public void setSelectorRepetitionThreshold(int value) {
+      worked
+   }
+   */
+/*
    public static void processReader(InstructionBusReader busReader, String baseFilename, List<NamedBlock> blocks) {
       // Setup TraceProcessorWorker according to Preferences
       TraceProcessorWorker worker = new TraceProcessorWorker();
@@ -59,7 +77,9 @@ public class TraceProcessor {
       // Add blocks
       blocks.addAll(worker.processTrace(baseFilename, busReader));
    }
+*/
 
+   /*
    private static void selectPartitioner(String partitioner, TraceProcessorWorker worker) {
       PartitionerType part = EnumUtils.valueOf(PartitionerType.class, partitioner);
 
@@ -81,14 +101,14 @@ public class TraceProcessor {
             System.out.println("TraceProcessor: type not defined '"+part+"'");
       }
    }
-
+*/
    /*
    public List<InstructionBlock> processTrace(File trace) {
       System.out.println("Processing " + trace.getName() + "...");
       return worker.processTrace(trace);
    }
     */
-
+/*
    public void selectPartBasicBlock() {
       worker.partitionerType = TraceProcessorWorker.PartitionerType.BasicBlock;
    }
@@ -114,6 +134,7 @@ public class TraceProcessor {
    public void useFileWriter(){
       worker.useWriter = false;
    }
+ */
 
    /**
     * INSTANCE VARIABLES
