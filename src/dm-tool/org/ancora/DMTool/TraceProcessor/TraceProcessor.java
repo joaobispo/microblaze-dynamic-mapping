@@ -19,7 +19,14 @@ package org.ancora.DMTool.TraceProcessor;
 
 import java.io.File;
 import java.util.List;
+import org.ancora.DMTool.Configuration.GeneralPreferences;
+import org.ancora.DMTool.Configuration.PartitionerType;
+import org.ancora.DMTool.TransformStudy.NamedBlock;
+import org.ancora.DMTool.Utils.EnumUtils;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
+import org.ancora.SharedLibrary.ParseUtils;
+import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 
 /**
  *
@@ -27,14 +34,60 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
  */
 public class TraceProcessor {
 
+
+
    public TraceProcessor() {
       worker = new TraceProcessorWorker();
    }
 
+   public static void processReader(InstructionBusReader busReader, String baseFilename, List<NamedBlock> blocks) {
+      // Setup TraceProcessorWorker according to Preferences
+      TraceProcessorWorker worker = new TraceProcessorWorker();
+
+      EnumPreferences prefs = GeneralPreferences.getPreferences();
+
+      worker.useGatherer = Boolean.parseBoolean(prefs.getPreference(GeneralPreferences.useGatherer));
+      worker.useSelector = Boolean.parseBoolean(prefs.getPreference(GeneralPreferences.useSelector));
+      worker.useWriter = Boolean.parseBoolean(prefs.getPreference(GeneralPreferences.useBlockWriter));
+
+      worker.selectorRepThreshold = ParseUtils.parseInt(prefs.getPreference(GeneralPreferences.selectorThreshold));
+      worker.maxSuperBlockPatternSize = ParseUtils.parseInt(prefs.getPreference(GeneralPreferences.megablockMaxPatternSize));
+      
+      String partitioner = prefs.getPreference(GeneralPreferences.partitioner);
+      selectPartitioner(partitioner, worker);
+      
+      // Add blocks
+      blocks.addAll(worker.processTrace(baseFilename, busReader));
+   }
+
+   private static void selectPartitioner(String partitioner, TraceProcessorWorker worker) {
+      PartitionerType part = EnumUtils.valueOf(PartitionerType.class, partitioner);
+
+      if(part == null) {
+         System.out.println("TraceProcessor:Could not select partitioner '"+partitioner+"'");
+      }
+
+      switch(part) {
+         case BasicBlock:
+            worker.partitionerType = TraceProcessorWorker.PartitionerType.BasicBlock;
+            break;
+         case SuperBlock:
+            worker.partitionerType = TraceProcessorWorker.PartitionerType.SuperBlock;
+            break;
+         case MegaBlock:
+            worker.partitionerType = TraceProcessorWorker.PartitionerType.MegaBlock;
+            break;
+         default:
+            System.out.println("TraceProcessor: type not defined '"+part+"'");
+      }
+   }
+
+   /*
    public List<InstructionBlock> processTrace(File trace) {
       System.out.println("Processing " + trace.getName() + "...");
       return worker.processTrace(trace);
    }
+    */
 
    public void selectPartBasicBlock() {
       worker.partitionerType = TraceProcessorWorker.PartitionerType.BasicBlock;

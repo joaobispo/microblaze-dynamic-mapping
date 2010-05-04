@@ -13,10 +13,14 @@ import org.ancora.DMTool.Configuration.Definitions;
 import org.ancora.DMTool.Configuration.FileType;
 import org.ancora.DMTool.Configuration.GeneralPreferences;
 import org.ancora.DMTool.Shell.Executable;
+import org.ancora.DMTool.TraceProcessor.TraceProcessor;
 import org.ancora.DMTool.Utils.EnumUtils;
 import org.ancora.DMTool.Utils.IoUtilsAppend;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
+import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
+import org.ancora.DynamicMapping.InstructionBlock.MbElfReader;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 
 /**
  *
@@ -68,7 +72,10 @@ public class TransformExec implements Executable {
 
       // Process files
       List<NamedBlock> blocks = getBlocks(inputFiles);
-      
+      System.out.println("Found blocks:");
+      for(NamedBlock block : blocks) {
+         System.out.println(block.getName() + "("+block.getBlock().getRepetitions()+" repetitions)");
+      }
       
 
       return true;
@@ -90,6 +97,7 @@ public class TransformExec implements Executable {
       int separatorIndex = filename.lastIndexOf(Definitions.EXTENSION_SEPARATOR);
       String extension = filename.substring(separatorIndex+1);
       FileType fileType = FileType.getFileType(extension);
+      String baseFilename = filename.substring(0, separatorIndex);
 
       if(fileType == null) {
          return;
@@ -99,17 +107,21 @@ public class TransformExec implements Executable {
          addBlocksLoader(file, blocks);
          return;
       }
-/*
+
       if(fileType == FileType.elf) {
-         addBlocksTraceProcessor(file, blocks);
+         String systemConfig = "./Configuration Files/systemconfig.xml";
+         InstructionBusReader busReader = MbElfReader.createMbElfReader(systemConfig, file.getAbsolutePath());
+         TraceProcessor.processReader(busReader, baseFilename, blocks);
          return;
       }
 
+      
       if(fileType == FileType.trace) {
-         addBlocksTraceProcessor(file, blocks);
+         InstructionBusReader busReader = MbTraceReader.createTraceReader(file);
+         TraceProcessor.processReader(busReader, baseFilename, blocks);
          return;
       }
-*/
+
       return;
    }
 
@@ -132,10 +144,13 @@ public class TransformExec implements Executable {
       blocks.add(new NamedBlock(block, blockName));
    }
 
+
    /**
     * INSTANCE VARIABLES
     */
    private Logger logger;
+
+
 
 
 
