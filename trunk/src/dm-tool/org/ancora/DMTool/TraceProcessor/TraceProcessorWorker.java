@@ -18,8 +18,10 @@
 package org.ancora.DMTool.TraceProcessor;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import org.ancora.DMTool.TransformStudy.NamedBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducer;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
@@ -55,11 +57,12 @@ public class TraceProcessorWorker {
 
 
 
-   public List<InstructionBlock> processTrace(File trace) {     
-      InstructionBlockProducer lastProducer = setupObjects(trace);
+   public List<NamedBlock> processTrace(String baseFilename, InstructionBusReader busReader) {
+      //InstructionBlockProducer lastProducer = setupObjects(trace);
+      InstructionBlockProducer lastProducer = setupObjects(baseFilename);
 
       // Using MicroBlaze Trace Reader by default
-      InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
+      //InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
       InstructionBlockStats ibStats = new InstructionBlockStats();
       InstructionBlockCollector collector = new InstructionBlockCollector();
 
@@ -69,11 +72,23 @@ public class TraceProcessorWorker {
       lastProducer.addListener(collector);
       // Process trace
       partitioner.run(busReader);
+
       // Do some basic checks
-      TraceUtils.testStats(trace, ibStats);
+      checkInstructionNumber(busReader, ibStats);
+
 
       // Return instruction blocks
-      return collector.getBlocks();
+      //return collector.getBlocks();
+      List<NamedBlock> blocks = new ArrayList<NamedBlock>();
+      int counter = 0;
+      for(InstructionBlock block : collector.getBlocks()) {
+         // Build name
+         String blockName = baseFilename+"-"+counter;
+         blocks.add(new NamedBlock(block, blockName));
+         counter++;
+      }
+
+      return blocks;
    }
    // IDEIA: Manter booleans para configurar o "run", e quando se faz run,
    // Constroi objectos e faz ligações.
@@ -86,7 +101,8 @@ public class TraceProcessorWorker {
    // Selector - on/off
    // Write Blocks - on/off
 
-   private InstructionBlockProducer setupObjects(File trace) {
+   private InstructionBlockProducer setupObjects(String baseFilename) {
+   //private InstructionBlockProducer setupObjects(File trace) {
       InstructionBlockProducer lastProducer;
 
       // Setup Partitioner
@@ -130,12 +146,33 @@ public class TraceProcessorWorker {
 
       // Setup Writer
       if(useWriter) {
-         ibWriter = new MbInstructionBlockWriter(trace.getName());
+        //          String EXTENSION_SEPARATOR = ".";
+        // int lastIndexOfSeparator = trace.getName().lastIndexOf(EXTENSION_SEPARATOR);
+        // String baseFilename = trace.getName().substring(0, lastIndexOfSeparator);
+         ibWriter = new MbInstructionBlockWriter(baseFilename);
+         //ibWriter = new MbInstructionBlockWriter(trace.getName());
          lastProducer.addListener(ibWriter);
       }
 
       return lastProducer;
    }
+
+   private boolean checkInstructionNumber(InstructionBusReader busReader, InstructionBlockStats ibStats) {
+      // Check if Partitioned Instructions Add Up
+      long blockInst = ibStats.getTotalInstructions();
+      long traceInst = busReader.getInstructions();
+
+      if (blockInst != traceInst) {
+         Logger.getLogger(TraceProcessorWorker.class.getName()).
+                 warning("Total instructions does not add up: Trace(" + traceInst + ") " +
+                 "vs. Partitioner(" + blockInst + ")");
+         return false;
+      }
+
+      return true;
+
+   }
+
 
    /**
     * INSTANCE VARIABLES
@@ -154,6 +191,7 @@ public class TraceProcessorWorker {
    boolean useWriter;
 
    private InstructionFilter DEFAULT_JUMP_FILTER = new MbJumpFilter();
+
 
 
 

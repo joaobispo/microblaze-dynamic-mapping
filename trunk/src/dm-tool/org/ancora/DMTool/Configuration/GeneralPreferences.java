@@ -17,7 +17,13 @@ public enum GeneralPreferences implements EnumKey {
    outputFolder("./"),
    blockExtension("block"),
    elfExtension("elf"),
-   traceExtension("trace");
+   traceExtension("trace"),
+   partitioner("BasicBlock"),
+   useGatherer("false"),
+   useSelector("false"),
+   useBlockWriter("false"),
+   megablockMaxPatternSize("30"),
+   selectorThreshold("2");
 
    private GeneralPreferences(String defaultValue) {
       this.defaultValue = defaultValue;
