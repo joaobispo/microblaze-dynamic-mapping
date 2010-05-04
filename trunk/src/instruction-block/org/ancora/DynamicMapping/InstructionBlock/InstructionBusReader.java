@@ -29,4 +29,6 @@ public interface InstructionBusReader {
      * null if the end of the stream has been reached.
     */
    GenericInstruction nextInstruction();
+   long getCycles();
+   long getInstructions();
 }

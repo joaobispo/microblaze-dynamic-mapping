@@ -44,8 +44,8 @@ public class InstructionBlockStats implements InstructionBlockListener {
       // Do Nothing
    }
 
-   public int getTotalInstructions() {
-      int acc = 0;
+   public long getTotalInstructions() {
+      long acc = 0;
       for(int i=0; i<blockInstructions.size(); i++) {
          acc += blockInstructions.get(i) * blockRepetitions.get(i);
       }
