@@ -1,15 +1,31 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright 2010 Ancora Research Group.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
  */
 
 package org.ancora.DMTool.Shell;
 
+import org.ancora.DMTool.Shell.System.Executable;
 import java.io.File;
+import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
-import org.ancora.DMTool.Configuration.GeneralPreferences;
+import org.ancora.DMTool.Shell.System.GeneralPreferences;
 import org.ancora.DMTool.Utils.EnumUtils;
 import org.ancora.DMTool.Utils.LineReader;
 import org.ancora.DMTool.Utils.ShellUtils;
@@ -83,6 +99,9 @@ public class Shell {
       // Split String
       List<String> splitCommand = ShellUtils.splitCommand(command);
 
+      // Check output
+      //System.out.println(splitCommand);
+
       // Check if there is a command
       if(splitCommand.size() == 0) {
          // Show current properties - dropped
@@ -99,12 +118,21 @@ public class Shell {
 
       splitCommand = splitCommand.subList(1, splitCommand.size());
 
-      // Check simple commands (exit, help, config, set)
+      /// Check simple commands (exit, help, config, set)
+      // Check simple commands (exit)
       if(commandEnum == Command.exit) {
          logger.info("Bye...");
          System.exit(0);
       }
 
+      // Get Executable
+      Executable executable = executables.get(commandEnum);
+      if(executable == null) {
+         logger.warning("Executable for command '"+commandEnum+"' not found.");
+      }
+
+      return executable.execute(splitCommand);
+      /*
       if(commandEnum == Command.help) {
          showHelp();
          return true;
@@ -122,10 +150,10 @@ public class Shell {
       if(exec != null) {
          return exec.execute(splitCommand);
       }
-
-      return false;
+*/
+      //return false;
    }
-
+/*
    private static void showHelp() {
       logger.info("Supported commands:");
       for(Command command : Command.values()) {
@@ -133,7 +161,9 @@ public class Shell {
          logger.info(message);
       }
    }
-
+*/
+   /*
+   
    private static boolean executeSet(List<String> args) {
       EnumPreferences prefs = GeneralPreferences.getPreferences();
 
@@ -162,7 +192,8 @@ public class Shell {
 
       return true;
    }
-
+*/
+   /*
    private static boolean executeOptions() {
       EnumPreferences prefs = GeneralPreferences.getPreferences();
 
@@ -175,17 +206,67 @@ public class Shell {
 
       return true;
    }
+    */
 
    /**
     * INSTANCE VARIABLES
     */
    private static Logger logger = Logger.getLogger(Shell.class.getName());
 
+   private static final Map<Command, Executable> executables;
+   static {
+      Map<Command, Executable> aMap = new Hashtable<Command, Executable>();
+
+      aMap.put(Command.set, new Set());
+      aMap.put(Command.transform, new Transform());
+      aMap.put(Command.help, new Help());
+      aMap.put(Command.options, new Options());
+
+      executables = Collections.unmodifiableMap(aMap);
+   }
 
 
+   /**
+    * ENUM
+    */
+   public enum Command {
 
-
-
+      help,
+      exit,
+      set,
+      options,
+      transform;
+/*
+      public String helpMessage() {
+         switch (this) {
+            case help:
+               return "This help message";
+            case exit:
+               return "Exit the program";
+            case set:
+               return "Set the value of a particular option";
+            case options:
+               return "Show the current value of avaliable options";
+            case transform:
+               return "Study transformation effects on code. Supports traces, elfs and blocks.";
+            default:
+               return "Help message not defined";
+         }
+      }
+*/
+      /*
+      public Executable getExecutable() {
+         switch (this) {
+            case transform:
+               return new Transform();
+            default:
+               Logger.getLogger(Command.class.getName()).
+                       warning("Executable not defined for '" + this.name() + "'");
+               return null;
+         }
+      }
+       */
+   }
 
 
 

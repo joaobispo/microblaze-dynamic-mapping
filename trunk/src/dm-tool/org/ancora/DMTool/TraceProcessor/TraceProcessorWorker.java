@@ -43,23 +43,29 @@ import org.ancora.MicroBlaze.Trace.TraceUtils;
  * Given a trace, returns a list of InstructionBlocks.
  * Can be setup in a number of ways.
  *
+ * TODO: Move this class to InstructionBlock package
+ *
  * @author Joao Bispo
  */
 public class TraceProcessorWorker {
 
-   public TraceProcessorWorker() {
+   public TraceProcessorWorker(Partitioner partitioner) {
       // Default partitioner: basicblock
-      partitionerType = PartitionerType.BasicBlock;
+      //partitionerType = PartitionerType.BasicBlock;
+      this.partitioner = partitioner;
       useGatherer = false;
       useSelector = false;
-      useWriter = false;
+      selectorRepThreshold = 1;
+//      useWriter = false;
    }
 
 
 
-   public List<NamedBlock> processTrace(String baseFilename, InstructionBusReader busReader) {
+   //public List<NamedBlock> processTrace(String baseFilename, InstructionBusReader busReader) {
+   public List<InstructionBlock> processTrace(InstructionBusReader busReader) {
       //InstructionBlockProducer lastProducer = setupObjects(trace);
-      InstructionBlockProducer lastProducer = setupObjects(baseFilename);
+//      InstructionBlockProducer lastProducer = setupObjects(baseFilename);
+      InstructionBlockProducer lastProducer = setupObjects();
 
       // Using MicroBlaze Trace Reader by default
       //InstructionBusReader busReader = MbTraceReader.createTraceReader(trace);
@@ -78,7 +84,8 @@ public class TraceProcessorWorker {
 
 
       // Return instruction blocks
-      //return collector.getBlocks();
+      return collector.getBlocks();
+      /*
       List<NamedBlock> blocks = new ArrayList<NamedBlock>();
       int counter = 0;
       for(InstructionBlock block : collector.getBlocks()) {
@@ -89,6 +96,7 @@ public class TraceProcessorWorker {
       }
 
       return blocks;
+       */
    }
    // IDEIA: Manter booleans para configurar o "run", e quando se faz run,
    // Constroi objectos e faz ligações.
@@ -101,11 +109,13 @@ public class TraceProcessorWorker {
    // Selector - on/off
    // Write Blocks - on/off
 
-   private InstructionBlockProducer setupObjects(String baseFilename) {
+   private InstructionBlockProducer setupObjects() {
+   //private InstructionBlockProducer setupObjects(String baseFilename) {
    //private InstructionBlockProducer setupObjects(File trace) {
       InstructionBlockProducer lastProducer;
 
       // Setup Partitioner
+      /*
       switch(partitionerType) {
          case BasicBlock:
             partitioner = new BasicBlock(DEFAULT_JUMP_FILTER);
@@ -121,6 +131,7 @@ public class TraceProcessorWorker {
                     warning("Partitioner '"+partitionerType+"' not defined. Using default " +
                     "partitioner '"+partitioner.getName()+"'");
       }
+       */
       lastProducer = partitioner;
 
       // Setup Gatherer
@@ -145,6 +156,7 @@ public class TraceProcessorWorker {
       }
 
       // Setup Writer
+      /*
       if(useWriter) {
         //          String EXTENSION_SEPARATOR = ".";
         // int lastIndexOfSeparator = trace.getName().lastIndexOf(EXTENSION_SEPARATOR);
@@ -153,6 +165,7 @@ public class TraceProcessorWorker {
          //ibWriter = new MbInstructionBlockWriter(trace.getName());
          lastProducer.addListener(ibWriter);
       }
+       */
 
       return lastProducer;
    }
@@ -173,31 +186,47 @@ public class TraceProcessorWorker {
 
    }
 
+   public void setUseGatherer(boolean useGatherer) {
+      this.useGatherer = useGatherer;
+   }
+
+   public void setUseSelector(boolean useSelector) {
+      this.useSelector = useSelector;
+   }
+
+   public void setSelectorRepThreshold(int selectorRepThreshold) {
+      this.selectorRepThreshold = selectorRepThreshold;
+   }
+
+
+
 
    /**
     * INSTANCE VARIABLES
     */
-   private Partitioner partitioner;
+   //private Partitioner partitioner;
    private Gatherer gatherer;
    private Selector selector;
-   private MbInstructionBlockWriter ibWriter;
+   //private MbInstructionBlockWriter ibWriter;
 
    // Choices
-   PartitionerType partitionerType;
-   int maxSuperBlockPatternSize;
-   boolean useGatherer;
-   boolean useSelector;
-   int selectorRepThreshold;
-   boolean useWriter;
+   private Partitioner partitioner;
+   //private PartitionerType partitionerType;
+   //private int maxSuperBlockPatternSize;
+   private boolean useGatherer;
+   private boolean useSelector;
+   private int selectorRepThreshold;
+   //boolean useWriter;
 
-   private InstructionFilter DEFAULT_JUMP_FILTER = new MbJumpFilter();
+   //private InstructionFilter DEFAULT_JUMP_FILTER = new MbJumpFilter();
 
 
 
-
+/*
    public enum PartitionerType {
       BasicBlock,
       SuperBlock,
       MegaBlock;
    }
+ */
 }
