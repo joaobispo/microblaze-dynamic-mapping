@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
+import org.ancora.IntermediateRepresentation.Ilp.Mapper;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 
@@ -45,7 +44,7 @@ public class OperationListStats {
 
 
 /*
-public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario ilpScene) {
+public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
       // Create data
       ilpScene.reset();
       ilpScene.processOperations(operations);
@@ -54,7 +53,7 @@ public static IlpScenario getIlpStats(List<Operation> operations, IlpScenario il
 }
  */
 
-   public static OperationListStats buildStats(List<Operation> operations, IlpScenario ilpScene) {
+   public static OperationListStats buildStats(List<Operation> operations, Mapper ilpScene) {
       // Create data
       ilpScene.reset();
       ilpScene.processOperations(operations);

@@ -27,4 +27,5 @@ import org.ancora.IntermediateRepresentation.Operation;
 public interface Transformation {
 
    List<Operation> transform(List<Operation> operations);
+
 }

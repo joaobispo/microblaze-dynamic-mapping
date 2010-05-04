@@ -22,7 +22,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.ancora.IntermediateRepresentation.ImmutableTest;
 import org.ancora.IntermediateRepresentation.MemoryTest;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operand;
@@ -33,7 +32,7 @@ import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
  *
  * @author Joao Bispo
  */
-public class MbIlpScene1 implements IlpScenario {
+public class MbIlpScene1 implements Mapper {
 
    /**
     * Creates a MicroBlaze ILP Scenario 1 with MicroBlaze Immutable and Memory Tests

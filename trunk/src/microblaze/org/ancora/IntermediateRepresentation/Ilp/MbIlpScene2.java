@@ -32,7 +32,7 @@ import org.ancora.IntermediateRepresentation.Operations.OperationType;
  *
  * @author Joao Bispo
  */
-public class MbIlpScene2 implements IlpScenario {
+public class MbIlpScene2 implements Mapper {
 
    /**
     * Creates a MicroBlaze ILP Scenario 2 with MicroBlaze Immutable and Memory Tests

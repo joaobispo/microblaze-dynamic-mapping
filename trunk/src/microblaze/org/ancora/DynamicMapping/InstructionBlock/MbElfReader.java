@@ -45,6 +45,9 @@ public class MbElfReader implements InstructionBusReader {
       } catch (SysteMException ex) {
          Logger.getLogger(MbElfReader.class.getName()).
                  warning("Could not create system: "+ex.getMessage());
+         Logger.getLogger(MbElfReader.class.getName()).
+                 warning("Tried to execute file '"+binary_file+"'");
+
          return null;
       }
 
@@ -87,11 +90,21 @@ public class MbElfReader implements InstructionBusReader {
       return instName;
    }
 
+   public long getCycles() {
+      return system.getCycles();
+   }
+
+   public long getInstructions() {
+      return system.getCPUClass().getNumberInstructions();
+   }
+
    /**
     * INSTANCE VARIABLES
     */
    private int sys_status;
    private SysteM system;
+
+
 
 
 
