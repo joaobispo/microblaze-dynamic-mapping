@@ -107,7 +107,12 @@ public class Tester {
       Gatherer gatherer = new Gatherer();
       Selector selector = new Selector(repetitionsThreshold);
       InstructionBlockStats ibStats = new InstructionBlockStats();
-      MbInstructionBlockWriter ibWriter = new MbInstructionBlockWriter(trace.getName());
+
+               String EXTENSION_SEPARATOR = ".";
+         int lastIndexOfSeparator = trace.getName().lastIndexOf(EXTENSION_SEPARATOR);
+         String baseFilename = trace.getName().substring(0, lastIndexOfSeparator);
+      //MbInstructionBlockWriter ibWriter = new MbInstructionBlockWriter(trace.getName());
+      MbInstructionBlockWriter ibWriter = new MbInstructionBlockWriter(baseFilename);
       
       
       partitioner.addListener(gatherer);
@@ -136,8 +141,8 @@ public class Tester {
       TraceProperties props = TraceProperties.getTraceProperties(trace);
 
       // Check if Partitioned Instructions Add Up
-      int blockInst = ibStats.getTotalInstructions();
-      int traceInst = props.getInstructions();
+      long blockInst = ibStats.getTotalInstructions();
+      long traceInst = props.getInstructions();
 
       if(blockInst != traceInst) {
          Logger.getLogger(Tester.class.getName()).

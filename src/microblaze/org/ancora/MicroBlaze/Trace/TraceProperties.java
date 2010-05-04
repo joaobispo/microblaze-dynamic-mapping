@@ -52,14 +52,14 @@ public class TraceProperties {
       return Float.parseFloat(value);
    }
 
-   public int getInstructions() {
+   public long getInstructions() {
      String value = TraceUtils.safeGet(Key.instructions, properties);
-      return Integer.parseInt(value);
+      return Long.parseLong(value);
    }
 
-   public int getCycles() {
+   public long getCycles() {
       String value = TraceUtils.safeGet(Key.cycles, properties);
-      return Integer.parseInt(value);
+      return Long.parseLong(value);
    }
 
    public enum Key {

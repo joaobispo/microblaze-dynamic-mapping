@@ -38,6 +38,25 @@ public class IoUtilsAppend {
       return fileList;
    }
 
+      public static List<File> getFilesRecursive(File folder) {
+      List<File> fileList = new ArrayList<File>();
+      File[] files = folder.listFiles();
+
+      for(File file : files) {
+         if(file.isFile()) {
+            fileList.add(file);
+         }
+      }
+
+      for(File file : files) {
+         if(file.isDirectory()) {
+            fileList.addAll(getFilesRecursive(file));
+         }
+      }
+
+      return fileList;
+   }
+
    /**
     * Returns files from a folder with a certain extension.
     *

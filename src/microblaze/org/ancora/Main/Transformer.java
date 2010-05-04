@@ -24,7 +24,7 @@ import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.IntermediateRepresentation.Dotty;
-import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
+import org.ancora.IntermediateRepresentation.Ilp.Mapper;
 import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
@@ -130,7 +130,7 @@ public class Transformer {
    }
 
    private static List<Operation> processBlock(InstructionBlock block) {
-      IlpScenario ilpScenario = new MbIlpScene2();
+      Mapper ilpScenario = new MbIlpScene2();
 
       Transformation[] microblaze = {
          new TransformImmToLiterals(),

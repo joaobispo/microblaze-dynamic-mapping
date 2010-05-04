@@ -82,12 +82,12 @@ public class PropagateConstants implements Transformation {
          Integer literalValue = literalRegisters.get(operands.get(i).toString());
          if(literalValue != null) {
             int bits = operands.get(i).getBits();
-            System.out.println("Register substituted by Literal because of Constant Propagation. Address "+operation.getAddress());
-            System.out.println("Before:"+operation.getInputs());
+            //System.out.println("Register substituted by Literal because of Constant Propagation. Address "+operation.getAddress());
+            //System.out.println("Before:"+operation.getInputs());
             Literal newLiteral = new Literal(Literal.LiteralType.integer,
                     literalValue.toString(), bits);
             operands.set(i, newLiteral);
-            System.out.println("After:"+operation.getInputs());
+            //System.out.println("After:"+operation.getInputs());
          }
       }
 

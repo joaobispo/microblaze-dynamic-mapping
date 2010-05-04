@@ -20,7 +20,7 @@ package org.ancora.Main;
 import java.util.ArrayList;
 import java.util.List;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.IntermediateRepresentation.Ilp.IlpScenario;
+import org.ancora.IntermediateRepresentation.Ilp.Mapper;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 
@@ -32,7 +32,7 @@ public class DataGatherer {
 
    // Done this way because of floating-point arithmetic. Never sum doubles
    // if you can sum integers and then calculate the double.
-   public static double getIlpBlock(InstructionBlock block, IlpScenario ilpScene) {
+   public static double getIlpBlock(InstructionBlock block, Mapper ilpScene) {
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
       // Create ILP Data
       ilpScene.processOperations(operations);
@@ -44,7 +44,7 @@ public class DataGatherer {
       //return getIlp(blocks, ilpScene);
    }
 
-   public static double getIlpBlock(List<InstructionBlock> blocks, IlpScenario ilpScene) {
+   public static double getIlpBlock(List<InstructionBlock> blocks, Mapper ilpScene) {
       int totalOperations = 0;
       int totalLines = 0;
 
@@ -55,7 +55,7 @@ public class DataGatherer {
 
       // Collect ILP
       //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
-      //IlpScenario ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
+      //Mapper ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
       //ilpScene.processOperations(operations);
 
       // Collect data
@@ -68,7 +68,7 @@ public class DataGatherer {
 
    // Done this way because of floating-point arithmetic. Never sum doubles
    // if you can sum integers and then calculate the double.
-   public static double getIlpOperations(List<Operation> operations, IlpScenario ilpScene) {
+   public static double getIlpOperations(List<Operation> operations, Mapper ilpScene) {
       // Create ILP Data
       ilpScene.processOperations(operations);
 

@@ -130,7 +130,11 @@ public class TraceProcessorWorker {
 
       // Setup Writer
       if(useWriter) {
-         ibWriter = new MbInstructionBlockWriter(trace.getName());
+         String EXTENSION_SEPARATOR = ".";
+         int lastIndexOfSeparator = trace.getName().lastIndexOf(EXTENSION_SEPARATOR);
+         String baseFilename = trace.getName().substring(0, lastIndexOfSeparator);
+         ibWriter = new MbInstructionBlockWriter(baseFilename);
+        // ibWriter = new MbInstructionBlockWriter(trace.getName());
          lastProducer.addListener(ibWriter);
       }
 

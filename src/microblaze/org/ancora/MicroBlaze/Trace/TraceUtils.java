@@ -118,8 +118,8 @@ public class TraceUtils {
       TraceProperties props = TraceProperties.getTraceProperties(trace);
 
       // Check if Partitioned Instructions Add Up
-      int blockInst = ibStats.getTotalInstructions();
-      int traceInst = props.getInstructions();
+      long blockInst = ibStats.getTotalInstructions();
+      long traceInst = props.getInstructions();
 
       if(blockInst != traceInst) {
          Logger.getLogger(TraceUtils.class.getName()).

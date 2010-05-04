@@ -137,13 +137,13 @@ public class ParseUnconditionalBranches implements Transformation {
       for(int i=0; i<operands.size(); i++) {
          Integer literalValue = literalRegisters.get(operands.get(i).toString());
          if(literalValue != null) {
-            System.out.println("Register substituted by Literal because of Uncondition Branch. Address "+operation.getAddress());
-            System.out.println("Before:"+operation.getInputs());
+            //System.out.println("Register substituted by Literal because of Uncondition Branch. Address "+operation.getAddress());
+            //System.out.println("Before:"+operation.getInputs());
             Literal newLiteral = new Literal(Literal.LiteralType.integer,
                     literalValue.toString(), MbDefinitions.BITS_REGISTER);
             operands.set(i, newLiteral);
             //Logger.getLogger(ParseUnconditionalBranches.class.getName())
-            System.out.println("After:"+operation.getInputs());
+            //System.out.println("After:"+operation.getInputs());
          }
       }
 

@@ -10,6 +10,7 @@ import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_PREFIX;
 import java.io.File;
 import java.util.logging.Logger;
 import org.ancora.MicroBlaze.InstructionName;
+import org.ancora.MicroBlaze.Trace.TraceProperties;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.common.LineReader;
 
@@ -25,8 +26,10 @@ public class MbTraceReader implements InstructionBusReader {
     *
     * @param reader
     */
-    private MbTraceReader(LineReader reader) {
+    private MbTraceReader(LineReader reader, long cycles, long instructions) {
        this.reader = reader;
+       this.cycles = cycles;
+       this.instructions = instructions;
     }
 
    /**
@@ -49,7 +52,12 @@ public class MbTraceReader implements InstructionBusReader {
                     warning("Could not create MbTraceReader.");
       }
 
-      return new MbTraceReader(reader);
+      // Extract information about number of instructions and cycles
+      TraceProperties props = TraceProperties.getTraceProperties(traceFile);
+      long cycles = props.getCycles();
+      long instructions = props.getInstructions();
+
+      return new MbTraceReader(reader, cycles, instructions);
 
    }
 
@@ -102,9 +110,21 @@ public class MbTraceReader implements InstructionBusReader {
       }
    }
 
+   public long getCycles() {
+      return cycles;
+   }
+
+   public long getInstructions() {
+      return instructions;
+   }
+
    /**
     * INSTANCE VARIABLES
     */
     private final LineReader reader;
+    private long cycles;
+    private long instructions;
+
+
 
 }

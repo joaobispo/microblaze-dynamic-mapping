@@ -41,10 +41,12 @@ public class MbInstructionBlockWriter implements InstructionBlockListener {
 
 
 
-   public MbInstructionBlockWriter(String traceFilename) {
+   //public MbInstructionBlockWriter(String traceFilename) {
+   public MbInstructionBlockWriter(String baseFilename) {
       counter = 0;
-      int lastIndexOfSeparator = traceFilename.lastIndexOf(EXTENSION_SEPARATOR);
-      baseFilename = traceFilename.substring(0, lastIndexOfSeparator);
+      //int lastIndexOfSeparator = traceFilename.lastIndexOf(EXTENSION_SEPARATOR);
+      //baseFilename = traceFilename.substring(0, lastIndexOfSeparator);
+      this.baseFilename = baseFilename;
       ids = new HashSet<Integer>();
    }
 
