@@ -25,7 +25,7 @@ import org.ancora.IntermediateRepresentation.Operation;
  *
  * @author Joao Bispo
  */
-public interface IlpScenario {
+public interface Mapper {
 
 
    /**

@@ -31,7 +31,7 @@ public class DataGatherer {
    // Done this way because of floating-point arithmetic. Never sum doubles
    // if you can sum integers and then calculate the double.
    /*
-   public static double getIlp(InstructionBlock block, IlpScenario ilpScene) {
+   public static double getIlp(InstructionBlock block, Mapper ilpScene) {
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
       // Create ILP Data
       ilpScene.processOperations(operations);
@@ -45,7 +45,7 @@ public class DataGatherer {
     */
 
    /*
-   public static double getIlp(List<InstructionBlock> blocks, IlpScenario ilpScene) {
+   public static double getIlp(List<InstructionBlock> blocks, Mapper ilpScene) {
       int totalOperations = 0;
       int totalLines = 0;
 
@@ -56,7 +56,7 @@ public class DataGatherer {
 
       // Collect ILP
       //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
-      //IlpScenario ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
+      //Mapper ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
       //ilpScene.processOperations(operations);
 
       // Collect data
@@ -69,7 +69,7 @@ public class DataGatherer {
     */
 
 
-   public static double getOperations(List<Operation> operations, IlpScenario ilpScene) {
+   public static double getOperations(List<Operation> operations, Mapper ilpScene) {
       // Create ILP Data
       ilpScene.reset();
       ilpScene.processOperations(operations);
