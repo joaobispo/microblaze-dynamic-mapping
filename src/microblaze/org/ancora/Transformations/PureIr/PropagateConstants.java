@@ -111,6 +111,11 @@ public class PropagateConstants implements Transformation {
       }
    }
 
+   /**
+    * TODO: Add more transformations
+    * @param operation
+    * @return
+    */
    private List<Literal> resolveOperation(Operation operation) {
       switch((OperationType)operation.getType()) {
          case IntegerArithmeticWithCarry:

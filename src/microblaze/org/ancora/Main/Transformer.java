@@ -85,7 +85,7 @@ public class Transformer {
          // Processing on list ended. Removed nops before printing
          operations = removeNops(operations);
          // Connect
-         List<Operation> ops = Dotty.connectOperations(operations);
+         List<Operation> ops = Dotty.versionAndconnectOperations(operations);
 
          IoUtils.write(new File("E:/dot." + i + ".txt"), Dotty.generateDot(ops));
       }

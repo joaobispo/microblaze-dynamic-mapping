@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.logging.Logger;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.Trace.TraceProperties;
+import org.ancora.MicroBlaze.Trace.TraceUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.common.LineReader;
 
@@ -54,6 +55,7 @@ public class MbTraceReader implements InstructionBusReader {
 
       // Extract information about number of instructions and cycles
       TraceProperties props = TraceProperties.getTraceProperties(traceFile);
+
       long cycles = props.getCycles();
       long instructions = props.getInstructions();
 

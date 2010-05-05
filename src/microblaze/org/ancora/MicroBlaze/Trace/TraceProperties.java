@@ -19,6 +19,14 @@ public class TraceProperties {
       this.properties = properties;
    }
 
+   /*
+   public static TraceProperties getTraceProperties(Properties props) {
+      TraceProperties traceProps = new TraceProperties(props);
+     
+      return traceProps;
+   }
+    */
+
    /**
     * Given a File object representing a Trace Properties file, loads the
     * contents of the file into a TraceDefinitions object.
@@ -30,6 +38,8 @@ public class TraceProperties {
     * @return
     */
    public static TraceProperties getTraceProperties(File traceFile) {
+
+      /*
       // Get Properties file corresponding to this trace file
       File tracePropertiesFile = TraceUtils.getTracePropertiesFile(traceFile, Key.values());
       // Check if file exists
@@ -38,6 +48,8 @@ public class TraceProperties {
       }
 
       Properties properties = IoUtils.loadProperties(tracePropertiesFile);
+*/
+      Properties properties = TraceUtils.getPropertiesFromTrace(traceFile, Key.values());
 
       if(properties == null) {
          return null;

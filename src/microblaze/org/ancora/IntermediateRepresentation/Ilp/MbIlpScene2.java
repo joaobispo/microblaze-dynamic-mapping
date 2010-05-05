@@ -154,10 +154,20 @@ public class MbIlpScene2 implements Mapper {
    }
 
    private void updateLiveouts(String operandRepresentation) {
+      // Remove SSA suffix
+      int separatorIndex = operandRepresentation.lastIndexOf(".");
+      if (separatorIndex != -1) {
+         operandRepresentation = operandRepresentation.substring(0, separatorIndex);
+      }
       liveOuts.add(operandRepresentation);
    }
 
    private void updateLiveins(String operandRepresentation) {
+      // Remove SSA suffix
+      int separatorIndex = operandRepresentation.lastIndexOf(".");
+      if (separatorIndex != -1) {
+         operandRepresentation = operandRepresentation.substring(0, separatorIndex);
+      }
       liveIns.add(operandRepresentation);
    }
 
