@@ -17,11 +17,12 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import org.ancora.IntermediateRepresentation.OperationType;
 import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.OperandUtils;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
-import org.ancora.IntermediateRepresentation.Operands.OperandType;
+import org.ancora.IntermediateRepresentation.OperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**

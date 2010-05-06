@@ -17,7 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operations.deprecated;
 
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+import org.ancora.IntermediateRepresentation.OperationType;
 import org.ancora.IntermediateRepresentation.Operations.*;
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
@@ -50,7 +50,7 @@ public class Mux extends Operation {
 
    @Override
    public Enum getType() {
-      return OperationType.Mux;
+      return null;//OperationType.Mux;
    }
 
    /*

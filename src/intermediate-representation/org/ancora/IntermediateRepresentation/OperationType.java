@@ -21,7 +21,22 @@ package org.ancora.IntermediateRepresentation;
  *
  * @author Joao Bispo
  */
-public interface ImmutableTest {
+public enum OperationType {
 
-   public boolean isImmutable(Operand operand);
+   IntegerArithmeticWithCarry,
+   Control,
+   MockOperation,
+   Logic,
+   //Exit,
+   //Mux,
+   ConditionalExit,
+   UnconditionalExit,
+   Nop,
+   Division,
+   SignExtension,
+   MemoryLoad,
+   MemoryStore,
+   Multiplication,
+   ShiftRight,
+   //Move;
 }

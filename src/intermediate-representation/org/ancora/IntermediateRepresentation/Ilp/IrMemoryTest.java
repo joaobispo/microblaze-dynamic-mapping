@@ -19,7 +19,7 @@ package org.ancora.IntermediateRepresentation.Ilp;
 
 import org.ancora.IntermediateRepresentation.MemoryTest;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+import org.ancora.IntermediateRepresentation.OperationType;
 
 /**
  *

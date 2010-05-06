@@ -15,27 +15,17 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operations;
+package org.ancora.IntermediateRepresentation;
+
+import java.util.List;
+import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum OperationType {
+public interface Transformation {
 
-   IntegerArithmeticWithCarry,
-   Control,
-   MockOperation,
-   Logic,
-   Exit,
-   Mux,
-   ConditionalExit,
-   UnconditionalExit,
-   Nop,
-   Division,
-   SignExtension,
-   MemoryLoad,
-   MemoryStore,
-   Multiplication,
-   ShiftRight;
+   List<Operation> transform(List<Operation> operations);
+
 }

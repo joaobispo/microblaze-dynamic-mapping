@@ -17,6 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import org.ancora.IntermediateRepresentation.OperationType;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
@@ -25,10 +26,18 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public class Nop extends Operation {
 
+
+   public Nop(Operation operation) {
+      super(operation.getAddress());
+      //this.name = name;
+   }
+
+   /*
    public Nop(int address, String name) {
       super(address);
       this.name = name;
    }
+    */
 
 
 
@@ -44,11 +53,12 @@ public class Nop extends Operation {
 
    @Override
    public String toString() {
-      return "NOP "+name;
+      //return "NOP "+name;
+      return "NOP "+operation.toString();
    }
 
 
-
-   private String name;
+   private Operation operation;
+   //private String name;
 
 }

@@ -18,7 +18,6 @@
 package org.ancora.IntermediateRepresentation;
 
 import org.ancora.IntermediateRepresentation.Operands.Literal;
-import org.ancora.IntermediateRepresentation.Operands.OperandType;
 
 /**
  *
