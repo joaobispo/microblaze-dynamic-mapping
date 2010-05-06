@@ -17,7 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operations.deprecated;
 
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+import org.ancora.IntermediateRepresentation.OperationType;
 import org.ancora.IntermediateRepresentation.Operations.*;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
@@ -41,7 +41,7 @@ public class Exit extends Operation {
 
    @Override
    public Enum getType() {
-      return OperationType.Exit;
+      return null;//OperationType.Exit;
    }
 
    /*

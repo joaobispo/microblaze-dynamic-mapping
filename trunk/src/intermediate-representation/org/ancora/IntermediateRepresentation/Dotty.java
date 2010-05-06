@@ -27,7 +27,6 @@ import java.util.Set;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
 import org.ancora.IntermediateRepresentation.Operations.Control;
 import org.ancora.IntermediateRepresentation.Operations.MockOperation;
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
 //import org.ancora.IntermediateRepresentation.Operations.OperationType;
 
 /**

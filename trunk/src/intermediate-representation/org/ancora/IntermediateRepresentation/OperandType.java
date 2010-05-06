@@ -15,27 +15,13 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operands;
-
-import java.util.logging.Logger;
-import org.ancora.IntermediateRepresentation.ImmutableTest;
-import org.ancora.IntermediateRepresentation.Operand;
+package org.ancora.IntermediateRepresentation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class IrImmutableTest implements ImmutableTest {
-
-   public boolean isImmutable(Operand operand) {
-      if(operand.getType() == OperandType.literal) {
-         return true;
-      }
-      else {
-         Logger.getLogger(IrImmutableTest.class.getName()).
-                 warning("Case for operand of type '"+operand.getType()+"' not defined.");
-       return false;
-      }
-   }
-
+public enum OperandType {
+   literal,
+   internalData;
 }
