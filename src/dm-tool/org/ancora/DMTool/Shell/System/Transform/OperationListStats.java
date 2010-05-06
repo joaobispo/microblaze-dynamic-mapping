@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.IntermediateRepresentation.Ilp.Mapper;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 
 /**
  *
@@ -31,15 +30,45 @@ import org.ancora.IntermediateRepresentation.Operations.MbOperation;
  */
 public class OperationListStats {
 
+   public static void calcAverage(List<OperationListStats> stats) {
+      int numberOfLines = 0;
+      int numberOfOperations = 0;
+      int liveIns = 0;
+      int liveOuts = 0;
+      int repetitions = 0;
+
+      int size = stats.size();
+      for(int i=0; i<stats.size(); i++) {
+         liveIns += stats.get(i).liveins;
+         liveOuts += stats.get(i).liveouts;
+         repetitions += stats.get(i).repetitions;
+         numberOfOperations += stats.get(i).numberOfOperations;
+         numberOfLines += stats.get(i).numberOfLines;
+      }
+
+      double avgClp = (double)numberOfLines / (double)size;
+      double avgIlp =  (double)numberOfOperations / (double)numberOfLines;
+      double avgComm =  (double)(liveIns+liveOuts) / (double)size;
+      double avgInstructions =  (double)(numberOfOperations) / (double)size;
+      double avgRepetitions =  (double)(repetitions) / (double)size;
+      
+      System.out.println("Avg. CLP:"+avgClp);
+      System.out.println("Avg. ILP:"+avgIlp);
+      System.out.println("Avg. Comm:"+avgComm);
+      System.out.println("Avg. Instructions per block:"+avgInstructions);
+      System.out.println("Avg. Repetitions per block:"+avgRepetitions);
+   }
+
    private OperationListStats(int numberOfLines, int numberOfOperations, 
            int liveins, int liveouts, Map<Integer, List<Operation>> mapping,
-           int numberOfMbOps) {
+           int repetitions, String name) {
       this.numberOfLines = numberOfLines;
       this.numberOfOperations = numberOfOperations;
       this.liveins = liveins;
       this.liveouts = liveouts;
       this.mapping = mapping;
-      this.numberOfMbOps = numberOfMbOps;
+      this.repetitions = repetitions;
+      this.name = name;
    }
 
 
@@ -53,11 +82,13 @@ public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
 }
  */
 
-   public static OperationListStats buildStats(List<Operation> operations, Mapper ilpScene) {
+
+   public static OperationListStats buildStats(List<Operation> operations, Mapper ilpScene,
+           int repetitions, String name) {
       // Create data
       ilpScene.reset();
       ilpScene.processOperations(operations);
-
+/*
       int mbOp = 0;
       for(int i=0; i<operations.size(); i++) {
          MbOperation op = MbOperation.getMbOperation(operations.get(i));
@@ -65,12 +96,16 @@ public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
             mbOp++;
          }
       }
-
+*/
       // Gather data
       return new OperationListStats(ilpScene.getNumberOfLines(), ilpScene.getNumberOfOps(),
               ilpScene.getLiveIns(), ilpScene.getLiveOuts(), ilpScene.getMapping(),
-              mbOp);
+              repetitions, name);
       
+   }
+
+   public int getNumberOfLines() {
+      return numberOfLines;
    }
 
    /**
@@ -107,9 +142,11 @@ public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
       return liveins + liveouts;
    }
 
+   /*
    public int getNumberOfMbOps() {
       return numberOfMbOps;
    }
+    */
 
 
 
@@ -145,11 +182,13 @@ public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
    public String toString() {
       StringBuilder builder = new StringBuilder();
 
+      builder.append("Block:"+name);
+      builder.append("Repetitions:"+repetitions);
       builder.append("ILP:"+getIlp()+"\n");
       builder.append("CPL:"+getCpl()+"\n");
       builder.append("#Inst:"+getNumberOfOperations()+"\n");
       builder.append("CommunicationCosts:"+getCommunicationCost()+"\n");
-      builder.append("Number of MicroBlaze Ops:"+getNumberOfMbOps()+"\n");
+      //builder.append("Number of MicroBlaze Ops:"+getNumberOfMbOps()+"\n");
 
       return builder.toString();
    }
@@ -166,5 +205,7 @@ public static Mapper getIlpStats(List<Operation> operations, Mapper ilpScene) {
    private final int liveins;
    private final int liveouts;
    private final Map<Integer, List<Operation>> mapping;
-   private final int numberOfMbOps;
+   private final int repetitions;
+   private final String name;
+   //private final int numberOfMbOps;
 }
