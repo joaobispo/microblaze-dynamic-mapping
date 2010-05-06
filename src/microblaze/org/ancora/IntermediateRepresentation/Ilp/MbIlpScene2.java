@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 //import org.ancora.IntermediateRepresentation.Operands.MbImmutableTest;
 import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+import org.ancora.IntermediateRepresentation.OperationType;
 
 /**
  *
@@ -49,6 +49,7 @@ public class MbIlpScene2 implements Mapper {
 //      this.immutableTest = immutableTest;
       this.memoryTest = memoryTest;
       //this.numLoads = numLoads;
+      this.mapMoves = false;
 
    }
 
@@ -59,6 +60,14 @@ public class MbIlpScene2 implements Mapper {
          if(operation.getType() == OperationType.Nop) {
             continue;
          }
+
+         /*
+         if(!mapMoves) {
+            if(operation.getType() == OperationType.Move) {
+               continue;
+            }
+         }
+          */
 
          // Given the inputs, find the lower possible line where the operation
          // can be put.
@@ -172,6 +181,7 @@ public class MbIlpScene2 implements Mapper {
    }
 
    public void reset() {
+
       mappedOps = 0;
       usedLines = 0;
       lastLineWithStore = 0;
@@ -244,11 +254,20 @@ public class MbIlpScene2 implements Mapper {
       return mapping;
    }
 
+   /**
+    * TODO: Consider if this is part of Mapper interface.
+    * @param mapMoves
+    */
+   public void setMapMoves(boolean mapMoves) {
+      this.mapMoves = mapMoves;
+   }
+
    
 
    /**
     * INSTANCE VARIABLES
     */
+   private boolean mapMoves;
    //private int numLoads;
    private int mappedOps;
    private int usedLines;

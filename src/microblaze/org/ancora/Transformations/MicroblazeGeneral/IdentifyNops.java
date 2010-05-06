@@ -26,7 +26,7 @@ import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
@@ -65,7 +65,7 @@ public class IdentifyNops implements Transformation {
             continue;
          }
 
-         operations.set(i, new Nop(mbOperation.getAddress(), mbOperation.toString()));
+         operations.set(i, new Nop(mbOperation));
          // Check if value == 0
          if(outputValue != 0) {
             Logger.getLogger(IdentifyNops.class.getName()).

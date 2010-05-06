@@ -22,7 +22,7 @@ import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *

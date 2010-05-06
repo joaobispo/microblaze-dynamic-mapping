@@ -29,7 +29,7 @@ import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.IntermediateRepresentation.Operations.OperationType;
+import org.ancora.IntermediateRepresentation.OperationType;
 import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
@@ -49,8 +49,8 @@ import org.ancora.Transformations.MicroblazeInstructions.ParseSignExtension;
 import org.ancora.Transformations.MicroblazeInstructions.ParseStores;
 import org.ancora.Transformations.MicroblazeInstructions.ParseUnconditionalBranches;
 import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
-import org.ancora.Transformations.PureIr.PropagateConstants;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformations.PropagateConstants;
+import org.ancora.IntermediateRepresentation.Transformation;
 import org.ancora.common.IoUtilsAppend;
 
 /**
