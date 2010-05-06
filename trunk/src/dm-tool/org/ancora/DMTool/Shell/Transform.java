@@ -137,19 +137,29 @@ public class Transform implements Executable {
             // Get stats before transformations
             OperationListStats beforeTransf = OperationListStats.buildStats(operations, mapper,
                     block.getRepetitions(), blockName);
-
-            // Show operations
-            /*
+/*
+            // Show operations before
+            System.out.println("BEFORE OPERATIONS:");
             for(Operation operation : operations) {
                System.out.println(operation.getFullOperation());
             }
-             */
+  */
+            // Write DOT Before
+            if(writeDot) {
+               File folder = IoUtils.safeFolder("dot/"+baseFilename);
+               String filename = baseFilename + "-" + i + "-before.dot";
+               writeDot(operations, new File(folder, filename));
+            }
 
 
             // Transform
             for(Transformation t : transf) {
-               operations = t.transform(operations);
+               // Show transformations
+               System.out.println("Transformation:"+t);
+               //operations = t.transform(operations);
+               t.transform(operations);
             }
+
 
             // Get stats after transformation
             OperationListStats afterTransf = OperationListStats.buildStats(operations, mapper,
@@ -159,17 +169,21 @@ public class Transform implements Executable {
             statsBefore.add(beforeTransf);
             statsAfter.add(afterTransf);
             /*
-            System.out.println("Block:");
+            System.out.println("AFTER OPERATIONS:");
             for(Operation operation : operations) {
                System.out.println(operation.getFullOperation());
             }
              */
+             
 
-            // Write DOT
+            // Write DOT After
             if(writeDot) {
-               writeDot(operations, baseFilename, i);
+               File folder = IoUtils.safeFolder("dot/"+baseFilename);
+               String filename = baseFilename + "-" + i + "-after.dot";
+               writeDot(operations, new File(folder, filename));
             }
-            
+
+
          }
          
 
@@ -303,12 +317,13 @@ public class Transform implements Executable {
       System.out.println("------------------------");
    }
 
-   private void writeDot(List<Operation> operations, String baseFilename, int index) {
-
+   private void writeDot(List<Operation> operations, File dotFile) {
+   //private void writeDot(List<Operation> operations, String baseFilename, int index) {
+/*
       File folder = IoUtils.safeFolder("dot/"+baseFilename);
       String filename = baseFilename + "-" + index + ".dot";
       File dotFile = new File(folder, filename);
-
+*/
       
       // Processing on list ended. Removed nops before printing
       List<Operation> ops = Dotty.removeNops(operations);
