@@ -97,6 +97,28 @@ public abstract class Operation {
       return address;
    }
 
+   public String getFullOperation() {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append(address);
+      builder.append(" ");
+      builder.append(toString());
+      for(Operand input : inputs) {
+         builder.append(", ");
+         builder.append(input);
+      }
+      builder.append("; ");
+
+      if(outputs.size() > 0) {
+         builder.append(outputs.get(0));
+      }
+      for(int i=1; i<outputs.size(); i++) {
+         builder.append(", ");
+         builder.append(outputs.get(i));
+      }
+
+      return builder.toString();
+   }
 
 
    /*

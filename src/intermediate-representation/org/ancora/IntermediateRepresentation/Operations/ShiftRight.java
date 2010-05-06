@@ -45,10 +45,10 @@ public class ShiftRight extends Operation {
       super(address);
 
       this.operation = operation;
-      this.input = input;
-      this.output = output;
-      this.carryIn = carryIn;
-      this.carryOut = carryOut;
+      //this.input = input;
+      //this.output = output;
+      //this.carryIn = carryIn;
+      //this.carryOut = carryOut;
 
       // Connect Inputs
       connectToInput(input);
@@ -88,11 +88,13 @@ public class ShiftRight extends Operation {
    }
 
    public Operand getInput() {
-      return input;
+      //return input;
+      return getInputs().get(0);
    }
 
    public Operand getOutput() {
-      return output;
+      //return output;
+       return getOutputs().get(0);
    }
 
    public Op getOperation() {
@@ -100,11 +102,21 @@ public class ShiftRight extends Operation {
    }
 
    public Operand getCarryIn() {
-      return carryIn;
+      if (hasCarryIn) {
+         return getInputs().get(1);
+      } else {
+         return null;
+      }
+      //return carryIn;
    }
 
    public Operand getCarryOut() {
-      return carryOut;
+      if (hasCarryOut) {
+         return getOutputs().get(1);
+      } else {
+         return null;
+      }
+      //return carryOut;
    }
 
    
@@ -118,10 +130,10 @@ public class ShiftRight extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input;
-   private Operand output;
-   private Operand carryIn;
-   private Operand carryOut;
+   //private Operand input;
+   //private Operand output;
+   //private Operand carryIn;
+   //private Operand carryOut;
    private boolean hasCarryIn;
    private boolean hasCarryOut;
 

@@ -33,11 +33,11 @@ public class ArithmeticWithCarry extends Operation {
    public ArithmeticWithCarry(int address, ArithmeticWithCarry.Op operation, Operand input1, Operand input2, Operand output1, Operand carryIn, Operand carryOut) {
       super(address);
       this.operation = operation;
-      this.input1 = input1;
-      this.input2 = input2;
-      this.output1 = output1;
-      this.carryIn = carryIn;
-      this.carryOut = carryOut;
+//      this.input1 = input1;
+//      this.input2 = input2;
+//      this.output1 = output1;
+//      this.carryIn = carryIn;
+//      this.carryOut = carryOut;
 
       // Connect Inputs
       connectToInput(input1);
@@ -77,32 +77,52 @@ public class ArithmeticWithCarry extends Operation {
       return false;
    }
 
-   public Integer getInput1() {
-      if(input1.getType() != OperandType.literal) {
+   public Integer resolveInput1() {
+      if(getInput1().getType() != OperandType.literal) {
          return null;
       }
 
-      return Literal.getInteger((Literal)input1);
+      return Literal.getInteger((Literal)getInput1());
    }
 
-   public Integer getInput2() {
-      if(input2.getType() != OperandType.literal) {
+   public Integer resolveInput2() {
+      if(getInput2().getType() != OperandType.literal) {
          return null;
       }
 
-      return Literal.getInteger((Literal)input2);
+      return Literal.getInteger((Literal)getInput2());
    }
+   
+   public Operand getInput1() {
+      return getInputs().get(0);
+   }
+
+   public Operand getInput2() {
+      return getInputs().get(1);
+   }
+
 
    public Operand getCarryIn() {
-      return carryIn;
+      if(hasCarryIn) {
+         return getInputs().get(2);
+      } else {
+         return null;
+      }
+      //return carryIn;
    }
 
    public Operand getCarryOut() {
-      return carryOut;
+      if(hasCarryOut) {
+         return getInputs().get(1);
+      } else {
+         return null;
+      }
+      //return carryOut;
    }
 
    public Operand getOutput() {
-      return output1;
+      return getOutputs().get(0);
+      //return output1;
    }
 
    public Op getOperation() {
@@ -111,13 +131,13 @@ public class ArithmeticWithCarry extends Operation {
 
    public Integer resolveOutput() {
       // Get first operand
-      Integer firstOperand = getInput1();
+      Integer firstOperand = resolveInput1();
       if(firstOperand == null) {
          return null;
       }
 
       // Get second operand
-      Integer secondOperand = getInput2();
+      Integer secondOperand = resolveInput2();
       if(secondOperand == null) {
          return null;
       }
@@ -130,8 +150,9 @@ public class ArithmeticWithCarry extends Operation {
          carryInValue = 1;
       }
       
-      if(carryIn != null) {
-        Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
+      //if(carryIn != null) {
+      if(hasCarryIn) {
+        Literal lit = OperandUtils.transformOperandToLiteral(getCarryIn());
         if(lit == null) {
            return null;
         }
@@ -153,18 +174,19 @@ public class ArithmeticWithCarry extends Operation {
    }
 
    public Integer resolveCarryOut() {
-      if(carryOut == null) {
+      //if(carryOut == null) {
+      if(!hasCarryOut) {
          return null;
       }
 
       // Get first operand
-      Integer firstOperand = getInput1();
+      Integer firstOperand = resolveInput1();
       if(firstOperand == null) {
          return null;
       }
 
       // Get second operand
-      Integer secondOperand = getInput2();
+      Integer secondOperand = resolveInput2();
       if(secondOperand == null) {
          return null;
       }
@@ -177,8 +199,10 @@ public class ArithmeticWithCarry extends Operation {
          carryInValue = 1;
       }
 
-      if(carryIn != null) {
-        Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
+      //if(carryIn != null) {
+      if(hasCarryIn) {
+        //Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
+        Literal lit = OperandUtils.transformOperandToLiteral(getCarryIn());
         if(lit == null) {
            return null;
         }
@@ -212,11 +236,11 @@ public class ArithmeticWithCarry extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand input2;
-   private Operand output1;
-   private Operand carryIn;
-   private Operand carryOut;
+   //private Operand input1;
+   //private Operand input2;
+   //private Operand output1;
+   //private Operand carryIn;
+   //private Operand carryOut;
    private boolean hasCarryIn;
    private boolean hasCarryOut;
 

@@ -43,9 +43,9 @@ public class Logic extends Operation {
 
       super(address);
 
-      this.input1 = input1;
-      this.input2 = input2;
-      this.output1 = output1;
+      //this.input1 = input1;
+      //this.input2 = input2;
+      //this.output1 = output1;
       this.operation = operation;
       //this.signed = signed;
 
@@ -81,15 +81,18 @@ public class Logic extends Operation {
 
    
    public Operand getInput1() {
-      return input1;
+      //return input1;
+      return getInputs().get(0);
    }
 
    public Operand getInput2() {
-      return input2;
+      //return input2;
+      return getInputs().get(1);
    }
 
    public Operand getOutput1() {
-      return output1;
+      //return output1;
+      return getOutputs().get(0);
    }
 
    public Op getOperation() {
@@ -102,9 +105,9 @@ public class Logic extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand input2;
-   private Operand output1;
+   //private Operand input1;
+   //private Operand input2;
+   //private Operand output1;
    private Logic.Op operation;
    //private boolean signed;
 
