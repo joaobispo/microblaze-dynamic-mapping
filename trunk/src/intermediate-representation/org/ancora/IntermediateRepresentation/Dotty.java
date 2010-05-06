@@ -100,7 +100,7 @@ public class Dotty {
       for(Operation operation : operations) {
          operands.addAll(operation.getInputs());
          operands.addAll(operation.getOutputs());
-         operands.addAll(operation.getParameters());
+         //operands.addAll(operation.getParameters());
       }
 
       return operands;

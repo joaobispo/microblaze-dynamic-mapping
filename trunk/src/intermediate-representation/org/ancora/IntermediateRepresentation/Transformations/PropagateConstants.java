@@ -21,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.OperandUtils;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.ArithmeticWithCarry;
@@ -49,7 +47,7 @@ public class PropagateConstants implements Transformation {
 
       for(int i=0; i<operations.size(); i++) {
          Operation operation = operations.get(i);
-         //substituteRegisterForLiterals(operation, literalRegisters);
+         substituteRegisterForLiterals(operation, literalRegisters);
 
          // Resolve Operation
          List<Literal> outputs = resolveOperation(operation);
@@ -86,7 +84,8 @@ public class PropagateConstants implements Transformation {
             //System.out.println("Before:"+operation.getInputs());
             Literal newLiteral = new Literal(Literal.LiteralType.integer,
                     literalValue.toString(), bits);
-            operands.set(i, newLiteral);
+            //operands.set(i, newLiteral);
+            operation.replaceInput(i, newLiteral);
             //System.out.println("After:"+operation.getInputs());
          }
       }

@@ -20,9 +20,7 @@ package org.ancora.IntermediateRepresentation.Operations;
 import org.ancora.IntermediateRepresentation.OperationType;
 import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.OperandUtils;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
-import org.ancora.IntermediateRepresentation.OperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 
 /**
@@ -79,19 +77,25 @@ public class ArithmeticWithCarry extends Operation {
    }
 
    public Integer resolveInput1() {
+      return Literal.getInteger(getInput1());
+      /*
       if(getInput1().getType() != OperandType.literal) {
          return null;
       }
 
       return Literal.getInteger((Literal)getInput1());
+       */
    }
 
    public Integer resolveInput2() {
+      /*
       if(getInput2().getType() != OperandType.literal) {
          return null;
       }
 
       return Literal.getInteger((Literal)getInput2());
+       */
+      return Literal.getInteger(getInput2());
    }
    
    public Operand getInput1() {
@@ -153,13 +157,25 @@ public class ArithmeticWithCarry extends Operation {
       
       //if(carryIn != null) {
       if(hasCarryIn) {
-        Literal lit = OperandUtils.transformOperandToLiteral(getCarryIn());
-        if(lit == null) {
-           return null;
-        }
-        else {
-           carryInValue = Literal.getInteger(lit);
-        }
+         /*
+         boolean isLiteral = getCarryIn().getType() == OperandType.literal;
+         if(!isLiteral) {
+            return null;
+         }
+          */
+        //Literal lit = TransformUtils.transformOperandToLiteral(getCarryIn());
+        //if(lit == null) {
+        //   return null;
+        //}
+        //else {
+        //   carryInValue = Literal.getInteger(lit);
+        //}
+
+         //carryInValue = Literal.getInteger((Literal)getCarryIn());
+         carryInValue = Literal.getInteger(getCarryIn());
+         if(carryInValue == null) {
+            return null;
+         }
       }
 
       if(operation == Op.add) {
@@ -202,14 +218,20 @@ public class ArithmeticWithCarry extends Operation {
 
       //if(carryIn != null) {
       if(hasCarryIn) {
-        //Literal lit = OperandUtils.transformOperandToLiteral(carryIn);
-        Literal lit = OperandUtils.transformOperandToLiteral(getCarryIn());
+        //Literal lit = TransformUtils.transformOperandToLiteral(carryIn);
+        /*
+         Literal lit = TransformUtils.transformOperandToLiteral(getCarryIn());
         if(lit == null) {
            return null;
         }
         else {
            carryInValue = Literal.getInteger(lit);
         }
+         */
+         carryInValue = Literal.getInteger(getCarryIn());
+         if(carryInValue == null) {
+            return null;
+         }
       }
 
       if(operation == Op.add) {

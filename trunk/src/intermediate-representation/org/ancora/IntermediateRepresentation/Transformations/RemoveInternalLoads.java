@@ -140,7 +140,8 @@ public class RemoveInternalLoads implements Transformation {
                  offset.getType() == OperandType.literal;
 
          if(DL) {
-            String address = base.toString() + "-" + Literal.getInteger((Literal)offset);
+            //String address = base.toString() + "-" + Literal.getInteger((Literal)offset);
+            String address = base.toString() + "-" + Literal.getInteger(offset);
             return address;
          }
 

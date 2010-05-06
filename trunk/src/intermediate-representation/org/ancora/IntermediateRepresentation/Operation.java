@@ -30,7 +30,7 @@ public abstract class Operation {
    //public Operation(OperationType type) {
       inputs = new ArrayList<Operand>();
       outputs = new ArrayList<Operand>();
-      parameters = new ArrayList<Operand>();
+      //parameters = new ArrayList<Operand>();
       this.address = address;
       //this.type = type;
    }
@@ -61,14 +61,28 @@ public abstract class Operation {
    }
 
    /**
+    * Replaces the given operand as input of this object, and adds this operation
+    * as a consumer of the operand.
+    *
+    * @param input
+    * @param position
+    */
+   public void replaceInput(int position, Operand input) {
+      input.replaceInConsumer(position, this);
+   }
+
+
+   /**
     * Adds the given operand as input of this object, and adds this operation
     * as a consumer of the operand.
     *
     * @param input
     */
+   /*
    public void connectToParameters(Operand param) {
       param.connectToParameter(this);
    }
+    */
 
    /**
     * Adds the given operand as output of this object, and adds this operation
@@ -85,17 +99,32 @@ public abstract class Operation {
    }
     */
 
+   /**
+    * Replaces the given operand as output of this object, and adds this operation
+    * as a producer of the operand.
+    *
+    * @param input
+    * @param position
+    */
+   public void replaceOutput(int position, Operand output) {
+      output.replaceInProducer(position, this);
+   }
+
    public List<Operand> getOutputs() {
       return outputs;
    }
 
+   /*
    public List<Operand> getParameters() {
       return parameters;
    }
+    */
 
    public int getAddress() {
       return address;
    }
+
+
 
    public String getFullOperation() {
       StringBuilder builder = new StringBuilder();
@@ -160,7 +189,7 @@ public abstract class Operation {
     */
    private List<Operand> inputs;
    private List<Operand> outputs;
-   private List<Operand> parameters;
+   //private List<Operand> parameters;
    private int address;
    //private OperationType type;
    //private String type;

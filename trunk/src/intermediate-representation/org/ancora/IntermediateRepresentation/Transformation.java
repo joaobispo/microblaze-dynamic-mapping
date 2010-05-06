@@ -18,7 +18,6 @@
 package org.ancora.IntermediateRepresentation;
 
 import java.util.List;
-import org.ancora.IntermediateRepresentation.Operation;
 
 /**
  *
@@ -26,6 +25,7 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public interface Transformation {
 
-   List<Operation> transform(List<Operation> operations);
+  List<Operation> transform(List<Operation> operations);
+   //void transform(List<Operation> operations);
 
 }

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2010 Ancora Research Group.
  * 
@@ -72,9 +71,15 @@ public class Literal extends Operand {
       return literalType.name()+"."+value;
    }
 
-
-   //public static Integer getInteger(Operand operand) {
-   public static Integer getInteger(Literal operand) {
+   /**
+    * Checks if Operand is of type literal. If not, returns null.
+    * Then, checks if is a Literal of type integer. If not, returns null.
+    * Otherwise, returns an integer representing this literal.
+    * @param operand
+    * @return
+    */
+   public static Integer getInteger(Operand operand) {
+   //public static Integer getInteger(Literal operand) {
       if(operand.getType() != OperandType.literal) {
          return null;
       }
