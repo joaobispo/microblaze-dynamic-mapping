@@ -42,8 +42,8 @@ public class SignExtension extends Operation {
 
       super(address);
 
-      this.input1 = input1;
-      this.output = output1;
+      //this.input1 = input1;
+      //this.output = output1;
       this.extensionSizeInBits = extensionSizeInBits;
 
       connectToInput(input1);
@@ -68,11 +68,13 @@ public class SignExtension extends Operation {
    }
 
    public Operand getInput1() {
-      return input1;
+      //return input1;
+      return getInputs().get(0);
    }
 
    public Operand getOutput() {
-      return output;
+      //return output;
+      return getOutputs().get(0);
    }
 
    public int getExtensionSizeInBits() {
@@ -86,7 +88,7 @@ public class SignExtension extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand output;
+   //private Operand input1;
+   //private Operand output;
    private int extensionSizeInBits;
 }

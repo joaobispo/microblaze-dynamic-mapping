@@ -43,14 +43,16 @@ public class MemoryLoad extends Operation {
    public MemoryLoad(int address, Operand input1, Operand input2, Operand output, int bytes) {
       super(address);
 
-      this.input1 = input1;
-      this.input2 = input2;
-      this.output = output;
+
       this.bytes = bytes;
 
       connectToInput(input1);
       connectToInput(input2);
       connectToOutput(output);
+
+      //this.input1 = getInputs().get(0);
+      //this.input2 = getInputs().get(1);
+      //this.output = getOutputs().get(0);
    }
 
 
@@ -70,15 +72,18 @@ public class MemoryLoad extends Operation {
    }
 
    public Operand getInput1() {
-      return input1;
+      return getInputs().get(0);
+      //return input1;
    }
 
    public Operand getInput2() {
-      return input2;
+      return getInputs().get(1);
+      //return input2;
    }
 
    public Operand getOutput() {
-      return output;
+      return getOutputs().get(0);
+      //return output;
    }
 
    @Override
@@ -91,8 +96,8 @@ public class MemoryLoad extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand input2;
-   private Operand output;
+   //private Operand input1;
+   //private Operand input2;
+   //private Operand output;
    private int bytes;
 }

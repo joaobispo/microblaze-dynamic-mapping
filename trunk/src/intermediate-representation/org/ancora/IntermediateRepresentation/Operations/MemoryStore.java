@@ -41,9 +41,9 @@ public class MemoryStore extends Operation {
    public MemoryStore(int address, Operand input1, Operand input2, Operand input3, int bytes) {
       super(address);
 
-      this.input1 = input1;
-      this.input2 = input2;
-      this.input3 = input3;
+      //this.input1 = input1;
+      //this.input2 = input2;
+      //this.input3 = input3;
       this.bytes = bytes;
 
       connectToInput(input1);
@@ -69,15 +69,18 @@ public class MemoryStore extends Operation {
 
 
    public Operand getContentsToStore() {
-      return input1;
+      //return input1;
+      return getInputs().get(0);
    }
 
    public Operand getOperand1() {
-      return input2;
+      //return input2;
+      return getInputs().get(1);
    }
 
    public Operand getOperand2() {
-      return input3;
+      //return input3;
+      return getInputs().get(2);
    }
 
 
@@ -93,8 +96,8 @@ public class MemoryStore extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand input2;
-   private Operand input3;
+   //private Operand input1;
+   //private Operand input2;
+   //private Operand input3;
    private int bytes;
 }

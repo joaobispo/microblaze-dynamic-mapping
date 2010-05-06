@@ -42,7 +42,7 @@ public class UnconditionalExit extends Operation {
       this.baseAddress = baseAddress;
       this.supposedJumpAddress = supposedJumpAddress;
       this.delaySlots = delaySlots;
-      this.input1 = input1;
+//      this.input1 = input1;
 
       connectToInput(input1);
    }
@@ -65,7 +65,8 @@ public class UnconditionalExit extends Operation {
    }
 
    public Operand getInput1() {
-      return input1;
+      //return input1;
+      return getInputs().get(0);
    }
 
    public int getBaseAddress() {
@@ -89,5 +90,5 @@ public class UnconditionalExit extends Operation {
    private int baseAddress;
    private int supposedJumpAddress;
    private int delaySlots;
-   private Operand input1;
+   //private Operand input1;
 }

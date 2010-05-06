@@ -51,8 +51,8 @@ public class ConditionalExit extends Operation {
       //this.nextTraceInstOffset = nextTraceInstOffset;
       this.supposedJumpAddress = nextAddress;
       this.delaySlots = delaySlots;
-      this.input1 = input1;
-      this.input2 = input2;
+      //this.input1 = input1;
+      //this.input2 = input2;
 
       connectToInput(input1);
       connectToInput(input2);
@@ -110,8 +110,8 @@ public int getSupposedJumpAddress() {
    //private int nextTraceInstOffset;
    private int supposedJumpAddress;
    private int delaySlots;
-   private Operand input1;
-   private Operand input2;
+   //private Operand input1;
+   //private Operand input2;
 
 
 public enum Input {

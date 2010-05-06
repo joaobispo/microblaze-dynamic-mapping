@@ -42,9 +42,9 @@ public class Mutiplication extends Operation {
 
       super(address);
 
-      this.input1 = input1;
-      this.input2 = input2;
-      this.output = output1;
+//      this.input1 = input1;
+//      this.input2 = input2;
+//      this.output = output1;
 
       connectToInput(input1);
       connectToInput(input2);
@@ -62,15 +62,18 @@ public class Mutiplication extends Operation {
    }
 
    public Operand getInput1() {
-      return input1;
+      //return input1;
+      return getInputs().get(0);
    }
 
    public Operand getInput2() {
-      return input2;
+      //return input2;
+      return getInputs().get(1);
    }
 
    public Operand getOutput() {
-      return output;
+      //return output;
+      return getOutputs().get(0);
    }
 
 
@@ -84,8 +87,8 @@ public class Mutiplication extends Operation {
    /**
     * INSTANCE VARIABLES
     */
-   private Operand input1;
-   private Operand input2;
-   private Operand output;
+   //private Operand input1;
+   //private Operand input2;
+   //private Operand output;
 
 }

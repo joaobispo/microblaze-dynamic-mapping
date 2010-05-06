@@ -23,7 +23,7 @@ import org.ancora.IntermediateRepresentation.Operand;
  *
  * @author Joao Bispo
  */
-public class InternalData extends Operand {
+public class InternalData extends Operand  {
 
    public InternalData(String name, int bits) {
       this.name = name;
@@ -55,7 +55,7 @@ public class InternalData extends Operand {
    }
 
    @Override
-   public Operand copy() {
+   public InternalData copy() {
       return new InternalData(name, bits);
    }
 
@@ -63,6 +63,12 @@ public class InternalData extends Operand {
    public String toString() {
       return name;
    }
+
+   public String getName() {
+      return name;
+   }
+
+   
 
    /**
     * INSTANCE VARIABLES
