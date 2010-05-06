@@ -24,10 +24,13 @@ import java.util.logging.Logger;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.IntermediateRepresentation.MbParser;
+import org.ancora.IntermediateRepresentation.Operand;
+import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.Transformations.MicroblazeGeneral.*;
 import org.ancora.Transformations.MicroblazeInstructions.*;
+import org.ancora.Transformations.PureIr.SingleStaticAssignment;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -46,13 +49,33 @@ public class TransformUtils {
          operations = transf.transform(operations);
       }
 
-      // Check that there are no microblaze operations
+      // Check that there are no microblaze operations  nor operands
       for(Operation operation : operations) {
          if(MbOperation.getMbOperation(operation) != null) {
             Logger.getLogger(TransformUtils.class.getName()).
                     warning("Could not transform block of MicroBlaze instructions " +
                     "int a pure intermediate representation, due to operation '"+operation+"'");
             return null;
+         }
+
+         for(Operand operand : operation.getInputs()) {
+            if(operand.getType() == MicroblazeType.MbImm ||
+                    operand.getType() == MicroblazeType.MbRegister) {
+                Logger.getLogger(TransformUtils.class.getName()).
+                    warning("Could not transform block of MicroBlaze instructions " +
+                    "int a pure intermediate representation, due to input operand '"+operand+"'");
+            return null;
+            }
+         }
+
+         for(Operand operand : operation.getOutputs()) {
+            if(operand.getType() == MicroblazeType.MbImm ||
+                    operand.getType() == MicroblazeType.MbRegister) {
+                Logger.getLogger(TransformUtils.class.getName()).
+                    warning("Could not transform block of MicroBlaze instructions " +
+                    "int a pure intermediate representation, due to output operand '"+operand+"'");
+            return null;
+            }
          }
       }
 
@@ -92,6 +115,8 @@ public class TransformUtils {
        */
    }
 
+  
+
    public static final Transformation[] microblazeTransformations = {
          new TransformImmToLiterals(),
          new RegisterZeroToLiteral(),
@@ -107,6 +132,8 @@ public class TransformUtils {
          new ParseLoads(),
          new ParseStores(),
          new ParseMultiplication(),
-         new ParseShiftRight()
+         new ParseShiftRight(),
+         new TransformRegistersToInternalData(),
+         new SingleStaticAssignment()
       };
 }

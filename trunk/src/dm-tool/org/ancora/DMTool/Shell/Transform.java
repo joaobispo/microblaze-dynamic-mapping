@@ -17,34 +17,30 @@
 
 package org.ancora.DMTool.Shell;
 
-import org.ancora.DMTool.TransformStudy.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import org.ancora.DMTool.Configuration.Definitions;
-import org.ancora.DMTool.Configuration.FileType;
 import org.ancora.DMTool.Shell.System.GeneralPreferences;
 import org.ancora.DMTool.Shell.System.Executable;
 import org.ancora.DMTool.Shell.System.MapperDispenser;
 import org.ancora.DMTool.Shell.System.PartitionerDispenser;
 import org.ancora.DMTool.Shell.System.Transform.OperationListStats;
 import org.ancora.DMTool.Shell.System.TransformDispenser;
-import org.ancora.DMTool.TraceProcessor.TraceProcessor;
 import org.ancora.DMTool.TraceProcessor.TraceProcessorWorker;
-import org.ancora.DMTool.Utils.EnumUtils;
 import org.ancora.DMTool.Utils.IoUtilsAppend;
 import org.ancora.DMTool.Utils.TransformUtils;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
 import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
 import org.ancora.DynamicMapping.InstructionBlock.MbElfReader;
-import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
 import org.ancora.DynamicMapping.Partitioning.Partitioner;
+import org.ancora.IntermediateRepresentation.Dotty;
 import org.ancora.IntermediateRepresentation.Ilp.Mapper;
 import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 import org.ancora.Transformations.Transformation;
@@ -69,7 +65,7 @@ public class Transform implements Executable {
       traceExtension = prefs.getPreference(GeneralPreferences.traceExtension);
       mapper = MapperDispenser.getCurrentMapper();
       transf = TransformDispenser.getCurrentTransformations();
-
+      writeDot = Boolean.parseBoolean(prefs.getPreference(GeneralPreferences.transformWriteDot));
    }
 
 
@@ -83,19 +79,6 @@ public class Transform implements Executable {
          return false;
       }
 
-      // Get type of files extension
-      /*
-      FileType extensionType = EnumUtils.valueOf(FileType.class, arguments.get(0));
-      if(extensionType == null) {
-         logger.info("Invalid file type '"+arguments.get(0)+"'. Avaliable:");
-         for(FileType type : FileType.values()) {
-            logger.info("- "+type.name());
-         }
-         return false;
-      }
-
-      String extension = getExtension(extensionType);
-      */
 
       // Check file/folder
       File file = new File(arguments.get(0));
@@ -122,101 +105,24 @@ public class Transform implements Executable {
 
       processFiles(inputFiles);
 
-      //System.out.println("Input files:");
-      //System.out.println(inputFiles);
-
-      // Process files
-      /*
-      List<NamedBlock> blocks = getBlocks(inputFiles);
-      System.out.println("Found blocks:");
-      for(NamedBlock block : blocks) {
-         System.out.println(block.getName() + "("+block.getBlock().getRepetitions()+" repetitions)");
-      }
-      */
 
       return true;
    }
 
-   /*
-   private List<NamedBlock> getBlocks(List<File> inputFiles) {
-      List<NamedBlock> blocks = new ArrayList<NamedBlock>();
-
-      for(File file : inputFiles) {
-         addBlocks(file, blocks);
-      }
-
-      return blocks;
-   }
-    */
-
-   /*
-   private void addBlocks(File file, List<NamedBlock> blocks) {
-      // Determine file extension and determine type of file
-      String filename = file.getName();
-      int separatorIndex = filename.lastIndexOf(Definitions.EXTENSION_SEPARATOR);
-      String extension = filename.substring(separatorIndex+1);
-      FileType fileType = FileType.getFileType(extension);
-      String baseFilename = filename.substring(0, separatorIndex);
-
-      if(fileType == null) {
-         return;
-      }
-
-      if(fileType == FileType.block) {
-         addBlocksLoader(file, blocks);
-         return;
-      }
-
-      if(fileType == FileType.elf) {
-         String systemConfig = "./Configuration Files/systemconfig.xml";
-         InstructionBusReader busReader = MbElfReader.createMbElfReader(systemConfig, file.getAbsolutePath());
-//         TraceProcessor.processReader(busReader, baseFilename, blocks);
-         return;
-      }
-
-      
-      if(fileType == FileType.trace) {
-         InstructionBusReader busReader = MbTraceReader.createTraceReader(file);
-//         TraceProcessor.processReader(busReader, baseFilename, blocks);
-         return;
-      }
-
-      return;
-   }
-    */
-
-   /**
-    * File is a instruction block.
-    * 
-    * @param file
-    * @param blocks
-    */
-   /*
-   private List<InstructionBlock> addBlocksLoader(File file) {
-   //private void addBlocksLoader(File file, List<NamedBlock> blocks) {
-      InstructionBlock block = MbInstructionBlockWriter.loadInstructionBlock(file);
-      if(block == null) {
-         logger.warning("Could not load block file '"+file+"'.");
-      }
-
-      String blockName = file.getName();
-      int separatorIndex = blockName.lastIndexOf(Definitions.EXTENSION_SEPARATOR);
-      blockName = blockName.substring(0, separatorIndex);
-
-      blocks.add(new NamedBlock(block, blockName));
-   }
-    */
 
    private void processFiles(List<File> inputFiles) {
-
+      List<OperationListStats> statsBefore = new ArrayList<OperationListStats>();
+      List<OperationListStats> statsAfter = new ArrayList<OperationListStats>();
 
       for(File file : inputFiles) {
          logger.info("Processing file '"+file.getName()+"'...");
          String baseFilename = ParseUtils.removeSuffix(file.getName(), Definitions.EXTENSION_SEPARATOR);
 
+
          // Get InstructionBlocks
          List<InstructionBlock> blocks = getBlocks(file);
          for(int i=0; i<blocks.size(); i++) {
+            String blockName = baseFilename+"-"+i;
 
             InstructionBlock block = blocks.get(i);
             logger.info("Block "+i+", "+block.getRepetitions()+" repetitions.");
@@ -229,7 +135,8 @@ public class Transform implements Executable {
             }
 
             // Get stats before transformations
-            OperationListStats beforeTransf = OperationListStats.buildStats(operations, mapper);
+            OperationListStats beforeTransf = OperationListStats.buildStats(operations, mapper,
+                    block.getRepetitions(), blockName);
 
             // Transform
             for(Transformation t : transf) {
@@ -237,14 +144,34 @@ public class Transform implements Executable {
             }
 
             // Get stats after transformation
-            OperationListStats afterTransf = OperationListStats.buildStats(operations, mapper);
+            OperationListStats afterTransf = OperationListStats.buildStats(operations, mapper,
+                    block.getRepetitions(), blockName);
 
             showStats(beforeTransf, afterTransf);
+            statsBefore.add(beforeTransf);
+            statsAfter.add(afterTransf);
+            /*
+            System.out.println("Block:");
+            for(Operation operation : operations) {
+               System.out.println(operation.getFullOperation());
+            }
+             */
+
+            // Write DOT
+            if(writeDot) {
+               writeDot(operations, baseFilename, i);
+            }
             
          }
          
 
       }
+
+      // Calculate average
+      System.out.println("Average Stats Before Transformations:");
+      OperationListStats.calcAverage(statsBefore);
+      System.out.println("Average Stats After Transformations:");
+      OperationListStats.calcAverage(statsAfter);
    }
 
    private List<InstructionBlock> getBlocks(File file) {
@@ -270,21 +197,7 @@ public class Transform implements Executable {
          TraceProcessorWorker worker = getProcessorWorker(busReader);
          return worker.processTrace(busReader);
       }
-      /*
-      if(fileType == FileType.elf) {
-         String systemConfig = "./Configuration Files/systemconfig.xml";
-         InstructionBusReader busReader = MbElfReader.createMbElfReader(systemConfig, file.getAbsolutePath());
-//         TraceProcessor.processReader(busReader, baseFilename, blocks);
-         return;
-      }
 
-
-      if(fileType == FileType.trace) {
-         InstructionBusReader busReader = MbTraceReader.createTraceReader(file);
-//         TraceProcessor.processReader(busReader, baseFilename, blocks);
-         return;
-      }
-*/
       // Not of the type expected
       logger.warning("Could not process file with extension '"+extension+"'.");
       return new ArrayList<InstructionBlock>();
@@ -311,18 +224,19 @@ public class Transform implements Executable {
 
    private static void showStats(OperationListStats beforeTransf, OperationListStats afterTransf) {
       // only show after stats that change
-      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations", "MbOperations"};
+//      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations", "MbOperations"};
+      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations"};
       String[] before = {String.valueOf(beforeTransf.getCommunicationCost()),
         String.valueOf(beforeTransf.getCpl()),
         String.valueOf(beforeTransf.getIlp()),
         String.valueOf(beforeTransf.getNumberOfOperations()),
-        String.valueOf(beforeTransf.getNumberOfMbOps())
+//        String.valueOf(beforeTransf.getNumberOfMbOps())
       };
       String[] after = {String.valueOf(afterTransf.getCommunicationCost()),
         String.valueOf(afterTransf.getCpl()),
         String.valueOf(afterTransf.getIlp()),
         String.valueOf(afterTransf.getNumberOfOperations()),
-        String.valueOf(afterTransf.getNumberOfMbOps())
+//        String.valueOf(afterTransf.getNumberOfMbOps())
       };
 
 
@@ -345,6 +259,22 @@ public class Transform implements Executable {
       System.out.println("------------------------");
    }
 
+   private void writeDot(List<Operation> operations, String baseFilename, int index) {
+
+      File folder = IoUtils.safeFolder("dot/"+baseFilename);
+      String filename = baseFilename + "-" + index + ".dot";
+      File dotFile = new File(folder, filename);
+
+      
+      // Processing on list ended. Removed nops before printing
+      List<Operation> ops = Dotty.removeNops(operations);
+
+      // Connect
+      ops = Dotty.connectOperations(operations);
+
+      IoUtils.write(dotFile, Dotty.generateDot(ops));
+   }
+
    /**
     * INSTANCE VARIABLES
     */
@@ -354,15 +284,7 @@ public class Transform implements Executable {
    private String blockExtension;
    private Mapper mapper;
    private Transformation[] transf;
-
-
-
-
-
-
-
-
-
+   private boolean writeDot;
 
 
 

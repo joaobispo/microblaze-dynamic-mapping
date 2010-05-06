@@ -19,17 +19,14 @@ package org.ancora.DMTool.Shell.System;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
-import org.ancora.IntermediateRepresentation.Ilp.Mapper;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene1;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 import org.ancora.Transformations.PureIr.PropagateConstants;
+import org.ancora.Transformations.PureIr.RemoveInternalLoads;
+import org.ancora.Transformations.PureIr.SingleStaticAssignment;
 import org.ancora.Transformations.Transformation;
 
 /**
@@ -78,6 +75,8 @@ public class TransformDispenser {
               new Hashtable<String, Transformation>();
 
       aMap.put(Options.PropagateConstants.toLowerCase(), new PropagateConstants());
+      aMap.put(Options.SingleStaticAssignment.toLowerCase(), new SingleStaticAssignment());
+      aMap.put(Options.RemoveInternalLoads.toLowerCase(), new RemoveInternalLoads());
 
 
       transfOptions = Collections.unmodifiableMap(aMap);
@@ -88,10 +87,14 @@ public class TransformDispenser {
     * ENUM
     */
    public enum TransformOption {
-      PropagateConstants;
+      PropagateConstants,
+      SingleStaticAssignment,
+      RemoveInternalLoads;
    }
 
    public interface Options {
       String PropagateConstants = "ConstantPropagation";
+      String SingleStaticAssignment = "SSA";
+      String RemoveInternalLoads = "spilling-loads";
    }
 }
