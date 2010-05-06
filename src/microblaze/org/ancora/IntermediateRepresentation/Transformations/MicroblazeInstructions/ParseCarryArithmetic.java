@@ -15,12 +15,11 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import static org.ancora.IntermediateRepresentation.Operations.ArithmeticWithCarry.Op.*;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.ArithmeticWithCarry;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
@@ -37,6 +36,11 @@ import org.ancora.IntermediateRepresentation.Transformation;
  * @author Joao Bispo
  */
 public class ParseCarryArithmetic implements Transformation {
+
+   @Override
+   public String toString() {
+      return "ParseCarryArithmetic";
+   }
 
    public List<Operation> transform(List<Operation> operations) {
      for(int i=0; i<operations.size(); i++) {
@@ -84,10 +88,7 @@ public class ParseCarryArithmetic implements Transformation {
 
   
 
-   @Override
-   public String toString() {
-      return "ParseAdds";
-   }
+
 
    /**
     * INSTANCE VARIABLES
@@ -223,7 +224,7 @@ public class ParseCarryArithmetic implements Transformation {
          return null;
       }
 
-      return MbOperandUtils.createCarryOperand();
+      return MbTransformUtils.createCarryOperand();
    }
 
    private Operand getCarryOut(InstructionName instructionName) {
@@ -237,7 +238,7 @@ public class ParseCarryArithmetic implements Transformation {
          return null;
       }
 
-      return MbOperandUtils.createCarryOperand();
+      return MbTransformUtils.createCarryOperand();
    }
 
 }

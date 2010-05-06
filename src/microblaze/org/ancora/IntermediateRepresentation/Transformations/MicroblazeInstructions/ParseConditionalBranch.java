@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.ArrayList;
 import static org.ancora.IntermediateRepresentation.Operations.ConditionalExit.Op.*;
@@ -29,7 +29,7 @@ import org.ancora.IntermediateRepresentation.Operations.ConditionalExit;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.InstructionProperties;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
@@ -58,10 +58,10 @@ public class ParseConditionalBranch implements Transformation {
         }
 
         // Check if it has delay slots
-        int delaySlots = MbOperandUtils.getDelaySlots(branchOp.getMbType());
+        int delaySlots = MbTransformUtils.getDelaySlots(branchOp.getMbType());
 
         // Calculate nextAddress
-        int nextAddress = MbOperandUtils.calculateNextAddress(operations, i, branchOp.getMbType());
+        int nextAddress = MbTransformUtils.calculateNextAddress(operations, i, branchOp.getMbType());
         // Calculate offset
         //int offset = nextAddress - branchOp.getAddress();
 

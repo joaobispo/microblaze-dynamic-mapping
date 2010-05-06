@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -23,21 +23,22 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.Division;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.IntermediateRepresentation.Operations.Mutiplication;
+import org.ancora.IntermediateRepresentation.Operations.UnconditionalExit;
 import org.ancora.MicroBlaze.InstructionName;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class ParseMultiplication implements Transformation {
+public class ParseReturnSubroutine implements Transformation {
 
    @Override
    public String toString() {
-      return "ParseMultiplication";
+      return "ParseReturnFromSubroutine";
    }
 
 
@@ -47,24 +48,26 @@ public class ParseMultiplication implements Transformation {
          Operation operation = operations.get(i);
 
         // Check if MicroBlaze Operation
-        MbOperation mulOp = MbOperation.getMbOperation(operation);
-        if(mulOp == null) {
+        MbOperation rstdOp = MbOperation.getMbOperation(operation);
+        if(rstdOp == null) {
            continue;
         }
 
-        // Check if it is a division
-        Integer number = instructionProperties.get(mulOp.getMbType());
-        if(number == null) {
+        // Check if it is a rstd
+        if(rstdOp.getMbType() != InstructionName.rtsd) {
            continue;
         }
 
+         Operand input1 = rstdOp.getInputs().get(0).copy();
 
-         Operand input1 = mulOp.getInputs().get(0).copy();
-         Operand input2 = mulOp.getInputs().get(1).copy();
-         Operand output = mulOp.getOutputs().get(0).copy();
+         //int baseAddress = MbTransformUtils.getIntegerValue(rstdOp.getInputs().get(1));
+         int baseAddress = MbImm.getImmValue(rstdOp.getInputs().get(1));
+         int supposedJumpAddress = MbTransformUtils.calculateNextAddress(operations, i,
+                rstdOp.getMbType());
+         int delaySlots = 1;
 
-         Operation newOperation = new Mutiplication(mulOp.getAddress(),
-                 input1, input2, output);
+         Operation newOperation = new UnconditionalExit(rstdOp.getAddress(),
+                 baseAddress, supposedJumpAddress, delaySlots, input1);
 
         // Replace old operation
         operations.set(i, newOperation);
@@ -80,11 +83,10 @@ public class ParseMultiplication implements Transformation {
    static {
       Map<InstructionName, Integer> aMap = new Hashtable<InstructionName, Integer>();
 
-      aMap.put(InstructionName.mul, 1);
-      aMap.put(InstructionName.muli, 2);
- 
+      aMap.put(InstructionName.sext8, 8);
+      aMap.put(InstructionName.sext16, 16);
+
       instructionProperties = Collections.unmodifiableMap(aMap);
    }
-
 
 }

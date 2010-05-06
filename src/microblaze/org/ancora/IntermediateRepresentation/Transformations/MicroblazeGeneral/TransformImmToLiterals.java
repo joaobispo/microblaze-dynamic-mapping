@@ -15,13 +15,13 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeGeneral;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.Operands.Literal;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
@@ -30,6 +30,12 @@ import org.ancora.IntermediateRepresentation.Transformation;
  * @author Joao Bispo
  */
 public class TransformImmToLiterals implements Transformation {
+   
+   @Override
+   public String toString() {
+      //return RegisterZeroToLiteral.class.getName();
+      return "TransformImmToLiterals";
+   }
 
    /**
     * Transforms MicroBlaze Immediate operands to General Literal Operands
@@ -40,25 +46,68 @@ public class TransformImmToLiterals implements Transformation {
     * @return
     */
    public List<Operation> transform(List<Operation> operations) {
+      
+      for(int i=0; i<operations.size(); i++) {
+         Operation operation = operations.get(i);
+
+         // Check inputs
+         List<Operand> inputs = operation.getInputs();
+         for(int j=0; j<inputs.size(); j++) {
+            Operand operand = inputs.get(j);
+
+            Literal literal = getLiteralFromImm(operand);
+
+            if(literal != null) {
+               // Replace input
+               operation.replaceInput(j, literal);
+            }
+         }
+
+         // Check outputs
+         List<Operand> outputs = operation.getOutputs();
+         for(int j=0; j<outputs.size(); j++) {
+            Operand operand = outputs.get(j);
+
+            Literal literal = getLiteralFromImm(operand);
+
+            if(literal != null) {
+               // Replace input
+               operation.replaceOutput(j, literal);
+            }
+         }
+      }
+/*
       for(Operation operation : operations) {
          transformOperands(operation.getInputs());
          transformOperands(operation.getOutputs());
       }
-
+*/
       return operations;
    }
-
+/*
    private void transformOperands(List<Operand> operands) {
       for(int i=0; i<operands.size(); i++) {
          //if(operands.get(i).getType() == MbOperandType.immediate) {
          if(operands.get(i).getType() == MicroblazeType.MbImm) {
-            Operand newOperand = MbOperandUtils.transformOperandToLiteral(operands.get(i));
+            Operand newOperand = MbTransformUtils.transformOperandToLiteral(operands.get(i));
             if(newOperand != null) {
                operands.set(i, newOperand);
             }
          }
       }
 
+   }
+*/
+   private Literal getLiteralFromImm(Operand operand) {
+      // Check if it is a MicroBlaze immediate value
+      Integer immValue = MbImm.getImmValue(operand);
+
+      if(immValue == null) {
+         return null;
+      }
+
+      return new Literal(Literal.LiteralType.integer, String.valueOf(immValue),
+              operand.getBits());
    }
 
 /*
@@ -78,21 +127,18 @@ public class TransformImmToLiterals implements Transformation {
    }
  */
 
+   /*
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
+      Operand newOperand = MbTransformUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
          return false;
       }
    }
+    */
 
-   @Override
-   public String toString() {
-      //return RegisterZeroToLiteral.class.getName();
-      return "TransformImmToLiterals";
-   }
 
 
 

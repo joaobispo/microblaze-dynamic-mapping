@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;

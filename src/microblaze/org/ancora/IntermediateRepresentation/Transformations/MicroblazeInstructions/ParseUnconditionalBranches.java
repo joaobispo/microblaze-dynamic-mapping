@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,8 @@ import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.IntermediateRepresentation.Operations.UnconditionalExit;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
@@ -75,7 +76,7 @@ public class ParseUnconditionalBranches implements Transformation {
         }
 
         // Calculate next address
-        int nextSupposedAddress = MbOperandUtils.calculateNextAddress(operations, i,
+        int nextSupposedAddress = MbTransformUtils.calculateNextAddress(operations, i,
                 branchOp.getMbType());
 
         // Calculate base address
@@ -87,7 +88,7 @@ public class ParseUnconditionalBranches implements Transformation {
         }
 
         // Check if it has delay slots
-        int delaySlots = MbOperandUtils.getDelaySlots(branchOp.getMbType());
+        int delaySlots = MbTransformUtils.getDelaySlots(branchOp.getMbType());
 
         // Get input 1
         Operand input1 = branchOp.getInputs().get(0).copy();
@@ -100,7 +101,8 @@ public class ParseUnconditionalBranches implements Transformation {
         }
 
         // Check if input1 is literal
-        Integer input1Value = MbOperandUtils.getIntegerValue(input1);
+        /*
+        Integer input1Value = MbTransformUtils.getIntegerValue(input1);
         if(input1Value != null) {
             // Confirm that next address is block is correct
            int calculatedJump = baseAddress + input1Value;
@@ -117,6 +119,7 @@ public class ParseUnconditionalBranches implements Transformation {
            operations.set(i, new Nop(branchOp));
            continue;
         }
+         */
 
         // Create UnconditionalExit operation
         UnconditionalExit newOperation = new UnconditionalExit(branchOp.getAddress(),
@@ -175,7 +178,8 @@ public class ParseUnconditionalBranches implements Transformation {
       }
 
       // Check if it as a value
-      Integer value = MbOperandUtils.getIntegerValue(branchOp.getInputs().get(1));
+      //Integer value = MbTransformUtils.getIntegerValue(branchOp.getInputs().get(1));
+      Integer value = MbImm.getImmValue(branchOp.getInputs().get(1));
       if(value == null) {
          return false;
       }

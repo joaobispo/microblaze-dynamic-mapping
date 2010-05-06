@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -26,7 +26,7 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.ShiftRight;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
@@ -59,10 +59,10 @@ public class ParseShiftRight implements Transformation {
         ShiftRight.Op op = props.operation;
         Operand input = shiftOperation.getInputs().get(0).copy();
         Operand output = shiftOperation.getOutputs().get(0).copy();
-        Operand carryOut = MbOperandUtils.createCarryOperand();
+        Operand carryOut = MbTransformUtils.createCarryOperand();
         Operand carryIn;
         if(props.hasCarryIn) {
-           carryIn = MbOperandUtils.createCarryOperand();
+           carryIn = MbTransformUtils.createCarryOperand();
         } else {
            carryIn = null;
         }

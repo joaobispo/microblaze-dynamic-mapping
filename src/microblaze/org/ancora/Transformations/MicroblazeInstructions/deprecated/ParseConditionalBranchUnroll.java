@@ -38,7 +38,7 @@ import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.deprecated.Mux;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.InstructionProperties;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**

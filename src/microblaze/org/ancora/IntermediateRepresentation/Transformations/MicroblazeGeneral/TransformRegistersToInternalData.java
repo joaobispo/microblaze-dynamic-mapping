@@ -15,17 +15,17 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeGeneral;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
-import org.ancora.IntermediateRepresentation.Operands.MbRegister;
 import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
+ * Transforms MbRegisters into Internal Data
  *
  * @author Joao Bispo
  */

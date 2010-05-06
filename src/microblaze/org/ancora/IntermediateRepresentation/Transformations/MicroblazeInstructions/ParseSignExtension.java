@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.Division;
+import org.ancora.IntermediateRepresentation.Operations.Logic;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
+import org.ancora.IntermediateRepresentation.Operations.SignExtension;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.IntermediateRepresentation.Transformation;
 
@@ -32,11 +33,11 @@ import org.ancora.IntermediateRepresentation.Transformation;
  *
  * @author Joao Bispo
  */
-public class ParseDivision implements Transformation {
+public class ParseSignExtension implements Transformation {
 
    @Override
    public String toString() {
-      return "ParseDivision";
+      return "ParseSignExtension";
    }
 
 
@@ -46,24 +47,23 @@ public class ParseDivision implements Transformation {
          Operation operation = operations.get(i);
 
         // Check if MicroBlaze Operation
-        MbOperation divisionOp = MbOperation.getMbOperation(operation);
-        if(divisionOp == null) {
+        MbOperation signExtOp = MbOperation.getMbOperation(operation);
+        if(signExtOp == null) {
            continue;
         }
 
-        // Check if it is a division
-        Division.Op divisionOperation =
-                instructionProperties.get(divisionOp.getMbType());
-        if(divisionOperation == null) {
+        // Check if it is an unconditional compare
+        Integer extensionSize =
+                instructionProperties.get(signExtOp.getMbType());
+        if(extensionSize == null) {
            continue;
         }
 
-         Operand input1 = divisionOp.getInputs().get(0).copy();
-         Operand input2 = divisionOp.getInputs().get(1).copy();
-         Operand output = divisionOp.getOutputs().get(0).copy();
+         Operand input1 = signExtOp.getInputs().get(0).copy();
+         Operand output = signExtOp.getOutputs().get(0).copy();
 
-         Operation newOperation = new Division(divisionOp.getAddress(),
-                 input1, input2, output, divisionOperation);
+         Operation newOperation = new SignExtension(signExtOp.getAddress(),
+                 input1, output, extensionSize);
 
         // Replace old operation
         operations.set(i, newOperation);
@@ -75,15 +75,14 @@ public class ParseDivision implements Transformation {
    /**
     * INSTANCE VARIABLES
     */
-      private static final Map<InstructionName, Division.Op> instructionProperties;
+      private static final Map<InstructionName, Integer> instructionProperties;
    static {
-      Map<InstructionName, Division.Op> aMap = new Hashtable<InstructionName, Division.Op>();
+      Map<InstructionName, Integer> aMap = new Hashtable<InstructionName, Integer>();
 
-      aMap.put(InstructionName.idiv, Division.Op.mbIntegerDivisionSigned);
-      aMap.put(InstructionName.idivu, Division.Op.mbIntegerDivisionUnsigned);
- 
+      aMap.put(InstructionName.sext8, 8);
+      aMap.put(InstructionName.sext16, 16);
+
       instructionProperties = Collections.unmodifiableMap(aMap);
    }
-
 
 }

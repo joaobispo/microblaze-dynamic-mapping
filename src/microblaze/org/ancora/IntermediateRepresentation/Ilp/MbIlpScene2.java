@@ -112,6 +112,7 @@ public class MbIlpScene2 implements Mapper {
             line = 0;
             dataLines.put(operandRepresentation, line);
             updateLiveins(operandRepresentation);
+            //System.out.println("Added Live-In:"+operandRepresentation);
          }
 
          lowestLine = Math.max(lowestLine, line);
@@ -195,7 +196,7 @@ public class MbIlpScene2 implements Mapper {
 
 
    public int getLiveIns() {
-      //System.out.println("Liveins:"+liveIns);
+//      System.out.println("Liveins:"+liveIns);
       return liveIns.size();
    }
 
@@ -212,7 +213,7 @@ public class MbIlpScene2 implements Mapper {
          }
       }
 */
-      //System.out.println("Liveouts:"+liveOuts);
+//      System.out.println("Liveouts:"+liveOuts);
       return liveOuts.size();
    }
 
