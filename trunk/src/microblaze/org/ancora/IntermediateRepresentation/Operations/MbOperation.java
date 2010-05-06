@@ -86,6 +86,14 @@ public class MbOperation extends Operation {
       }
    }
 
+   public static InstructionName getMbInstructionName(Operation operation) {
+      if(operation.getType() == MbOperationType.MicroBlazeOperation) {
+         return ((MbOperation)operation).getMbType();
+      } else {
+         return null;
+      }
+   }
+
    /**
     * INSTANCE VARIABLES
     */

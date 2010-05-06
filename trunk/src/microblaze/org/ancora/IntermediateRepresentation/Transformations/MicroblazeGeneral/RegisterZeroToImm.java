@@ -15,23 +15,28 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeGeneral;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral;
 
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
+import org.ancora.IntermediateRepresentation.Operands.MbRegister;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class RegisterZeroToLiteral implements Transformation {
+public class RegisterZeroToImm implements Transformation {
+
+   @Override
+   public String toString() {
+      return "RegisterZeroToImm";
+   }
 
    /**
-    * Changes occurences of Register 0 to Literal 0.
+    * Changes occurences of Register 0 to Immediate 0.
     *
     * <p>Changes input operations.
     * 
@@ -41,10 +46,42 @@ public class RegisterZeroToLiteral implements Transformation {
    public List<Operation> transform(List<Operation> operations) {
       //List<Operation> newList = new ArrayList<Operation>(operations.size());
 
+      for(int i=0; i<operations.size(); i++) {
+         Operation operation = operations.get(i);
+
+         // Check inputs
+         List<Operand> inputs = operation.getInputs();
+         for(int j=0; j<inputs.size(); j++) {
+            Operand operand = inputs.get(j);
+
+            Operand zeroImm = getImmZero(operand);
+
+            if(zeroImm != null) {
+               // Replace input
+               operation.replaceInput(j, zeroImm);
+            }
+         }
+
+         // Check outputs
+         List<Operand> outputs = operation.getOutputs();
+         for(int j=0; j<outputs.size(); j++) {
+            Operand operand = outputs.get(j);
+
+            Operand zeroImm = getImmZero(operand);
+
+            if(zeroImm != null) {
+               // Replace input
+               operation.replaceOutput(j, zeroImm);
+            }
+         }
+      }
+
+      /*
       for(Operation operation : operations) {
          transformRegister0(operation.getInputs());
          transformRegister0(operation.getOutputs());
       }
+       */
 
       return operations;
    }
@@ -53,6 +90,7 @@ public class RegisterZeroToLiteral implements Transformation {
     * @param inputs
     * @return true if found register 0.
     */
+   /*
    private boolean transformRegister0(List<Operand> operands) {
       boolean transformed = false;
 
@@ -60,7 +98,7 @@ public class RegisterZeroToLiteral implements Transformation {
          // Check if operand is a MbOperand
          Operand operand = operands.get(i);
          if(operand.getType() == MicroblazeType.MbRegister) {
-            Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
+            Operand newOperand = MbTransformUtils.transformOperandToLiteral(operand);
             if(newOperand != null) {
                // Change register to literal
                operands.set(i, newOperand);
@@ -71,11 +109,28 @@ public class RegisterZeroToLiteral implements Transformation {
 
       return transformed;
    }
+    */
 
-   @Override
-   public String toString() {
-      //return RegisterZeroToLiteral.class.getName();
-      return "RegisterZeroToLiteral";
+
+
+   private Operand getImmZero(Operand operand) {
+      // Try to get reg value from operand
+      Integer regValue = MbRegister.getRegValue(operand);
+      // If regValue == null, this is not a MbRegister
+      if (regValue == null) {
+         return null;
+      }
+
+      // We want regValue == 0
+      if (regValue != 0) {
+         return null;
+      }
+
+      // Create an Immediate type with value 0
+      return new MbImm(0, BITS_ZERO);
    }
+
+   public static final int BITS_ZERO = 1;
+
 
 }

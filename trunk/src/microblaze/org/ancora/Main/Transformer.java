@@ -33,22 +33,22 @@ import org.ancora.IntermediateRepresentation.OperationType;
 import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.LoggingUtils;
-import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.MicroblazeGeneral.RegisterZeroToLiteral;
-import org.ancora.Transformations.MicroblazeGeneral.IdentifyNops;
-import org.ancora.Transformations.MicroblazeGeneral.TransformImmToLiterals;
-import org.ancora.Transformations.MicroblazeInstructions.ParseCarryArithmetic;
-import org.ancora.Transformations.MicroblazeInstructions.ParseConditionalBranch;
-import org.ancora.Transformations.MicroblazeInstructions.ParseDivision;
-import org.ancora.Transformations.MicroblazeInstructions.ParseLoads;
-import org.ancora.Transformations.MicroblazeInstructions.ParseLogic;
-import org.ancora.Transformations.MicroblazeInstructions.ParseMultiplication;
-import org.ancora.Transformations.MicroblazeInstructions.ParseReturnSubroutine;
-import org.ancora.Transformations.MicroblazeInstructions.ParseShiftRight;
-import org.ancora.Transformations.MicroblazeInstructions.ParseSignExtension;
-import org.ancora.Transformations.MicroblazeInstructions.ParseStores;
-import org.ancora.Transformations.MicroblazeInstructions.ParseUnconditionalBranches;
-import org.ancora.Transformations.MicroblazeInstructions.RemoveImm;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral.RegisterZeroToImm;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral.IdentifyMicroblazeNops;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral.TransformImmToLiterals;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseCarryArithmetic;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseConditionalBranch;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseDivision;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseLoads;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseLogic;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseMultiplication;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseReturnSubroutine;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseShiftRight;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseSignExtension;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseStores;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.ParseUnconditionalBranches;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.RemoveImmInstruction;
 import org.ancora.IntermediateRepresentation.Transformations.PropagateConstants;
 import org.ancora.IntermediateRepresentation.Transformation;
 import org.ancora.common.IoUtilsAppend;
@@ -134,9 +134,9 @@ public class Transformer {
 
       Transformation[] microblaze = {
          new TransformImmToLiterals(),
-         new RegisterZeroToLiteral(),
-         new IdentifyNops(),
-         new RemoveImm(),
+         new RegisterZeroToImm(),
+         new IdentifyMicroblazeNops(),
+         new RemoveImmInstruction(),
          new ParseCarryArithmetic(),
          new ParseConditionalBranch(),
          new ParseUnconditionalBranches(),
@@ -229,8 +229,8 @@ public class Transformer {
       List<Transformation> transformations = new ArrayList<Transformation>();
 
       transformations.add(new TransformImmToLiterals());
-      transformations.add(new RegisterZeroToLiteral());
-      transformations.add(new IdentifyNops());
+      transformations.add(new RegisterZeroToImm());
+      transformations.add(new IdentifyMicroblazeNops());
 
       return transformations;
    }
@@ -243,7 +243,7 @@ public class Transformer {
    public static List<Transformation> getMicroBlazeInstructionTransf() {
       List<Transformation> transformations = new ArrayList<Transformation>();
 
-      transformations.add(new RemoveImm());
+      transformations.add(new RemoveImmInstruction());
       transformations.add(new ParseCarryArithmetic());
       transformations.add(new ParseConditionalBranch());
 

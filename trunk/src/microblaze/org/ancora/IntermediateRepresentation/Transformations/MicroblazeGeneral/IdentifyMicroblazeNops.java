@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeGeneral;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +25,15 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
+import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class IdentifyNops implements Transformation {
+public class IdentifyMicroblazeNops implements Transformation {
 
    /**
     * Detects and removes MicroBlaze nops (or r0, r0, r0)
@@ -43,9 +44,11 @@ public class IdentifyNops implements Transformation {
     * @return
     */
    public List<Operation> transform(List<Operation> operations) {
+   //public void transform(List<Operation> operations) {
       //List<Operation> newList = new ArrayList<Operation>(operations.size());
-
+System.out.println("This transformation, "+toString()+", was disabled.");
       //for(Operation operation : operations) {
+/*
       for(int i=0; i<operations.size(); i++) {
          Operation operation = operations.get(i);
 
@@ -60,7 +63,8 @@ public class IdentifyNops implements Transformation {
             continue;
          }
 
-         Integer outputValue = MbOperandUtils.getIntegerValue(mbOperation.getOutputs().get(0));
+         //Integer outputValue = MbTransformUtils.getIntegerValue(mbOperation.getOutputs().get(0));
+         Integer outputValue = MbImm.getImmValue(mbOperation.getOutputs().get(0));
          if(outputValue == null) {
             continue;
          }
@@ -68,10 +72,10 @@ public class IdentifyNops implements Transformation {
          operations.set(i, new Nop(mbOperation));
          // Check if value == 0
          if(outputValue != 0) {
-            Logger.getLogger(IdentifyNops.class.getName()).
+            Logger.getLogger(IdentifyMicroblazeNops.class.getName()).
                     warning("Removing an Or with output other than 0 ("+outputValue+")");
          }
-
+*/
 
          /*
          //boolean remove = hasLiteralsAsOnlyOutput(operation.getOutputs());
@@ -81,7 +85,7 @@ public class IdentifyNops implements Transformation {
             // Check if is instruction other than OR:
             boolean isOr = ((MbOperation)operation).getMbType() == InstructionName.or;
             if(!isOr) {
-               Logger.getLogger(IdentifyNops.class.getName()).
+               Logger.getLogger(IdentifyMicroblazeNops.class.getName()).
                        warning("Removed operation besides OR:"+operation.getAddress()+":"+operation);
             }
          }
@@ -93,18 +97,20 @@ public class IdentifyNops implements Transformation {
             // Check if is instruction other than OR:
             boolean isOr = ((MbOperation)operation).getMbType() == InstructionName.or;
             if(!isOr) {
-               Logger.getLogger(IdentifyNops.class.getName()).
+               Logger.getLogger(IdentifyMicroblazeNops.class.getName()).
                        warning("Removed operation besides OR:"+operation);
             }
          }
  */
-      }
+
+
+//    }
 
       return operations;
       //return newList;
    }
 
-
+/*
    private boolean hasLiteralsAsOnlyOutput(List<Operand> outputs) {
       // Check if all outputs are to register 0
       boolean isZero = false;
@@ -119,17 +125,18 @@ public class IdentifyNops implements Transformation {
 
       return isZero;
    }
-
+ */
+/*
    private boolean isLiteral(Operand operand) {
       // Check for Literals
-      Operand newOperand = MbOperandUtils.transformOperandToLiteral(operand);
+      Operand newOperand = MbTransformUtils.transformOperandToLiteral(operand);
       if (newOperand != null) {
          return true;
       } else {
          return false;
       }
    }
-
+*/
    @Override
    public String toString() {
       //return RegisterZeroToLiteral.class.getName();

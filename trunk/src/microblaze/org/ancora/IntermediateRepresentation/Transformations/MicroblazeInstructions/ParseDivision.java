@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -23,21 +23,20 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
+import org.ancora.IntermediateRepresentation.Operations.Division;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.IntermediateRepresentation.Operations.UnconditionalExit;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.MbOperandUtils;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
  * @author Joao Bispo
  */
-public class ParseReturnSubroutine implements Transformation {
+public class ParseDivision implements Transformation {
 
    @Override
    public String toString() {
-      return "ParseReturnFromSubroutine";
+      return "ParseDivision";
    }
 
 
@@ -47,25 +46,24 @@ public class ParseReturnSubroutine implements Transformation {
          Operation operation = operations.get(i);
 
         // Check if MicroBlaze Operation
-        MbOperation rstdOp = MbOperation.getMbOperation(operation);
-        if(rstdOp == null) {
+        MbOperation divisionOp = MbOperation.getMbOperation(operation);
+        if(divisionOp == null) {
            continue;
         }
 
-        // Check if it is a rstd
-        if(rstdOp.getMbType() != InstructionName.rtsd) {
+        // Check if it is a division
+        Division.Op divisionOperation =
+                instructionProperties.get(divisionOp.getMbType());
+        if(divisionOperation == null) {
            continue;
         }
 
-         Operand input1 = rstdOp.getInputs().get(0).copy();
+         Operand input1 = divisionOp.getInputs().get(0).copy();
+         Operand input2 = divisionOp.getInputs().get(1).copy();
+         Operand output = divisionOp.getOutputs().get(0).copy();
 
-         int baseAddress = MbOperandUtils.getIntegerValue(rstdOp.getInputs().get(1));
-         int supposedJumpAddress = MbOperandUtils.calculateNextAddress(operations, i,
-                rstdOp.getMbType());
-         int delaySlots = 1;
-
-         Operation newOperation = new UnconditionalExit(rstdOp.getAddress(),
-                 baseAddress, supposedJumpAddress, delaySlots, input1);
+         Operation newOperation = new Division(divisionOp.getAddress(),
+                 input1, input2, output, divisionOperation);
 
         // Replace old operation
         operations.set(i, newOperation);
@@ -77,14 +75,15 @@ public class ParseReturnSubroutine implements Transformation {
    /**
     * INSTANCE VARIABLES
     */
-      private static final Map<InstructionName, Integer> instructionProperties;
+      private static final Map<InstructionName, Division.Op> instructionProperties;
    static {
-      Map<InstructionName, Integer> aMap = new Hashtable<InstructionName, Integer>();
+      Map<InstructionName, Division.Op> aMap = new Hashtable<InstructionName, Division.Op>();
 
-      aMap.put(InstructionName.sext8, 8);
-      aMap.put(InstructionName.sext16, 16);
-
+      aMap.put(InstructionName.idiv, Division.Op.mbIntegerDivisionSigned);
+      aMap.put(InstructionName.idivu, Division.Op.mbIntegerDivisionUnsigned);
+ 
       instructionProperties = Collections.unmodifiableMap(aMap);
    }
+
 
 }

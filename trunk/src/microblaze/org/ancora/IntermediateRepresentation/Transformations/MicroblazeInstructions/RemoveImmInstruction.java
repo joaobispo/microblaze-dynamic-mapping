@@ -15,10 +15,11 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operands.MbImm;
@@ -28,59 +29,88 @@ import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
-import org.ancora.Transformations.MbOperandUtils;
+import org.ancora.IntermediateRepresentation.MbTransformUtils;
+import org.ancora.IntermediateRepresentation.Operations.MbOperationType;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
+ * Fuses the value of IMM instructions to the immediate value of the next
+ * instruction. 
+ * 
+ * <p>Because this transformation depends on the positions of the IMM in the
+ * Microblaze instructions, this transformation must be done before the MbOperations
+ * are changed to IR Operations.
  *
  * @author Joao Bispo
  */
-public class RemoveImm implements Transformation {
+public class RemoveImmInstruction implements Transformation {
+
+   @Override
+   public String toString() {
+      return "RemoveImmInstruction";
+   }
+
 
    public List<Operation> transform(List<Operation> operations) {
      //List<Operation> newList = new ArrayList<Operation>(operations.size());
 
      for(int i=0; i<operations.size(); i++) {
+        Operation operation = operations.get(i);
+
+        /*
         // Check if MicroBlaze operation
         MbOperation immOperation = MbOperation.getMbOperation(operations.get(i));
         if(immOperation == null) {
-           //newList.add(immOperation);
            continue;
-        }
+        }*/
 
         // Check if IMM
-        if(immOperation.getMbType() != InstructionName.imm) {
-           //newList.add(immOperation);
+        //if(immOperation.getMbType() != InstructionName.imm) {
+
+        //operation.getType() == MbOperationType.MicroBlazeOperation
+        InstructionName instName = MbOperation.getMbInstructionName(operation);
+        //if(operation.getType() != InstructionName.imm) {
+        if(instName != InstructionName.imm) {
            continue;
         }
 
+        MbOperation immOperation = (MbOperation)operation;
+
         // Collect imm value from IMM operation
-        Integer upper16 = MbOperandUtils.getIntegerValue(immOperation.getInputs().get(0));
-        //Integer upper16 = MbImm.getImmValue(immOperation.getInputs().get(0));
-        //int upper16 = ParseUtils.parseInt(immOperation.getInputs().get(0).getValue());
+        //Integer upper16 = MbTransformUtils.getIntegerValue(immOperation.getInputs().get(0));
+        Integer upper16 = MbImm.getImmValue(immOperation.getInputs().get(0));
 
         // Collect imm value and imm from next instruction
-        MbOperation nextOperation = MbOperation.getMbOperation(operations.get(i+1));
+        Operation nextOperation = operations.get(i+1);
+        if(nextOperation.getType() != MbOperationType.MicroBlazeOperation) {
+           Logger.getLogger(RemoveImmInstruction.class.getName()).
+                   warning("Next operation is of type '"+nextOperation.getType()
+                   +"', instead of type "+MbOperationType.MicroBlazeOperation);
+           Logger.getLogger(RemoveImmInstruction.class.getName()).
+                   warning("Please, place this transformation before other transformations " +
+                   "which change the MicroBlaze operations.");
+           continue;
+        }
+        //MbOperation nextOperation = MbOperation.getMbOperation(operations.get(i+1));
+
         // Assume next operation is of type B
         List<Operand> inputs = nextOperation.getInputs();
+
         // Imm is always the last operand of a MicroBlaze instruction
         int immIndex = inputs.size()-1;
-//System.out.println("Operation Before:"+nextOperation);
         Operand immOperand = inputs.get(immIndex);
-//        System.out.println("immOP:"+immOperand.toString());
-        int lower16 = MbOperandUtils.getIntegerValue(immOperand);
-        //int lower16 = ParseUtils.parseInt(immOperand.getValue());
+        //int lower16 = MbTransformUtils.getIntegerValue(immOperand);
+        int lower16 = MbImm.getImmValue(immOperand);
         int completeInt = fuseImm(upper16, lower16);
 
         // Replace Operand for a Literal
-        inputs.set(immIndex, new Literal(Literal.LiteralType.integer,
-                String.valueOf(completeInt), BIS_FUSED_IMM));
-        //System.out.println("Imm Operand:"+immOperand);
+        MbImm newImm = new MbImm(completeInt, BITS_FUSED_IMM);
+        nextOperation.replaceInput(immIndex, newImm);
 
-// System.out.println("Operation After:"+nextOperation);
-        //newList.add(nextOperation);
-        // Since IMM was found and processed, advance an extra index
-        //i++;
+
+        //inputs.set(immIndex, new Literal(Literal.LiteralType.integer,
+        //        String.valueOf(completeInt), BITS_FUSED_IMM));
+
 
         operations.set(i, new Nop(immOperation));
      }
@@ -116,12 +146,7 @@ public class RemoveImm implements Transformation {
       return upper16 | lower16;
    }
 
-   @Override
-   public String toString() {
-      return "RemoveImm";
-   }
-
-   public static int BIS_FUSED_IMM = 32;
+   public static int BITS_FUSED_IMM = 32;
 
 
 }

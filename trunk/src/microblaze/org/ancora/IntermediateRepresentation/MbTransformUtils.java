@@ -15,16 +15,13 @@
  *  under the License.
  */
 
-package org.ancora.Transformations;
+package org.ancora.IntermediateRepresentation;
 
 import java.util.List;
 import java.util.logging.Logger;
-import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.OperandUtils;
 import org.ancora.IntermediateRepresentation.Operands.Literal;
 import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Operands.MbRegister;
-import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.MicroBlaze.MbDefinitions;
@@ -33,32 +30,7 @@ import org.ancora.MicroBlaze.MbDefinitions;
  *
  * @author Joao Bispo
  */
-public class MbOperandUtils {
-
-   /*
-   public static List<Operation> transformRegister0(List<Operation> operations) {
-      for(Operation operation : operations) {
-         transformRegister0(operation.getInputs());
-         transformRegister0(operation.getOutputs());
-      }
-
-      return operations;
-   }
-    */
-
-   /*
-   private static void transformRegister0(List<Operand> operands) {
-      for(int i=0; i<operands.size(); i++) {
-         // Check if operand is a MbOperand
-         Operand operand = operands.get(i);
-         if(operand.getType() == MbOperandType.register) {
-            System.out.println("True:"+operand);
-         }
-         
-      }
-
-   }
-    */
+public class MbTransformUtils {
 
    /**
     * If an operand can be transformed into literal, a new operand Literal operand is
@@ -67,20 +39,21 @@ public class MbOperandUtils {
     * @param operand
     * @return
     */
-   public static Literal transformOperandToLiteral(Operand operand) {
+//   public static Literal transformOperandToLiteral(Operand operand) {
       // Check if Literal from Intermediate Representation
-      Literal lit = OperandUtils.transformOperandToLiteral(operand);
+/*
+      Literal lit = TransformUtils.transformOperandToLiteral(operand);
       if(lit != null) {
          return lit;
       }
-
+*/
       // Check if Literal
-      /*
+  /*
       if(operand.getType() == OperandType.literal) {
          return (Literal) operand;
       }
-       */
-
+   */
+/*
       // Check if it is a MicroBlaze immediate value
       Integer immValue = MbImm.getImmValue(operand);
 
@@ -106,25 +79,26 @@ public class MbOperandUtils {
          }
       }
 
-      Logger.getLogger(MbOperandUtils.class.getName()).
+      Logger.getLogger(MbTransformUtils.class.getName()).
               warning("Could not find case to transform operand '"+operand+"'.");
       return null;
    }
-
+*/
    public static Operand createCarryOperand() {
       //return new MbOperand(MbOperandType.register, MbDefinitions.CARRY_REGISTER, MbDefinitions.BITS_CARRY);
       return new MbRegister(MbDefinitions.CARRY_REGISTER, null, MbDefinitions.BITS_CARRY);
    }
-
+/*
    private static boolean isRegisterZero(String value) {
       return value.equals(INTEGER_VALUE_ZERO);
    }
-
+*/
    /**
     * Supports Literal, MbImm
     * @param operand
     * @return
     */
+/*
    public static Integer getIntegerValue(Operand operand) {
       // First, transform operand to literal
       Literal literal = transformOperandToLiteral(operand);
@@ -132,13 +106,13 @@ public class MbOperandUtils {
          return null;
       }
 
-      return Literal.getInteger(literal);
-
+      return Literal.getInteger((Operand)literal);
+*/
       /*
       Integer integer = null;
 
       // Check if operand is intermediate representation literal
-      integer = OperandUtils.getIntegerValue(operand);
+      integer = TransformUtils.getIntegerValue(operand);
       //integer = Literal.getInteger(operand);
       if(integer != null) {
          return integer;
@@ -149,11 +123,11 @@ public class MbOperandUtils {
          return integer;
       }
 
-      Logger.getLogger(MbOperandUtils.class.getName()).
+      Logger.getLogger(MbTransformUtils.class.getName()).
               warning("Method not defined for operand '"+operand+"'");
       return null;
        */
-   }
+//   }
 
    /**
     * Calculates the next address.
@@ -189,6 +163,6 @@ public class MbOperandUtils {
       }
    }
 
-   private static final String INTEGER_VALUE_ZERO = "0";
-   private static final int BITS_ZERO = 0;
+   //private static final String INTEGER_VALUE_ZERO = "0";
+   //private static final int BITS_ZERO = 0;
 }

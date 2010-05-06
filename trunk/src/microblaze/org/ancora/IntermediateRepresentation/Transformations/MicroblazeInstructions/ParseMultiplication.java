@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.Transformations.MicroblazeInstructions;
+package org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions;
 
 import java.util.Collections;
 import java.util.Hashtable;
@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.Operations.Logic;
+import org.ancora.IntermediateRepresentation.Operations.Division;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.IntermediateRepresentation.Operations.SignExtension;
+import org.ancora.IntermediateRepresentation.Operations.Mutiplication;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.IntermediateRepresentation.Transformation;
 
@@ -33,11 +33,11 @@ import org.ancora.IntermediateRepresentation.Transformation;
  *
  * @author Joao Bispo
  */
-public class ParseSignExtension implements Transformation {
+public class ParseMultiplication implements Transformation {
 
    @Override
    public String toString() {
-      return "ParseSignExtension";
+      return "ParseMultiplication";
    }
 
 
@@ -47,23 +47,24 @@ public class ParseSignExtension implements Transformation {
          Operation operation = operations.get(i);
 
         // Check if MicroBlaze Operation
-        MbOperation signExtOp = MbOperation.getMbOperation(operation);
-        if(signExtOp == null) {
+        MbOperation mulOp = MbOperation.getMbOperation(operation);
+        if(mulOp == null) {
            continue;
         }
 
-        // Check if it is an unconditional compare
-        Integer extensionSize =
-                instructionProperties.get(signExtOp.getMbType());
-        if(extensionSize == null) {
+        // Check if it is a division
+        Integer number = instructionProperties.get(mulOp.getMbType());
+        if(number == null) {
            continue;
         }
 
-         Operand input1 = signExtOp.getInputs().get(0).copy();
-         Operand output = signExtOp.getOutputs().get(0).copy();
 
-         Operation newOperation = new SignExtension(signExtOp.getAddress(),
-                 input1, output, extensionSize);
+         Operand input1 = mulOp.getInputs().get(0).copy();
+         Operand input2 = mulOp.getInputs().get(1).copy();
+         Operand output = mulOp.getOutputs().get(0).copy();
+
+         Operation newOperation = new Mutiplication(mulOp.getAddress(),
+                 input1, input2, output);
 
         // Replace old operation
         operations.set(i, newOperation);
@@ -79,10 +80,11 @@ public class ParseSignExtension implements Transformation {
    static {
       Map<InstructionName, Integer> aMap = new Hashtable<InstructionName, Integer>();
 
-      aMap.put(InstructionName.sext8, 8);
-      aMap.put(InstructionName.sext16, 16);
-
+      aMap.put(InstructionName.mul, 1);
+      aMap.put(InstructionName.muli, 2);
+ 
       instructionProperties = Collections.unmodifiableMap(aMap);
    }
+
 
 }
