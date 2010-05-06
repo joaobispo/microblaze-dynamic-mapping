@@ -30,14 +30,14 @@ import org.ancora.IntermediateRepresentation.Operation;
  */
 public class OperationListStats {
 
-   public static void calcAverage(List<OperationListStats> stats) {
+   public static OperationListStats calcAverage(String name, List<OperationListStats> stats) {
       int numberOfLines = 0;
       int numberOfOperations = 0;
       int liveIns = 0;
       int liveOuts = 0;
       int repetitions = 0;
 
-      int size = stats.size();
+      //int size = stats.size();
       for(int i=0; i<stats.size(); i++) {
          liveIns += stats.get(i).liveins;
          liveOuts += stats.get(i).liveouts;
@@ -46,6 +46,9 @@ public class OperationListStats {
          numberOfLines += stats.get(i).numberOfLines;
       }
 
+      return new OperationListStats(numberOfLines, numberOfOperations, liveIns, liveOuts, null, repetitions, name);
+
+      /*
       double avgClp = (double)numberOfLines / (double)size;
       double avgIlp =  (double)numberOfOperations / (double)numberOfLines;
       double avgComm =  (double)(liveIns+liveOuts) / (double)size;
@@ -57,6 +60,7 @@ public class OperationListStats {
       System.out.println("Avg. Comm:"+avgComm);
       System.out.println("Avg. Instructions per block:"+avgInstructions);
       System.out.println("Avg. Repetitions per block:"+avgRepetitions);
+       */
    }
 
    private OperationListStats(int numberOfLines, int numberOfOperations, 

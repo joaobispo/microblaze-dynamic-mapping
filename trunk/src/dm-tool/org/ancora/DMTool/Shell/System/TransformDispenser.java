@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
-import org.ancora.Transformations.PureIr.PropagateConstants;
-import org.ancora.Transformations.PureIr.RemoveInternalLoads;
-import org.ancora.Transformations.PureIr.SingleStaticAssignment;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformations.PropagateConstants;
+import org.ancora.IntermediateRepresentation.Transformations.RemoveInternalLoads;
+import org.ancora.IntermediateRepresentation.Transformations.SingleStaticAssignment;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
