@@ -17,6 +17,8 @@
 
 package org.ancora.DMTool.Utils;
 
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeInstructions.*;
+import org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,6 @@ import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
-import org.ancora.Transformations.MicroblazeGeneral.*;
-import org.ancora.Transformations.MicroblazeInstructions.*;
 import org.ancora.IntermediateRepresentation.Transformations.SingleStaticAssignment;
 import org.ancora.IntermediateRepresentation.Transformation;
 
@@ -118,10 +118,23 @@ public class TransformUtils {
   
 
    public static final Transformation[] microblazeTransformations = {
-         new TransformImmToLiterals(),
-         new RegisterZeroToLiteral(),
-         new IdentifyNops(),
-         new RemoveImm(),
+ //        new TransformImmToLiterals(),
+ //        new RegisterZeroToImm(),
+
+//         new RemoveImmInstruction(),
+//         new IdentifyMicroblazeNops(),
+
+
+         //Because this transformation depends on the positions of the IMM in the
+         //Microblaze instructions, this transformation must be done before the MbOperations
+         //are changed to IR Operations.
+      
+         new RemoveImmInstruction(),
+
+         //new IdentifyMicroblazeNops(), //Maybe should wait until constant propagation?
+         
+         // Parse Mb Operations into IR Operations
+
          new ParseCarryArithmetic(),
          new ParseConditionalBranch(),
          new ParseUnconditionalBranches(),
@@ -133,7 +146,15 @@ public class TransformUtils {
          new ParseStores(),
          new ParseMultiplication(),
          new ParseShiftRight(),
+         
+
+         // Parse MbOperands and IR Operands
+         new RegisterZeroToImm(),
+         new TransformImmToLiterals(),
          new TransformRegistersToInternalData(),
+
+
+         // Further transform the now pure-ir representation
          new SingleStaticAssignment()
       };
 }
