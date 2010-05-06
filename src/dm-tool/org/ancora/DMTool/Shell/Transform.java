@@ -43,7 +43,7 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.SharedLibrary.IoUtils;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
@@ -138,6 +138,14 @@ public class Transform implements Executable {
             OperationListStats beforeTransf = OperationListStats.buildStats(operations, mapper,
                     block.getRepetitions(), blockName);
 
+            // Show operations
+            /*
+            for(Operation operation : operations) {
+               System.out.println(operation.getFullOperation());
+            }
+             */
+
+
             // Transform
             for(Transformation t : transf) {
                operations = t.transform(operations);
@@ -168,10 +176,11 @@ public class Transform implements Executable {
       }
 
       // Calculate average
-      System.out.println("Average Stats Before Transformations:");
-      OperationListStats.calcAverage(statsBefore);
-      System.out.println("Average Stats After Transformations:");
-      OperationListStats.calcAverage(statsAfter);
+//      System.out.println("Average Stats Before Transformations:");
+//      OperationListStats.calcAverage("Avg Before", statsBefore);
+//      System.out.println("Average Stats After Transformations:");
+//      OperationListStats.calcAverage("Avg After", statsAfter);
+      showStatsAverage(statsAfter.size(), OperationListStats.calcAverage("Avg Before", statsBefore), OperationListStats.calcAverage("Avg After", statsAfter));
    }
 
    private List<InstructionBlock> getBlocks(File file) {
@@ -244,6 +253,41 @@ public class Transform implements Executable {
       //System.out.println(beforeTransf);
 
       System.out.println("Changes:");
+      boolean noChanges = true;
+      for (int i = 0; i < param.length; i++) {
+         if (!before[i].equals(after[i])) {
+            noChanges = false;
+            System.out.println(param[i]+":"+before[i]+"->"+after[i]+";");
+         }
+      }
+
+      if(noChanges) {
+         System.out.println("None");
+      }
+
+      System.out.println("------------------------");
+   }
+
+   private static void showStatsAverage(int size, OperationListStats beforeTransf, OperationListStats afterTransf) {
+
+      System.out.println("\nChanges in total, analysed "+size+" blocks.");
+
+      String[] param = {"CommCosts", "Cpl", "Ilp", "Operations"};
+      String[] before = {String.valueOf(beforeTransf.getCommunicationCost()),
+        String.valueOf(beforeTransf.getCpl()),
+        String.valueOf(beforeTransf.getIlp()),
+        String.valueOf(beforeTransf.getNumberOfOperations()),
+
+      };
+      String[] after = {String.valueOf(afterTransf.getCommunicationCost()),
+        String.valueOf(afterTransf.getCpl()),
+        String.valueOf(afterTransf.getIlp()),
+        String.valueOf(afterTransf.getNumberOfOperations()),
+
+      };
+
+
+      //System.out.println("Changes:");
       boolean noChanges = true;
       for (int i = 0; i < param.length; i++) {
          if (!before[i].equals(after[i])) {

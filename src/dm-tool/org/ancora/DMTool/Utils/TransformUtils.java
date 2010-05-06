@@ -30,8 +30,8 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.Transformations.MicroblazeGeneral.*;
 import org.ancora.Transformations.MicroblazeInstructions.*;
-import org.ancora.Transformations.PureIr.SingleStaticAssignment;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformations.SingleStaticAssignment;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
