@@ -39,7 +39,7 @@ import org.ancora.IntermediateRepresentation.Operations.deprecated.Mux;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.InstructionProperties;
 import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *

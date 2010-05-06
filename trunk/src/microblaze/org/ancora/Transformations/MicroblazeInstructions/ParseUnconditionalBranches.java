@@ -33,7 +33,7 @@ import org.ancora.IntermediateRepresentation.Operations.UnconditionalExit;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
@@ -113,7 +113,8 @@ public class ParseUnconditionalBranches implements Transformation {
               System.out.println("this address:"+branchOp.getAddress()+"; next address:"+nextSupposedAddress);
            }
            // Do not add instructions
-           operations.set(i, new Nop(branchOp.getAddress(), branchOp.toString()));
+           //operations.set(i, new Nop(branchOp.getAddress(), branchOp.toString()));
+           operations.set(i, new Nop(branchOp));
            continue;
         }
 

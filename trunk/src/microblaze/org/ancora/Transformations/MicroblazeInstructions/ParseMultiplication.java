@@ -27,7 +27,7 @@ import org.ancora.IntermediateRepresentation.Operations.Division;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.Mutiplication;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *

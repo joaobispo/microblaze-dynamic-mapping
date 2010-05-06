@@ -27,7 +27,7 @@ import org.ancora.IntermediateRepresentation.Operations.Logic;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.SignExtension;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *

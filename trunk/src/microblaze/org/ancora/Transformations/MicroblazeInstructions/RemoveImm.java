@@ -29,7 +29,7 @@ import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.MbDefinitions;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.Transformations.MbOperandUtils;
-import org.ancora.Transformations.Transformation;
+import org.ancora.IntermediateRepresentation.Transformation;
 
 /**
  *
@@ -82,7 +82,7 @@ public class RemoveImm implements Transformation {
         // Since IMM was found and processed, advance an extra index
         //i++;
 
-        operations.set(i, new Nop(immOperation.getAddress(), immOperation.toString()));
+        operations.set(i, new Nop(immOperation));
      }
 
      // Add last operation
