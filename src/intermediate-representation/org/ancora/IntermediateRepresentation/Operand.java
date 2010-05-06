@@ -78,14 +78,14 @@ public abstract class Operand {
    public void connectToProducer(Operation producer, boolean showWarning) {
     */
       //if(this.producer != null && showWarning) {
-      if(this.producer != null) {
-          Logger.getLogger(Operand.class.getName()).
-                 info("Replacing producer '"+this.producer+"' in operand '"+this+"' " +
-                 "for producer '"+producer+"'.");
-      }
-      
-      this.producer = producer;
+      setProducer(producer);
       producer.getOutputs().add(this);
+   }
+
+
+   public void replaceInProducer(int position, Operation producer) {
+      setProducer(producer);
+      producer.getOutputs().set(position, this);
    }
 
    public Operation getProducer() {
@@ -107,6 +107,21 @@ public abstract class Operand {
       consumer.getInputs().add(this);
    }
 
+   public void replaceInConsumer(int position, Operation consumer) {
+      this.consumers.add(consumer);
+      consumer.getInputs().set(position, this);
+   }
+
+   private void setProducer(Operation producer) {
+      if (this.producer != null) {
+         Logger.getLogger(Operand.class.getName()).
+                 info("Replacing producer '" + this.producer + "' in operand '" + this + "' " +
+                 "for producer '" + producer + "'.");
+      }
+
+      this.producer = producer;
+   }
+
    /**
     * Adds this object as a parameter of the given parameter.
     *
@@ -114,6 +129,7 @@ public abstract class Operand {
     *  
     * @param consumer
     */
+   /*
    public void connectToParameter(Operation operation) {
       // Check that it is a literal
       if(getType() != OperandType.literal) {
@@ -125,6 +141,7 @@ public abstract class Operand {
       this.consumers.add(operation);
       operation.getParameters().add(this);
    }
+    */
 
    /*
    public String getValue() {
@@ -172,6 +189,11 @@ public abstract class Operand {
     */
    private Operation producer;
    private List<Operation> consumers;
+
+
+
+
+
    //private OperandType type;
    //private String value;
 }

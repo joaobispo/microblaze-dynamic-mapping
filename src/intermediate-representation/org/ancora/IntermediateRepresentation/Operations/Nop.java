@@ -29,6 +29,8 @@ public class Nop extends Operation {
 
    public Nop(Operation operation) {
       super(operation.getAddress());
+
+      this.operation = operation;
       //this.name = name;
    }
 
@@ -54,7 +56,8 @@ public class Nop extends Operation {
    @Override
    public String toString() {
       //return "NOP "+name;
-      return "NOP "+operation.toString();
+      //return "NOP";
+      return "NOP "+operation.getFullOperation();
    }
 
 
