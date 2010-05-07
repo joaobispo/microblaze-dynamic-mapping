@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
-import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
+import org.ancora.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.common.IoUtilsAppend;
 import org.ancora.common.LineReader;
 
@@ -24,7 +24,7 @@ import org.ancora.common.LineReader;
  * @author Joao Bispo
  */
 public class TraceUtils {
-
+/*
    public static File getTracePropertiesFile(File traceFile, Enum[] keys) {
       // Get the filename
       String tracePropertiesFilename = IoUtilsAppend.removeExtension(traceFile.getName(), EXTENSION_SEPARATOR) + EXTENSION_SEPARATOR + PROPERTIES_EXTENSION;
@@ -43,7 +43,7 @@ public class TraceUtils {
 
       return tracePropertiesFile;
    }
-
+*/
 
 
  public static Properties getPropertiesFromTrace(File traceFile, Enum[] keys) {
@@ -97,7 +97,7 @@ public class TraceUtils {
          return null;
       }
    }
-
+/*
    public static boolean createTraceProperties(File traceFile, File tracePropertiesFile, Enum[] keys) {
       Properties props = getPropertiesFromTrace(traceFile, keys);
 
@@ -114,7 +114,7 @@ public class TraceUtils {
          return false;
       }
    }
-   
+  */
    /*
       public static boolean createTraceProperties(File traceFile, File tracePropertiesFile, Enum[] keys) {
       // Open trace file for reading

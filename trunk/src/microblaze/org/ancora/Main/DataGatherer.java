@@ -19,8 +19,8 @@ package org.ancora.Main;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.IntermediateRepresentation.Ilp.Mapper;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.IrMapping.Mapper;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 

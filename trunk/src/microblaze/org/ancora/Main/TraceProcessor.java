@@ -19,7 +19,7 @@ package org.ancora.Main;
 
 import java.io.File;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlock;
 
 /**
  *

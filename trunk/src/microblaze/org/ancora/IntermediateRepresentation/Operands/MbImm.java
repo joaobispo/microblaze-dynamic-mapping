@@ -17,8 +17,9 @@
 
 package org.ancora.IntermediateRepresentation.Operands;
 
+import org.ancora.IntermediateRepresentation.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.MicroBlaze.MbDefinitions;
+import org.ancora.MicroBlaze.Definitions;
 
 /**
  *
@@ -28,7 +29,7 @@ public class MbImm extends Operand {
 
 
    public MbImm(int value) {
-      this(value, MbDefinitions.BITS_IMMEDIATE);
+      this(value, Definitions.BITS_IMMEDIATE);
    }
 
    public MbImm(int value, int bits) {
@@ -38,7 +39,7 @@ public class MbImm extends Operand {
 
    @Override
    public Enum getType() {
-      return MicroblazeType.MbImm;
+      return MbOperandType.MbImm;
    }
 
    @Override
@@ -64,7 +65,7 @@ public class MbImm extends Operand {
 
    public static Integer getImmValue(Operand operand) {
       // Check if MbImm
-      if(operand.getType() != MicroblazeType.MbImm) {
+      if(operand.getType() != MbOperandType.MbImm) {
          return null;
       }
 

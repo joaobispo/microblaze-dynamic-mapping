@@ -15,8 +15,11 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
 
+import org.ancora.InstructionBlock.InstructionBlockListener;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.GenericInstruction;
 import static org.ancora.MicroBlaze.Trace.TraceDefinitions.EXTENSION_SEPARATOR;
 
 import java.io.File;

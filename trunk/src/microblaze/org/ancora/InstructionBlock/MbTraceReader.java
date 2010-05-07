@@ -3,8 +3,10 @@
  * and open the template in the editor.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
 
+import org.ancora.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.GenericInstruction;
 import static org.ancora.MicroBlaze.Trace.TraceDefinitions.TRACE_PREFIX;
 
 import java.io.File;

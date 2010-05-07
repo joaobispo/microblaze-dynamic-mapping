@@ -17,6 +17,7 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
+import org.ancora.IntermediateRepresentation.MbOperationType;
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operation;

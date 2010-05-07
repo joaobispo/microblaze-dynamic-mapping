@@ -15,22 +15,17 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operations;
+package org.ancora.MicroBlaze;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum MbOperationType {
-   MicroBlazeOperation;
+public interface Definitions {
 
-   @Override
-   public String toString() {
-      switch(this) {
-         case MicroBlazeOperation:
-            return "mb";
-         default:
-            return "undefined";
-      }
-   }
+   int BITS_IMMEDIATE = 16;
+   int BITS_REGISTER = 32;
+   int BITS_CARRY = 1;
+
+   String CARRY_REGISTER = "MSR[29]";
 }

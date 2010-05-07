@@ -31,7 +31,7 @@ import org.ancora.IntermediateRepresentation.Operations.MockOperation;
 import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.IntermediateRepresentation.Operations.UnconditionalExit;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.MicroBlaze.MbDefinitions;
+import org.ancora.MicroBlaze.Definitions;
 import org.ancora.IntermediateRepresentation.MbTransformUtils;
 import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Transformation;
@@ -144,7 +144,7 @@ public class ParseUnconditionalBranches implements Transformation {
             //System.out.println("Register substituted by Literal because of Uncondition Branch. Address "+operation.getAddress());
             //System.out.println("Before:"+operation.getInputs());
             Literal newLiteral = new Literal(Literal.LiteralType.integer,
-                    literalValue.toString(), MbDefinitions.BITS_REGISTER);
+                    literalValue.toString(), Definitions.BITS_REGISTER);
             operands.set(i, newLiteral);
             //Logger.getLogger(ParseUnconditionalBranches.class.getName())
             //System.out.println("After:"+operation.getInputs());

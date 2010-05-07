@@ -20,7 +20,7 @@ package org.ancora.IntermediateRepresentation.Transformations.MicroblazeGeneral;
 import java.util.List;
 import org.ancora.IntermediateRepresentation.Operand;
 import org.ancora.IntermediateRepresentation.Operands.InternalData;
-import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
+import org.ancora.IntermediateRepresentation.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Transformation;
 
@@ -39,7 +39,7 @@ public class TransformRegistersToInternalData implements Transformation {
          for(int j = 0; j<inputs.size(); j++) {
             Operand input = inputs.get(j);
 
-            if(input.getType() != MicroblazeType.MbRegister) {
+            if(input.getType() != MbOperandType.MbRegister) {
                continue;
             }
 
@@ -52,7 +52,7 @@ public class TransformRegistersToInternalData implements Transformation {
          for(int j = 0; j<outputs.size(); j++) {
             Operand output = outputs.get(j);
 
-            if(output.getType() != MicroblazeType.MbRegister) {
+            if(output.getType() != MbOperandType.MbRegister) {
                continue;
             }
 

@@ -17,8 +17,9 @@
 
 package org.ancora.IntermediateRepresentation.Operands;
 
+import org.ancora.IntermediateRepresentation.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.MicroBlaze.MbDefinitions;
+import org.ancora.MicroBlaze.Definitions;
 
 /**
  *
@@ -38,7 +39,7 @@ public class MbRegister extends Operand {
     * @param value
     */
    public MbRegister(String name, int value) {
-      this(name, value, MbDefinitions.BITS_REGISTER);
+      this(name, value, Definitions.BITS_REGISTER);
    }
 
    /*
@@ -53,7 +54,7 @@ public class MbRegister extends Operand {
 
    @Override
    public Enum getType() {
-      return MicroblazeType.MbRegister;
+      return MbOperandType.MbRegister;
    }
 
    @Override
@@ -79,7 +80,7 @@ public class MbRegister extends Operand {
 
    public static Integer getRegValue(Operand operand) {
       // Check if MbRegister
-      if(operand.getType() != MicroblazeType.MbRegister) {
+      if(operand.getType() != MbOperandType.MbRegister) {
          return null;
       }
 

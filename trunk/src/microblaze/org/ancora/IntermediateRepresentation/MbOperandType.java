@@ -15,17 +15,14 @@
  *  under the License.
  */
 
-package org.ancora.MicroBlaze;
+package org.ancora.IntermediateRepresentation;
 
 /**
  *
  * @author Joao Bispo
  */
-public interface MbDefinitions {
+public enum MbOperandType {
 
-   int BITS_IMMEDIATE = 16;
-   int BITS_REGISTER = 32;
-   int BITS_CARRY = 1;
-
-   String CARRY_REGISTER = "MSR[29]";
+   MbRegister,
+   MbImm;
 }

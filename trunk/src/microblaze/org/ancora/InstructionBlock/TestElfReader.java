@@ -15,7 +15,10 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
+
+import org.ancora.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.GenericInstruction;
 
 /**
  *
