@@ -27,10 +27,10 @@ import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Operations.Nop;
 import org.ancora.MicroBlaze.InstructionName;
-import org.ancora.MicroBlaze.MbDefinitions;
+import org.ancora.MicroBlaze.Definitions;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.IntermediateRepresentation.MbTransformUtils;
-import org.ancora.IntermediateRepresentation.Operations.MbOperationType;
+import org.ancora.IntermediateRepresentation.MbOperationType;
 import org.ancora.IntermediateRepresentation.Transformation;
 
 /**

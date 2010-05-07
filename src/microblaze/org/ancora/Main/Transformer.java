@@ -20,12 +20,12 @@ package org.ancora.Main;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
-import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
-import org.ancora.IntermediateRepresentation.Dotty;
-import org.ancora.IntermediateRepresentation.Ilp.Mapper;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.MbInstruction;
+import org.ancora.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.IrMapping.Tools.Dotty;
+import org.ancora.IrMapping.Mapper;
+import org.ancora.IrMapping.AsapScenario2;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
@@ -109,7 +109,7 @@ public class Transformer {
 
       List<InstructionBlock> blocks = traceProcessor.processTrace(trace);
 
-      double ilp = DataGatherer.getIlpBlock(blocks, new MbIlpScene2());
+      double ilp = DataGatherer.getIlpBlock(blocks, new AsapScenario2());
 
       System.out.println("ILP:"+ilp);
    }
@@ -130,7 +130,7 @@ public class Transformer {
    }
 
    private static List<Operation> processBlock(InstructionBlock block) {
-      Mapper ilpScenario = new MbIlpScene2();
+      Mapper ilpScenario = new AsapScenario2();
 
       Transformation[] microblaze = {
          new TransformImmToLiterals(),

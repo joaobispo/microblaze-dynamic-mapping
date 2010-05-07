@@ -15,8 +15,10 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
 
+import org.ancora.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.GenericInstruction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ancora.MicroBlaze.InstructionName;

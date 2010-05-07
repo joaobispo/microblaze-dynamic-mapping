@@ -13,12 +13,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
-import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockCollector;
-import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockPrinter;
-import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
-import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.Listeners.InstructionBlockCollector;
+import org.ancora.InstructionBlock.Listeners.InstructionBlockPrinter;
+import org.ancora.InstructionBlock.Listeners.InstructionBlockStats;
+import org.ancora.InstructionBlock.MbTraceReader;
 import org.ancora.Partitioning.BasicBlock;
 import org.ancora.Partitioning.Tools.Gatherer;
 import org.ancora.Partitioning.MbJumpFilter;
@@ -26,10 +26,10 @@ import org.ancora.Partitioning.MegaBlock;
 import org.ancora.Partitioning.Partitioner;
 import org.ancora.Partitioning.SuperBlock;
 import org.ancora.Partitioning.Tools.Selector;
-import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
-import org.ancora.IntermediateRepresentation.Dotty;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene1;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
+import org.ancora.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.IrMapping.Tools.Dotty;
+import org.ancora.IrMapping.AsapScenario1;
+import org.ancora.IrMapping.AsapScenario2;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbMemoryTest;
@@ -172,8 +172,9 @@ public class Tester {
       // Transform block into IR
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
 
-      //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
-      MbIlpScene1 ilp = new MbIlpScene1(new MbMemoryTest());
+      //AsapScenario1 ilp = new AsapScenario1(new MbImmutableTest(), new MbMemoryTest());
+      //AsapScenario1 ilp = new AsapScenario1(new MbMemoryTest());
+      AsapScenario1 ilp = new AsapScenario1();
       ilp.processOperations(operations);
       ilp.printStats();
       //applyTransformations(operations);
@@ -248,9 +249,10 @@ public class Tester {
       List<Operation> operations = MbParser.parseMbInstructions(block.getInstructions());
 
       // Collect ILP
-      //MbIlpScene1 ilp = new MbIlpScene1(new MbImmutableTest(), new MbMemoryTest());
-      //MbIlpScene2 ilp = new MbIlpScene2(new MbImmutableTest(), new MbMemoryTest());
-      MbIlpScene2 ilp = new MbIlpScene2(new MbMemoryTest());
+      //AsapScenario1 ilp = new AsapScenario1(new MbImmutableTest(), new MbMemoryTest());
+      //AsapScenario2 ilp = new AsapScenario2(new MbImmutableTest(), new MbMemoryTest());
+      //AsapScenario2 ilp = new AsapScenario2(new MbMemoryTest());
+      AsapScenario2 ilp = new AsapScenario2();
       ilp.processOperations(operations);
 
       // Collect data

@@ -24,7 +24,7 @@ import org.ancora.IntermediateRepresentation.Operands.MbImm;
 import org.ancora.IntermediateRepresentation.Operands.MbRegister;
 import org.ancora.MicroBlaze.InstructionName;
 import org.ancora.MicroBlaze.InstructionProperties;
-import org.ancora.MicroBlaze.MbDefinitions;
+import org.ancora.MicroBlaze.Definitions;
 
 /**
  *
@@ -59,11 +59,11 @@ public class MbTransformUtils {
 
 //      if(operand.getType() == MbOperandType.immediate) {
 //               return new Literal(Literal.LiteralType.integer, operand.getValue(),
-//                 MbDefinitions.BITS_IMMEDIATE);
+//                 Definitions.BITS_IMMEDIATE);
 //      }
       if(immValue != null) {
          return new Literal(Literal.LiteralType.integer, String.valueOf(immValue),
-                 MbDefinitions.BITS_IMMEDIATE);
+                 Definitions.BITS_IMMEDIATE);
       }
 
       Integer regValue = MbRegister.getRegValue(operand);
@@ -85,8 +85,8 @@ public class MbTransformUtils {
    }
 */
    public static Operand createCarryOperand() {
-      //return new MbOperand(MbOperandType.register, MbDefinitions.CARRY_REGISTER, MbDefinitions.BITS_CARRY);
-      return new MbRegister(MbDefinitions.CARRY_REGISTER, null, MbDefinitions.BITS_CARRY);
+      //return new MbOperand(MbOperandType.register, Definitions.CARRY_REGISTER, Definitions.BITS_CARRY);
+      return new MbRegister(Definitions.CARRY_REGISTER, null, Definitions.BITS_CARRY);
    }
 /*
    private static boolean isRegisterZero(String value) {

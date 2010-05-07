@@ -17,7 +17,8 @@
 
 package org.ancora.IntermediateRepresentation.Operations;
 
-import org.ancora.IntermediateRepresentation.Ilp.IrMemoryTest;
+import org.ancora.IntermediateRepresentation.MbOperationType;
+import org.ancora.IrMapping.deprecated.IrMemoryTest;
 import org.ancora.IntermediateRepresentation.MemoryTest;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.MicroBlaze.InstructionName;

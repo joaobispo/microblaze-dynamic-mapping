@@ -351,7 +351,7 @@ is divided into following sections:
                 ===================
             -->
     <target depends="init" name="deps-jar" unless="no.deps">
-        <ant antfile="${project.DTool}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.IR_Mapping}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.Instruction_Block}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.Intermediate_Representation}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.Partitioning}/build.xml" inheritall="false" target="jar"/>
@@ -703,7 +703,7 @@ is divided into following sections:
                 ===============
             -->
     <target depends="init" name="deps-clean" unless="no.deps">
-        <ant antfile="${project.DTool}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.IR_Mapping}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.Instruction_Block}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.Intermediate_Representation}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.Partitioning}/build.xml" inheritall="false" target="clean"/>

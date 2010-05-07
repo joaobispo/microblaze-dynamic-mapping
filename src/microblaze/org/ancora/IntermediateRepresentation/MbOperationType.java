@@ -15,14 +15,22 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Operands;
+package org.ancora.IntermediateRepresentation;
 
 /**
  *
  * @author Joao Bispo
  */
-public enum MicroblazeType {
+public enum MbOperationType {
+   MicroBlazeOperation;
 
-   MbRegister,
-   MbImm;
+   @Override
+   public String toString() {
+      switch(this) {
+         case MicroBlazeOperation:
+            return "mb";
+         default:
+            return "undefined";
+      }
+   }
 }

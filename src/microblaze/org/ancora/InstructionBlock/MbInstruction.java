@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
 
+import org.ancora.InstructionBlock.GenericInstruction;
 import org.ancora.MicroBlaze.InstructionName;
 
 /**
