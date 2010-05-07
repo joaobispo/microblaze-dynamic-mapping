@@ -354,6 +354,7 @@ is divided into following sections:
         <ant antfile="${project.DTool}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.Instruction_Block}/build.xml" inheritall="false" target="jar"/>
         <ant antfile="${project.Intermediate_Representation}/build.xml" inheritall="false" target="jar"/>
+        <ant antfile="${project.Partitioning}/build.xml" inheritall="false" target="jar"/>
     </target>
     <target depends="init,-check-automatic-build,-clean-after-automatic-build" name="-verify-automatic-build"/>
     <target depends="init" name="-check-automatic-build">
@@ -705,6 +706,7 @@ is divided into following sections:
         <ant antfile="${project.DTool}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.Instruction_Block}/build.xml" inheritall="false" target="clean"/>
         <ant antfile="${project.Intermediate_Representation}/build.xml" inheritall="false" target="clean"/>
+        <ant antfile="${project.Partitioning}/build.xml" inheritall="false" target="clean"/>
     </target>
     <target depends="init" name="-do-clean">
         <delete dir="${build.dir}"/>

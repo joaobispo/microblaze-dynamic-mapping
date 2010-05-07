@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.ancora.DynamicMapping.Partitioning;
+package org.ancora.Partitioning;
 
-import org.ancora.DynamicMapping.Partitioning.Tools.InstructionFilter;
+import org.ancora.Partitioning.Tools.InstructionFilter;
 import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstruction;
 import org.ancora.MicroBlaze.InstructionName;
