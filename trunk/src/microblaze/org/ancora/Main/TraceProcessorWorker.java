@@ -27,14 +27,14 @@ import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockColl
 import org.ancora.DynamicMapping.InstructionBlock.Listeners.InstructionBlockStats;
 import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.DynamicMapping.InstructionBlock.MbTraceReader;
-import org.ancora.DynamicMapping.Partitioning.BasicBlock;
-import org.ancora.DynamicMapping.Partitioning.MbJumpFilter;
-import org.ancora.DynamicMapping.Partitioning.MegaBlock;
-import org.ancora.DynamicMapping.Partitioning.Partitioner;
-import org.ancora.DynamicMapping.Partitioning.SuperBlock;
-import org.ancora.DynamicMapping.Partitioning.Tools.Gatherer;
-import org.ancora.DynamicMapping.Partitioning.Tools.InstructionFilter;
-import org.ancora.DynamicMapping.Partitioning.Tools.Selector;
+import org.ancora.Partitioning.BasicBlock;
+import org.ancora.Partitioning.MbJumpFilter;
+import org.ancora.Partitioning.MegaBlock;
+import org.ancora.Partitioning.Partitioner;
+import org.ancora.Partitioning.SuperBlock;
+import org.ancora.Partitioning.Tools.Gatherer;
+import org.ancora.Partitioning.Tools.InstructionFilter;
+import org.ancora.Partitioning.Tools.Selector;
 import org.ancora.MicroBlaze.Trace.TraceUtils;
 
 /**
