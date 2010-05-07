@@ -20,9 +20,9 @@ package org.ancora.Partitioning;
 import org.ancora.Partitioning.Tools.InstructionFilter;
 import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+import org.ancora.InstructionBlock.GenericInstruction;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlockListener;
 import org.ancora.SharedLibrary.BitUtils;
 
 /**

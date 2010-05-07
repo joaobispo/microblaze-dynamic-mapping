@@ -18,8 +18,8 @@
 package org.ancora.Partitioning.Tools;
 
 import java.util.BitSet;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlockListener;
 import org.ancora.SharedLibrary.DataStructures.PushingQueue;
 
 /**
