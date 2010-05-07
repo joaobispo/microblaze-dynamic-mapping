@@ -19,11 +19,11 @@ package org.ancora.Partitioning;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockProducerSkeleton;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.GenericInstruction;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlockListener;
+import org.ancora.InstructionBlock.InstructionBlockProducerSkeleton;
+import org.ancora.InstructionBlock.InstructionBusReader;
 
 /**
  * Generates InstructionBlocks from Generic Instructions

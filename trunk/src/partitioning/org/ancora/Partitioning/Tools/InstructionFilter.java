@@ -17,7 +17,7 @@
 
 package org.ancora.Partitioning.Tools;
 
-import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
+import org.ancora.InstructionBlock.GenericInstruction;
 
 /**
  * Filters Generic Instructions.
