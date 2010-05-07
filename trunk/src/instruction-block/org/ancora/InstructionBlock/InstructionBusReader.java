@@ -15,16 +15,20 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.Partitioning.Tools;
-
-import org.ancora.DynamicMapping.InstructionBlock.GenericInstruction;
+package org.ancora.InstructionBlock;
 
 /**
- * Filters Generic Instructions.
+ * Represents an Instruction Bus. Can returns GenericInstructions.
  *
  * @author Joao Bispo
  */
-public interface InstructionFilter {
+public interface InstructionBusReader {
 
-   public boolean accept(GenericInstruction instruction);
+   /**
+    * @return the next instruction from the bus, or
+     * null if the end of the stream has been reached.
+    */
+   GenericInstruction nextInstruction();
+   long getCycles();
+   long getInstructions();
 }

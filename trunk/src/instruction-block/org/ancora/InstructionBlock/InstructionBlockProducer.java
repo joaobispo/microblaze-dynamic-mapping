@@ -15,30 +15,12 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock.Listeners;
-
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+package org.ancora.InstructionBlock;
 
 /**
  *
  * @author Joao Bispo
  */
-public class InstructionBlockPrinter implements InstructionBlockListener {
-
-   public InstructionBlockPrinter() {
-      //printToFile = false;
-   }
-
-
-
-   public void accept(InstructionBlock instructionBlock) {
-      System.out.println(instructionBlock);
-   }
-
-   public void flush() {
-      // Do Nothing
-   }
-
-   //private boolean printToFile;
+public interface InstructionBlockProducer {
+   public void addListener(InstructionBlockListener listener);
 }

@@ -15,20 +15,39 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock.Listeners;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlockListener;
 
 /**
- * Represents an Instruction Bus. Can returns GenericInstructions.
  *
  * @author Joao Bispo
  */
-public interface InstructionBusReader {
+public class InstructionBlockCollector implements InstructionBlockListener {
+
+   public InstructionBlockCollector() {
+      blocks = new ArrayList<InstructionBlock>();
+   }
+
+
+
+   public void accept(InstructionBlock instructionBlock) {
+      blocks.add(instructionBlock);
+   }
+
+   public void flush() {
+      // Do Nothing
+   }
+
+   public List<InstructionBlock> getBlocks() {
+      return blocks;
+   }
 
    /**
-    * @return the next instruction from the bus, or
-     * null if the end of the stream has been reached.
+    * INSTANCE VARIABLES
     */
-   GenericInstruction nextInstruction();
-   long getCycles();
-   long getInstructions();
+   private List<InstructionBlock> blocks;
 }

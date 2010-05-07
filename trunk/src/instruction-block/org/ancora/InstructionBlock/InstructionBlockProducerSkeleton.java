@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock;
+package org.ancora.InstructionBlock;
 
 import java.util.HashSet;
 import java.util.Set;

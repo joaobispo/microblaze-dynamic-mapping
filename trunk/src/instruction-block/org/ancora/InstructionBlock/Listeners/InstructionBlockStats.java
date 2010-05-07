@@ -15,39 +15,44 @@
  *  under the License.
  */
 
-package org.ancora.DynamicMapping.InstructionBlock.Listeners;
+package org.ancora.InstructionBlock.Listeners;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlockListener;
+import java.util.ArrayList;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlockListener;
 
 /**
  *
  * @author Joao Bispo
  */
-public class InstructionBlockCollector implements InstructionBlockListener {
+public class InstructionBlockStats implements InstructionBlockListener {
 
-   public InstructionBlockCollector() {
-      blocks = new ArrayList<InstructionBlock>();
+   public InstructionBlockStats() {
+      blockInstructions = new ArrayList<Integer>();
+      blockRepetitions = new ArrayList<Integer>();
    }
 
 
 
    public void accept(InstructionBlock instructionBlock) {
-      blocks.add(instructionBlock);
+      blockInstructions.add(instructionBlock.getInstructions().size());
+      blockRepetitions.add(instructionBlock.getRepetitions());
    }
 
    public void flush() {
       // Do Nothing
    }
 
-   public List<InstructionBlock> getBlocks() {
-      return blocks;
+   public long getTotalInstructions() {
+      long acc = 0;
+      for(int i=0; i<blockInstructions.size(); i++) {
+         acc += blockInstructions.get(i) * blockRepetitions.get(i);
+      }
+
+      return acc;
    }
 
-   /**
-    * INSTANCE VARIABLES
-    */
-   private List<InstructionBlock> blocks;
+   private List<Integer> blockInstructions;
+   private List<Integer> blockRepetitions;
 }
