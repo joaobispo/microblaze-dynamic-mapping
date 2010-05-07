@@ -15,23 +15,24 @@
  *  under the License.
  */
 
-package org.ancora.IntermediateRepresentation.Ilp;
-
-import org.ancora.IntermediateRepresentation.MemoryTest;
-import org.ancora.IntermediateRepresentation.Operation;
-import org.ancora.IntermediateRepresentation.OperationType;
+package org.ancora.IntermediateRepresentation;
 
 /**
+ * Several utility methods related to the classes in IR.
  *
  * @author Joao Bispo
  */
-public class IrMemoryTest implements MemoryTest {
+public class IrUtils {
+   public static boolean isMemoryOperation(Operation operation) {
+      if (operation.getType() == OperationType.MemoryLoad ||
+              operation.getType() == OperationType.MemoryStore) {
+         return true;
+      }
 
-   public boolean isMemoryOperation(Operation operation) {
       return false;
    }
 
-   public boolean isLoad(Operation operation) {
+   public static boolean isLoad(Operation operation) {
       if(operation.getType() == OperationType.MemoryLoad) {
          return true;
       } else {
@@ -39,12 +40,11 @@ public class IrMemoryTest implements MemoryTest {
       }
    }
 
-   public boolean isStore(Operation operation) {
+   public static boolean isStore(Operation operation) {
       if(operation.getType() == OperationType.MemoryStore) {
          return true;
       } else {
          return false;
       }
    }
-
 }
