@@ -17,7 +17,7 @@
 
 package org.ancora.DMTool.TransformStudy;
 
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBlock;
 
 /**
  *

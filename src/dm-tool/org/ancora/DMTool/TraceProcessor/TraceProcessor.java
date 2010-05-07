@@ -23,8 +23,8 @@ import org.ancora.DMTool.Shell.System.GeneralPreferences;
 import org.ancora.DMTool.Configuration.PartitionerType;
 import org.ancora.DMTool.TransformStudy.NamedBlock;
 import org.ancora.DMTool.Utils.EnumUtils;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBusReader;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.InstructionBusReader;
 import org.ancora.SharedLibrary.ParseUtils;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 

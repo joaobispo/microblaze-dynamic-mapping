@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.ancora.IntermediateRepresentation.Ilp.Mapper;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene1;
-import org.ancora.IntermediateRepresentation.Ilp.MbIlpScene2;
+import org.ancora.IrMapping.Mapper;
+import org.ancora.IrMapping.AsapScenario1;
+import org.ancora.IrMapping.AsapScenario2;
 import org.ancora.SharedLibrary.Preferences.EnumPreferences;
 
 /**
@@ -48,11 +48,11 @@ public class MapperDispenser {
       }
 
       if(mapperOption == MapperOption.AsapScenario1) {
-         return new MbIlpScene1();
+         return new AsapScenario1();
       }
 
       if(mapperOption == MapperOption.AsapScenario2) {
-         return new MbIlpScene2();
+         return new AsapScenario2();
       }
 
 

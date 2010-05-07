@@ -23,11 +23,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.ancora.DynamicMapping.InstructionBlock.InstructionBlock;
-import org.ancora.DynamicMapping.InstructionBlock.MbInstructionBlockWriter;
+import org.ancora.InstructionBlock.InstructionBlock;
+import org.ancora.InstructionBlock.MbInstructionBlockWriter;
 import org.ancora.IntermediateRepresentation.MbParser;
 import org.ancora.IntermediateRepresentation.Operand;
-import org.ancora.IntermediateRepresentation.Operands.MicroblazeType;
+import org.ancora.IntermediateRepresentation.MbOperandType;
 import org.ancora.IntermediateRepresentation.Operation;
 import org.ancora.IntermediateRepresentation.Operations.MbOperation;
 import org.ancora.IntermediateRepresentation.Transformations.SingleStaticAssignment;
@@ -59,8 +59,8 @@ public class TransformUtils {
          }
 
          for(Operand operand : operation.getInputs()) {
-            if(operand.getType() == MicroblazeType.MbImm ||
-                    operand.getType() == MicroblazeType.MbRegister) {
+            if(operand.getType() == MbOperandType.MbImm ||
+                    operand.getType() == MbOperandType.MbRegister) {
                 Logger.getLogger(TransformUtils.class.getName()).
                     warning("Could not transform block of MicroBlaze instructions " +
                     "int a pure intermediate representation, due to input operand '"+operand+"'");
@@ -69,8 +69,8 @@ public class TransformUtils {
          }
 
          for(Operand operand : operation.getOutputs()) {
-            if(operand.getType() == MicroblazeType.MbImm ||
-                    operand.getType() == MicroblazeType.MbRegister) {
+            if(operand.getType() == MbOperandType.MbImm ||
+                    operand.getType() == MbOperandType.MbRegister) {
                 Logger.getLogger(TransformUtils.class.getName()).
                     warning("Could not transform block of MicroBlaze instructions " +
                     "int a pure intermediate representation, due to output operand '"+operand+"'");
